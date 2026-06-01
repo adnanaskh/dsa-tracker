@@ -383,17 +383,39 @@ const PATTERNS = [
   { pattern: 'Hash Map / Set', usage: 'Frequency count, quick lookup', problems: 'Two Sum, Group Anagrams', time: 'O(n)', space: 'O(n)' },
 ];
 
-const WEEKLY_PLAN = Array.from({ length: 8 }, (_, i) => ({
-  week: `Week ${i + 1}`,
-  days: `Day ${i * 7 + 1}–${i * 7 + 7}`,
-  target: 35
-}));
+// Build smart day->questions map (days 61-65 compressed into day 60)
+const DAY_QUESTIONS = {};
+INITIAL_QUESTIONS.forEach(q => {
+  const mappedDay = q.day > 60 ? 60 : q.day;
+  if (!DAY_QUESTIONS[mappedDay]) DAY_QUESTIONS[mappedDay] = [];
+  DAY_QUESTIONS[mappedDay].push(q);
+});
 
-const DAILY_PLAN = Array.from({ length: 60 }, (_, i) => ({
-  day: i + 1,
-  topic: i < 6 ? 'Arrays & Hashing' : i < 12 ? 'Two Pointers' : 'Other Topics',
-  q1: '', q2: '', q3: '', q4: '', q5: ''
-}));
+const DAILY_PLAN = Array.from({ length: 60 }, (_, i) => {
+  const day = i + 1;
+  const qs = DAY_QUESTIONS[day] || [];
+  const topicSet = [...new Set(qs.map(q => q.topic))];
+  return { day, topic: topicSet.join(' + '), questions: qs };
+});
+
+const WEEKLY_PLAN = Array.from({ length: 9 }, (_, i) => {
+  const startDay = i * 7 + 1;
+  const endDay = Math.min((i + 1) * 7, 60);
+  const weekQs = INITIAL_QUESTIONS.filter(q => {
+    const d = q.day > 60 ? 60 : q.day;
+    return d >= startDay && d <= endDay;
+  });
+  const topics = [...new Set(weekQs.map(q => q.topic))];
+  return {
+    week: `Week ${i + 1}`,
+    startDay,
+    endDay,
+    days: `Day ${startDay}–${endDay}`,
+    topics,
+    targetCount: weekQs.length,
+    questionIds: weekQs.map(q => q.id),
+  };
+});
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -588,11 +610,11 @@ export default function App() {
       <main className="p-6">
         <div className="bg-white border border-gray-400 p-6 min-h-[70vh] shadow-sm">
           {activeTab === 'dashboard' && <DashboardTab questionsProgress={questionsProgress} />}
-          {activeTab === 'questions' && <QuestionsTab questionsProgress={questionsProgress} onSave={(id, data) => saveData('questionsProgress', id, data)} />}
-          {activeTab === 'planner' && <PlannerTab plannerProgress={plannerProgress} onSave={(id, data) => saveData('plannerProgress', id, data)} />}
+          {activeTab === 'questions' && <QuestionsTab questionsProgress={questionsProgress} onSave={(id, data) => saveData('questionsProgress', id, data)} onRevisionSave={(id, data) => saveData('revisionLogs', id, data)} />}
+          {activeTab === 'planner' && <PlannerTab plannerProgress={plannerProgress} questionsProgress={questionsProgress} onSave={(id, data) => saveData('plannerProgress', id, data)} />}
           {activeTab === 'revision' && <RevisionTab revisionLogs={revisionLogs} onSave={(id, data) => saveData('revisionLogs', id, data)} onDelete={(id) => deleteData('revisionLogs', id)} />}
           {activeTab === 'patterns' && <PatternsTab />}
-          {activeTab === 'weekly' && <WeeklyTab weeklyReviews={weeklyReviews} onSave={(id, data) => saveData('weeklyReviews', id, data)} />}
+          {activeTab === 'weekly' && <WeeklyTab weeklyReviews={weeklyReviews} questionsProgress={questionsProgress} onSave={(id, data) => saveData('weeklyReviews', id, data)} />}
         </div>
       </main>
     </div>
@@ -693,160 +715,168 @@ function DashboardTab({ questionsProgress }) {
   );
 }
 
-function QuestionsTab({ questionsProgress, onSave }) {
+function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [editingQuestion, setEditingQuestion] = useState(null);
+  const [filterTopic, setFilterTopic] = useState('All');
+  const [filterDifficulty, setFilterDifficulty] = useState('All');
 
   const handleEdit = (q) => {
     const progress = questionsProgress[q.id] || {};
     setEditingId(q.id);
+    setEditingQuestion(q);
     setEditForm({
       status: progress.status || '⬜ Pending',
       revisit: progress.revisit || '',
       attempts: progress.attempts || '',
       notes: progress.notes || '',
-      topic: q.topic // store for dashboard counts
+      topic: q.topic
     });
   };
 
   const handleSave = () => {
     onSave(editingId, editForm);
+    // Auto-add to revision log when flagged
+    if (editForm.revisit === '🔄 Revisit' && editingQuestion) {
+      onRevisionSave(`q_${editingId}`, {
+        questionName: editingQuestion.name,
+        questionId: editingId,
+        topic: editingQuestion.topic,
+        difficulty: editingQuestion.difficulty,
+        link: editingQuestion.link,
+        autoAdded: true,
+        flaggedAt: new Date().toISOString(),
+        attempt1: '', attempt2: '', attempt3: '',
+        mastered: 'No', notes: ''
+      });
+    }
     setEditingId(null);
+    setEditingQuestion(null);
   };
+
+  const allTopics = ['All', ...new Set(INITIAL_QUESTIONS.map(q => q.topic))];
+  const filtered = INITIAL_QUESTIONS.filter(q => {
+    const topicMatch = filterTopic === 'All' || q.topic === filterTopic;
+    const diffMatch = filterDifficulty === 'All' || q.difficulty === filterDifficulty;
+    return topicMatch && diffMatch;
+  });
 
   return (
     <div>
       <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">📋 Questions Tracker</h2>
+
+      {/* Filters */}
+      <div className="flex gap-4 mb-4 flex-wrap items-end">
+        <div>
+          <label className="block text-xs font-bold text-gray-600 mb-1 uppercase">Topic</label>
+          <select className="border border-gray-400 p-2 text-sm bg-white" value={filterTopic} onChange={e => setFilterTopic(e.target.value)}>
+            {allTopics.map(t => <option key={t}>{t}</option>)}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-gray-600 mb-1 uppercase">Difficulty</label>
+          <select className="border border-gray-400 p-2 text-sm bg-white" value={filterDifficulty} onChange={e => setFilterDifficulty(e.target.value)}>
+            {['All','Easy','Medium','Hard'].map(d => <option key={d}>{d}</option>)}
+          </select>
+        </div>
+        <div className="text-xs text-gray-500 pb-2">Showing <strong>{filtered.length}</strong> of {INITIAL_QUESTIONS.length} questions</div>
+      </div>
       
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-400 text-sm">
           <thead>
             <tr className="bg-[#2c3e50] text-white">
-              <th className="border border-gray-400 p-2 text-center w-12">#</th>
+              <th className="border border-gray-400 p-2 text-center w-10">#</th>
+              <th className="border border-gray-400 p-2 text-center w-10">DAY</th>
               <th className="border border-gray-400 p-2 text-left">TOPIC</th>
               <th className="border border-gray-400 p-2 text-left">QUESTION NAME</th>
               <th className="border border-gray-400 p-2 text-center">DIFFICULTY</th>
+              <th className="border border-gray-400 p-2 text-left">PATTERN</th>
               <th className="border border-gray-400 p-2 text-center">STATUS</th>
               <th className="border border-gray-400 p-2 text-center">REVISIT</th>
               <th className="border border-gray-400 p-2 text-center">ACTION</th>
             </tr>
           </thead>
           <tbody>
-            {INITIAL_QUESTIONS.map(q => {
+            {filtered.map(q => {
               const p = questionsProgress[q.id] || {};
               const isDone = p.status === '✅ Done';
               const needsRevisit = p.revisit === '🔄 Revisit';
-
+              const isMastered = p.revisit === '✔️ Mastered';
               return (
-                <tr key={q.id} className={`${isDone ? 'bg-green-50' : 'hover:bg-gray-100'}`}>
-                  <td className="border border-gray-400 p-2 text-center">{q.id}</td>
-                  <td className="border border-gray-400 p-2">{q.topic}</td>
+                <tr key={q.id} className={`${isDone ? 'bg-green-50' : needsRevisit ? 'bg-red-50' : 'hover:bg-gray-50'}`}>
+                  <td className="border border-gray-400 p-2 text-center text-gray-400 text-xs">{q.id}</td>
+                  <td className="border border-gray-400 p-2 text-center font-bold text-gray-600">{q.day}</td>
+                  <td className="border border-gray-400 p-2 text-xs text-gray-700">{q.topic}</td>
                   <td className="border border-gray-400 p-2">
-                    <a href={q.link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-semibold">
-                      {q.name}
-                    </a>
+                    <a href={q.link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-semibold">{q.name}</a>
                   </td>
                   <td className="border border-gray-400 p-2 text-center">
                     <span className={`px-2 py-1 text-xs font-bold border ${
                       q.difficulty === 'Easy' ? 'border-green-600 text-green-700 bg-green-100' :
                       q.difficulty === 'Medium' ? 'border-yellow-600 text-yellow-700 bg-yellow-100' :
                       'border-red-600 text-red-700 bg-red-100'
-                    }`}>
-                      {q.difficulty}
-                    </span>
+                    }`}>{q.difficulty}</span>
                   </td>
-                  <td className="border border-gray-400 p-2 text-center font-bold">
-                    {p.status || '⬜ Pending'}
-                  </td>
-                  <td className="border border-gray-400 p-2 text-center font-bold text-red-600">
-                    {needsRevisit ? '🔄 Flagged' : ''}
+                  <td className="border border-gray-400 p-2 text-xs text-gray-500">{q.pattern}</td>
+                  <td className="border border-gray-400 p-2 text-center font-bold text-sm">{p.status || '⬜ Pending'}</td>
+                  <td className="border border-gray-400 p-2 text-center text-xs font-bold">
+                    {needsRevisit ? <span className="text-red-600">🔄 Flagged</span> : isMastered ? <span className="text-green-600">✔️ Mastered</span> : ''}
                   </td>
                   <td className="border border-gray-400 p-2 text-center">
-                    <button 
-                      onClick={() => handleEdit(q)}
-                      className="bg-blue-600 text-white px-3 py-1 text-xs font-bold hover:bg-blue-700 border border-blue-800"
-                    >
-                      Update
-                    </button>
+                    <button onClick={() => handleEdit(q)} className="bg-blue-600 text-white px-3 py-1 text-xs font-bold hover:bg-blue-700 border border-blue-800">Update</button>
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <p className="mt-4 text-xs text-gray-500 italic">* Displaying representative set from your master tracker. All updates are saved to the secure online database.</p>
       </div>
 
-      {/* Classic Modal */}
+      {/* Modal */}
       {editingId && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white border-2 border-gray-800 p-6 w-[500px] shadow-lg">
+          <div className="bg-white border-2 border-gray-800 p-6 w-[520px] shadow-lg">
             <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h3 className="text-lg font-bold">Update Progress (Q#{editingId})</h3>
-              <button onClick={() => setEditingId(null)} className="text-gray-500 hover:text-black font-bold">✕</button>
+              <div>
+                <h3 className="text-lg font-bold">Update Progress (Q#{editingId})</h3>
+                {editingQuestion && <p className="text-xs text-gray-500 mt-0.5">{editingQuestion.name}</p>}
+              </div>
+              <button onClick={() => { setEditingId(null); setEditingQuestion(null); }} className="text-gray-500 hover:text-black font-bold text-xl">✕</button>
             </div>
-            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-bold mb-1">Status</label>
-                <select 
-                  className="w-full border border-gray-400 p-2 bg-gray-50 text-sm"
-                  value={editForm.status}
-                  onChange={(e) => setEditForm({...editForm, status: e.target.value})}
-                >
+                <select className="w-full border border-gray-400 p-2 bg-gray-50 text-sm" value={editForm.status} onChange={(e) => setEditForm({...editForm, status: e.target.value})}>
                   <option>⬜ Pending</option>
                   <option>🟡 In Progress</option>
                   <option>✅ Done</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-bold mb-1">Revisit Flag</label>
-                <select 
-                  className="w-full border border-gray-400 p-2 bg-gray-50 text-sm"
-                  value={editForm.revisit}
-                  onChange={(e) => setEditForm({...editForm, revisit: e.target.value})}
-                >
+                <select className="w-full border border-gray-400 p-2 bg-gray-50 text-sm" value={editForm.revisit} onChange={(e) => setEditForm({...editForm, revisit: e.target.value})}>
                   <option value="">None</option>
                   <option>🔄 Revisit</option>
                   <option>✔️ Mastered</option>
                 </select>
+                {editForm.revisit === '🔄 Revisit' && (
+                  <p className="text-xs text-orange-600 mt-1 font-bold">⚡ Will be auto-added to Revision Log.</p>
+                )}
               </div>
-
               <div>
                 <label className="block text-sm font-bold mb-1">Attempts</label>
-                <input 
-                  type="number"
-                  className="w-full border border-gray-400 p-2 bg-gray-50 text-sm"
-                  value={editForm.attempts}
-                  onChange={(e) => setEditForm({...editForm, attempts: e.target.value})}
-                />
+                <input type="number" className="w-full border border-gray-400 p-2 bg-gray-50 text-sm" value={editForm.attempts} onChange={(e) => setEditForm({...editForm, attempts: e.target.value})} />
               </div>
-
               <div>
                 <label className="block text-sm font-bold mb-1">Notes / Approach</label>
-                <textarea 
-                  className="w-full border border-gray-400 p-2 bg-gray-50 text-sm h-24"
-                  value={editForm.notes}
-                  onChange={(e) => setEditForm({...editForm, notes: e.target.value})}
-                  placeholder="e.g. Use hash map to store complements..."
-                ></textarea>
+                <textarea className="w-full border border-gray-400 p-2 bg-gray-50 text-sm h-24" value={editForm.notes} onChange={(e) => setEditForm({...editForm, notes: e.target.value})} placeholder="e.g. Use hash map to store complements..."></textarea>
               </div>
             </div>
-
             <div className="mt-6 flex justify-end gap-2">
-              <button 
-                onClick={() => setEditingId(null)}
-                className="px-4 py-2 text-sm border border-gray-400 hover:bg-gray-100 font-bold"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={handleSave}
-                className="px-4 py-2 text-sm bg-green-600 text-white border border-green-800 hover:bg-green-700 font-bold"
-              >
-                Save to Database
-              </button>
+              <button onClick={() => { setEditingId(null); setEditingQuestion(null); }} className="px-4 py-2 text-sm border border-gray-400 hover:bg-gray-100 font-bold">Cancel</button>
+              <button onClick={handleSave} className="px-4 py-2 text-sm bg-green-600 text-white border border-green-800 hover:bg-green-700 font-bold">Save to Database</button>
             </div>
           </div>
         </div>
@@ -855,7 +885,9 @@ function QuestionsTab({ questionsProgress, onSave }) {
   );
 }
 
-function PlannerTab({ plannerProgress, onSave }) {
+function PlannerTab({ plannerProgress, questionsProgress, onSave }) {
+  const [expandedDay, setExpandedDay] = useState(null);
+
   const handleInput = (day, field, value) => {
     const existing = plannerProgress[day] || {};
     onSave(day, { ...existing, [field]: value });
@@ -863,62 +895,95 @@ function PlannerTab({ plannerProgress, onSave }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">📅 60-Day Daily Planner</h2>
-      
+      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">📅 Complete 60-Day Planner</h2>
+      <p className="text-xs text-gray-500 mb-4">Click any row to expand and see the scheduled questions. Progress is auto-tracked from the Questions tab.</p>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-400 text-sm">
           <thead>
             <tr className="bg-[#2c3e50] text-white">
               <th className="border border-gray-400 p-2 text-center w-12">DAY</th>
               <th className="border border-gray-400 p-2 text-left">TOPIC FOCUS</th>
-              <th className="border border-gray-400 p-2 text-left">DONE TODAY</th>
-              <th className="border border-gray-400 p-2 text-center w-24">MOOD</th>
+              <th className="border border-gray-400 p-2 text-center w-16">TOTAL</th>
+              <th className="border border-gray-400 p-2 text-center w-16">DONE</th>
+              <th className="border border-gray-400 p-2 text-center w-32">PROGRESS</th>
+              <th className="border border-gray-400 p-2 text-center w-20">MOOD</th>
               <th className="border border-gray-400 p-2 text-left">NOTES</th>
             </tr>
           </thead>
           <tbody>
-            {DAILY_PLAN.slice(0, 15).map(plan => { // Showing subset for classic performance
+            {DAILY_PLAN.map(plan => {
               const p = plannerProgress[plan.day] || {};
+              const totalQs = plan.questions.length;
+              const doneQs = plan.questions.filter(q => (questionsProgress[q.id] || {}).status === '✅ Done').length;
+              const pct = totalQs > 0 ? Math.round((doneQs / totalQs) * 100) : 0;
+              const isExpanded = expandedDay === plan.day;
+              const isComplete = doneQs === totalQs && totalQs > 0;
               return (
-                <tr key={plan.day} className="hover:bg-gray-100">
-                  <td className="border border-gray-400 p-2 text-center font-bold bg-gray-50">{plan.day}</td>
-                  <td className="border border-gray-400 p-2">{plan.topic}</td>
-                  <td className="border border-gray-400 p-0">
-                    <input 
-                      type="text" 
-                      className="w-full h-full p-2 bg-transparent border-none focus:outline-none focus:bg-yellow-50"
-                      value={p.doneToday || ''}
-                      placeholder="e.g. 4/5"
-                      onChange={(e) => handleInput(plan.day, 'doneToday', e.target.value)}
-                    />
-                  </td>
-                  <td className="border border-gray-400 p-0">
-                    <select 
-                      className="w-full h-full p-2 bg-transparent border-none focus:outline-none cursor-pointer text-center"
-                      value={p.mood || ''}
-                      onChange={(e) => handleInput(plan.day, 'mood', e.target.value)}
-                    >
-                      <option value=""></option>
-                      <option value="😊">😊</option>
-                      <option value="😐">😐</option>
-                      <option value="😫">😫</option>
-                    </select>
-                  </td>
-                  <td className="border border-gray-400 p-0">
-                    <input 
-                      type="text" 
-                      className="w-full h-full p-2 bg-transparent border-none focus:outline-none focus:bg-yellow-50"
-                      value={p.notes || ''}
-                      placeholder="Any thoughts?"
-                      onChange={(e) => handleInput(plan.day, 'notes', e.target.value)}
-                    />
-                  </td>
-                </tr>
+                <React.Fragment key={plan.day}>
+                  <tr
+                    className={`cursor-pointer select-none ${isComplete ? 'bg-green-50' : 'hover:bg-gray-50'}`}
+                    onClick={() => setExpandedDay(isExpanded ? null : plan.day)}
+                  >
+                    <td className="border border-gray-400 p-2 text-center font-bold bg-gray-100">{plan.day}</td>
+                    <td className="border border-gray-400 p-2 font-semibold text-gray-800">
+                      <span className="mr-1 text-gray-400 text-xs">{isExpanded ? '▼' : '▶'}</span>{plan.topic || '—'}
+                    </td>
+                    <td className="border border-gray-400 p-2 text-center text-gray-600">{totalQs}</td>
+                    <td className="border border-gray-400 p-2 text-center font-bold text-green-700">{doneQs}</td>
+                    <td className="border border-gray-400 p-2">
+                      <div className="w-full bg-gray-200 h-3 border border-gray-300">
+                        <div className="bg-green-600 h-full" style={{ width: `${pct}%` }}></div>
+                      </div>
+                      <div className="text-xs text-gray-500 text-center mt-0.5">{pct}%</div>
+                    </td>
+                    <td className="border border-gray-400 p-0" onClick={e => e.stopPropagation()}>
+                      <select className="w-full h-full p-2 bg-transparent border-none focus:outline-none cursor-pointer text-center" value={p.mood || ''} onChange={(e) => handleInput(plan.day, 'mood', e.target.value)}>
+                        <option value=""></option>
+                        <option value="😊">😊</option>
+                        <option value="😐">😐</option>
+                        <option value="😫">😫</option>
+                      </select>
+                    </td>
+                    <td className="border border-gray-400 p-0" onClick={e => e.stopPropagation()}>
+                      <input type="text" className="w-full h-full p-2 bg-transparent border-none focus:outline-none focus:bg-yellow-50" value={p.notes || ''} placeholder="Any thoughts?" onChange={(e) => handleInput(plan.day, 'notes', e.target.value)} />
+                    </td>
+                  </tr>
+                  {isExpanded && plan.questions.length > 0 && (
+                    <tr>
+                      <td colSpan="7" className="border border-gray-400 p-0 bg-gray-50">
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="bg-gray-200">
+                              <th className="p-2 text-left w-8">ID</th>
+                              <th className="p-2 text-left">QUESTION</th>
+                              <th className="p-2 text-center w-20">DIFFICULTY</th>
+                              <th className="p-2 text-left">PATTERN</th>
+                              <th className="p-2 text-center w-24">STATUS</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {plan.questions.map(q => {
+                              const qp = questionsProgress[q.id] || {};
+                              return (
+                                <tr key={q.id} className={qp.status === '✅ Done' ? 'bg-green-50' : 'hover:bg-white'}>
+                                  <td className="p-2 text-gray-400">{q.id}</td>
+                                  <td className="p-2"><a href={q.link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline font-semibold">{q.name}</a></td>
+                                  <td className={`p-2 text-center font-bold ${ q.difficulty === 'Easy' ? 'text-green-700' : q.difficulty === 'Medium' ? 'text-yellow-700' : 'text-red-700' }`}>{q.difficulty}</td>
+                                  <td className="p-2 text-gray-500">{q.pattern}</td>
+                                  <td className="p-2 text-center font-bold">{qp.status || '⬜ Pending'}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               );
             })}
           </tbody>
         </table>
-        <p className="mt-4 text-xs text-gray-500 italic">* Displaying Days 1-15. Click fields to edit. Auto-saves online.</p>
       </div>
     </div>
   );
@@ -926,15 +991,11 @@ function PlannerTab({ plannerProgress, onSave }) {
 
 function RevisionTab({ revisionLogs, onSave, onDelete }) {
   const [newLog, setNewLog] = useState('');
-  
+
   const handleAdd = () => {
     if (!newLog.trim()) return;
-    const id = Date.now().toString();
-    onSave(id, {
-      questionName: newLog,
-      attempt1: '', attempt2: '', attempt3: '',
-      mastered: 'No', errorType: '', notes: ''
-    });
+    const id = `manual_${Date.now()}`;
+    onSave(id, { questionName: newLog, autoAdded: false, attempt1: '', attempt2: '', attempt3: '', mastered: 'No', notes: '', topic: '', link: '' });
     setNewLog('');
   };
 
@@ -943,84 +1004,71 @@ function RevisionTab({ revisionLogs, onSave, onDelete }) {
     onSave(id, { ...existing, [field]: value });
   };
 
-  return (
-    <div>
-      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">🔄 Revision & Weak Areas Log</h2>
-      
-      <div className="mb-4 flex gap-2">
-        <input 
-          type="text" 
-          value={newLog}
-          onChange={(e) => setNewLog(e.target.value)}
-          placeholder="Enter Question Name to track..." 
-          className="border border-gray-400 p-2 text-sm w-64 bg-white"
-        />
-        <button 
-          onClick={handleAdd}
-          className="bg-gray-800 text-white px-4 py-2 text-sm font-bold hover:bg-black border border-black"
-        >
-          Add to Revision Log
-        </button>
-      </div>
+  const autoLogs = Object.entries(revisionLogs).filter(([_, l]) => l.autoAdded);
+  const manualLogs = Object.entries(revisionLogs).filter(([_, l]) => !l.autoAdded);
 
+  const renderTable = (entries, title, badge) => (
+    <div className="mb-8">
+      <h3 className="text-sm font-bold border-b border-gray-400 pb-1 mb-3 text-gray-700 uppercase tracking-wide">
+        {badge} {title} <span className="text-xs font-normal text-gray-400 ml-1">({entries.length})</span>
+      </h3>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border border-gray-400 text-sm">
           <thead>
             <tr className="bg-[#2c3e50] text-white">
               <th className="border border-gray-400 p-2 text-left">QUESTION NAME</th>
+              <th className="border border-gray-400 p-2 text-left w-32">TOPIC</th>
               <th className="border border-gray-400 p-2 text-center w-24">1ST TRY</th>
               <th className="border border-gray-400 p-2 text-center w-24">2ND TRY</th>
               <th className="border border-gray-400 p-2 text-center w-24">3RD TRY</th>
               <th className="border border-gray-400 p-2 text-center w-24">MASTERED?</th>
               <th className="border border-gray-400 p-2 text-left">NOTES</th>
-              <th className="border border-gray-400 p-2 w-12"></th>
+              <th className="border border-gray-400 p-2 w-10"></th>
             </tr>
           </thead>
           <tbody>
-            {Object.keys(revisionLogs).length === 0 ? (
-              <tr><td colSpan="7" className="p-4 text-center text-gray-500">No entries yet. Add a question above.</td></tr>
-            ) : Object.entries(revisionLogs).map(([id, log]) => (
-              <tr key={id} className="hover:bg-gray-100">
-                <td className="border border-gray-400 p-2 font-semibold bg-gray-50">{log.questionName}</td>
-                {['attempt1', 'attempt2', 'attempt3'].map(attempt => (
-                  <td key={attempt} className="border border-gray-400 p-0">
-                    <input 
-                      type="date" 
-                      className="w-full h-full p-2 bg-transparent border-none text-xs focus:outline-none"
-                      value={log[attempt] || ''}
-                      onChange={(e) => handleUpdate(id, attempt, e.target.value)}
-                    />
+            {entries.length === 0 ? (
+              <tr><td colSpan="8" className="p-4 text-center text-gray-400 italic">No entries yet.</td></tr>
+            ) : entries.map(([id, log]) => (
+              <tr key={id} className={`hover:bg-gray-50 ${log.mastered === 'Yes' ? 'bg-green-50' : ''}`}>
+                <td className="border border-gray-400 p-2 font-semibold">
+                  {log.link ? <a href={log.link} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">{log.questionName}</a> : log.questionName}
+                </td>
+                <td className="border border-gray-400 p-2 text-xs text-gray-600">{log.topic || '—'}</td>
+                {['attempt1','attempt2','attempt3'].map(a => (
+                  <td key={a} className="border border-gray-400 p-0">
+                    <input type="date" className="w-full h-full p-2 bg-transparent border-none text-xs focus:outline-none" value={log[a] || ''} onChange={(e) => handleUpdate(id, a, e.target.value)} />
                   </td>
                 ))}
                 <td className="border border-gray-400 p-0">
-                   <select 
-                      className="w-full h-full p-2 bg-transparent border-none text-center font-bold focus:outline-none cursor-pointer"
-                      value={log.mastered || 'No'}
-                      onChange={(e) => handleUpdate(id, 'mastered', e.target.value)}
-                    >
-                      <option className="text-red-600">No</option>
-                      <option className="text-green-600">Yes</option>
-                    </select>
+                  <select className="w-full h-full p-2 bg-transparent border-none text-center font-bold focus:outline-none cursor-pointer" value={log.mastered || 'No'} onChange={(e) => handleUpdate(id, 'mastered', e.target.value)}>
+                    <option>No</option>
+                    <option>Yes</option>
+                  </select>
                 </td>
                 <td className="border border-gray-400 p-0">
-                  <input 
-                    type="text" 
-                    className="w-full h-full p-2 bg-transparent border-none focus:outline-none"
-                    value={log.notes || ''}
-                    placeholder="Mistake details..."
-                    onChange={(e) => handleUpdate(id, 'notes', e.target.value)}
-                  />
+                  <input type="text" className="w-full h-full p-2 bg-transparent border-none focus:outline-none" value={log.notes || ''} placeholder="Mistake details..." onChange={(e) => handleUpdate(id, 'notes', e.target.value)} />
                 </td>
                 <td className="border border-gray-400 p-0 text-center">
-                  <button onClick={() => onDelete(id)} className="text-red-600 hover:bg-red-100 w-full h-full p-2 font-bold text-lg leading-none">
-                    ×
-                  </button>
+                  <button onClick={() => onDelete(id)} className="text-red-600 hover:bg-red-100 w-full h-full p-2 font-bold text-lg leading-none">×</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    </div>
+  );
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">🔄 Revision & Weak Areas Log</h2>
+      <div className="mb-6 flex gap-2">
+        <input type="text" value={newLog} onChange={(e) => setNewLog(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAdd()} placeholder="Manually add question name to track..." className="border border-gray-400 p-2 text-sm w-72 bg-white" />
+        <button onClick={handleAdd} className="bg-gray-800 text-white px-4 py-2 text-sm font-bold hover:bg-black border border-black">+ Add Manually</button>
+      </div>
+      {renderTable(autoLogs, 'Auto-Flagged for Revisit', '⚡')}
+      {renderTable(manualLogs, 'Manually Added', '📝')}
     </div>
   );
 }
@@ -1056,7 +1104,7 @@ function PatternsTab() {
   );
 }
 
-function WeeklyTab({ weeklyReviews, onSave }) {
+function WeeklyTab({ weeklyReviews, questionsProgress, onSave }) {
   const handleUpdate = (week, field, value) => {
     const existing = weeklyReviews[week] || {};
     onSave(week, { ...existing, [field]: value });
@@ -1064,48 +1112,58 @@ function WeeklyTab({ weeklyReviews, onSave }) {
 
   return (
     <div>
-      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">📊 Weekly Review & Reflection</h2>
-      
-      <table className="w-full border-collapse border border-gray-400 text-sm">
-        <thead>
-          <tr className="bg-[#2c3e50] text-white">
-            <th className="border border-gray-400 p-2 text-left w-24">WEEK</th>
-            <th className="border border-gray-400 p-2 text-left w-32">DAYS</th>
-            <th className="border border-gray-400 p-2 text-center w-20">TARGET</th>
-            <th className="border border-gray-400 p-2 text-center w-20">SOLVED</th>
-            <th className="border border-gray-400 p-2 text-left">WEAK AREAS / NOTES</th>
-          </tr>
-        </thead>
-        <tbody>
-          {WEEKLY_PLAN.map(plan => {
-            const rev = weeklyReviews[plan.week] || {};
-            return (
-              <tr key={plan.week} className="hover:bg-gray-50">
-                <td className="border border-gray-400 p-2 font-bold bg-gray-100">{plan.week}</td>
-                <td className="border border-gray-400 p-2 text-xs text-gray-600">{plan.days}</td>
-                <td className="border border-gray-400 p-2 text-center font-bold text-gray-500">{plan.target}</td>
-                <td className="border border-gray-400 p-0">
-                   <input 
-                    type="number" 
-                    className="w-full h-full p-2 bg-transparent border-none focus:outline-none text-center font-bold"
-                    value={rev.solved || ''}
-                    onChange={(e) => handleUpdate(plan.week, 'solved', e.target.value)}
-                  />
-                </td>
-                <td className="border border-gray-400 p-0">
-                  <input 
-                    type="text" 
-                    className="w-full h-full p-2 bg-transparent border-none focus:outline-none"
-                    value={rev.notes || ''}
-                    placeholder="Reflections on this week..."
-                    onChange={(e) => handleUpdate(plan.week, 'notes', e.target.value)}
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <h2 className="text-xl font-bold border-b-2 border-gray-800 pb-2 mb-4 uppercase tracking-wide text-gray-800">📊 Weekly Auto-Summary & Review</h2>
+      {WEEKLY_PLAN.map(plan => {
+        const rev = weeklyReviews[plan.week] || {};
+        const solved = plan.questionIds.filter(id => (questionsProgress[id] || {}).status === '✅ Done').length;
+        const flagged = plan.questionIds.filter(id => (questionsProgress[id] || {}).revisit === '🔄 Revisit').length;
+        const pct = plan.targetCount > 0 ? Math.round((solved / plan.targetCount) * 100) : 0;
+        let badge = '🔴 Not Started'; let badgeCls = 'text-red-700 bg-red-100 border border-red-400';
+        if (pct === 100) { badge = '🟢 Complete'; badgeCls = 'text-green-700 bg-green-100 border border-green-400'; }
+        else if (pct > 0) { badge = '🟡 In Progress'; badgeCls = 'text-yellow-700 bg-yellow-100 border border-yellow-400'; }
+        return (
+          <div key={plan.week} className="mb-5 border border-gray-400 bg-white">
+            <div className="bg-[#2c3e50] text-white px-4 py-2 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-base">{plan.week}</span>
+                <span className="ml-3 text-gray-300 text-sm">{plan.days}</span>
+              </div>
+              <span className={`text-xs font-bold px-2 py-1 ${badgeCls}`}>{badge}</span>
+            </div>
+            {/* Auto stats */}
+            <div className="grid grid-cols-5 border-b border-gray-300">
+              {[
+                { label: 'TARGET',    value: plan.targetCount,              cls: 'text-gray-700' },
+                { label: 'SOLVED',    value: solved,                         cls: 'text-green-700 font-bold' },
+                { label: 'REMAINING', value: plan.targetCount - solved,      cls: 'text-orange-700' },
+                { label: '🔄 FLAGGED', value: flagged,                       cls: 'text-red-700' },
+                { label: '% DONE',    value: `${pct}%`,                      cls: pct === 100 ? 'text-green-700 font-bold' : 'text-gray-700' },
+              ].map((s, i) => (
+                <div key={i} className="text-center p-3 border-r border-gray-200 last:border-r-0">
+                  <div className="text-xs text-gray-500 uppercase mb-1">{s.label}</div>
+                  <div className={`text-xl ${s.cls}`}>{s.value}</div>
+                </div>
+              ))}
+            </div>
+            {/* Topics */}
+            <div className="px-4 py-2 border-b border-gray-200 bg-gray-50">
+              <span className="text-xs font-bold text-gray-500 uppercase mr-2">Topics:</span>
+              {plan.topics.map(t => <span key={t} className="text-xs bg-gray-200 border border-gray-300 px-2 py-0.5 mr-1 font-semibold text-gray-700">{t}</span>)}
+            </div>
+            {/* Progress bar */}
+            <div className="px-4 py-2 border-b border-gray-200">
+              <div className="w-full bg-gray-200 border border-gray-300 h-4">
+                <div className="bg-green-600 h-full transition-all duration-500" style={{ width: `${pct}%` }}></div>
+              </div>
+            </div>
+            {/* Manual notes */}
+            <div className="px-4 py-3 flex gap-2 items-center">
+              <label className="text-xs font-bold text-gray-600 uppercase whitespace-nowrap">Your Notes:</label>
+              <input type="text" className="flex-1 border border-gray-400 p-2 text-sm bg-white focus:outline-none focus:bg-yellow-50" value={rev.notes || ''} placeholder="Reflections, weak areas, topics to redo..." onChange={(e) => handleUpdate(plan.week, 'notes', e.target.value)} />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
