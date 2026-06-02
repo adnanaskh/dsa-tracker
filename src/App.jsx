@@ -529,7 +529,7 @@ export default function App() {
       <div className="min-h-screen bg-[#f0f0f0] flex items-center justify-center">
         <div className="text-center border-2 border-gray-400 bg-white p-12 shadow-sm w-[420px]">
           <h1 className="text-3xl font-bold text-[#2c3e50] tracking-wider mb-2">DSA MASTERY TRACKER</h1>
-          <p className="text-gray-500 text-sm mb-8">FAANG Interview Preparation | Java | 305 Questions | 60 Days</p>
+          <p className="text-gray-500 text-sm mb-8">FAANG Interview Preparation | 305 Questions | 60 Days</p>
           
           <div className="border-t border-gray-300 pt-8">
             <p className="text-sm font-bold text-gray-700 mb-1 uppercase">Sign in to sync your progress</p>
@@ -565,10 +565,10 @@ export default function App() {
       <header className="bg-[#2c3e50] text-white border-b-4 border-[#1a252f] px-6 py-4 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-wider">DSA MASTERY TRACKER</h1>
-          <p className="text-sm text-gray-300">FAANG Interview Preparation | Java | 305 Questions | 60 Days</p>
+          <p className="text-sm text-gray-300">FAANG Interview Preparation | 305 Questions | 60 Days</p>
         </div>
         <div className="text-right text-xs flex flex-col items-end gap-2">
-          <span className="text-green-400 font-bold">● Online Storage Active</span>
+          <span className="text-green-400 font-bold"></span>
           <div className="flex items-center gap-2">
             <span className="text-gray-300">{user.displayName || user.email}</span>
             <button
