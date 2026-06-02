@@ -6,6 +6,8 @@ A comprehensive web application designed to help developers systematically track
 
 - **Dashboard**: Real-time progress visualization across all DSA topics
 - **Questions Tracker**: Manage 250+ curated LeetCode problems with difficulty levels and topic categorization
+- **Solution Upload**: Store your code solutions for each problem with support for multiple programming languages
+- **Solution Viewer**: View and review previously uploaded solutions with syntax highlighting
 - **Planner**: Day-by-day study plan with customizable targets and progress tracking
 - **Revision Logger**: Detailed tracking of problem revisits with attempt dates and mastery status
 - **Weekly Reviews**: Comprehensive weekly analysis with statistics and notes
@@ -21,6 +23,38 @@ A comprehensive web application designed to help developers systematically track
 - **Backend**: Firebase (Authentication & Firestore)
 - **Build Tool**: Vite with HMR
 - **Linting**: ESLint
+
+## 💾 Solution Upload & Management
+
+### Upload Your Solutions
+- Click the **Upload** button on any problem in the Questions tab
+- Select your programming language (Java, Python, C++, JavaScript, C#, Go, Rust)
+- Paste your solution code with comments explaining your approach
+- Solutions are automatically saved to your profile
+
+### View Your Solutions
+- Click the **View** button to see your previously uploaded solution
+- Code displays with syntax highlighting
+- Use the **Copy** button to quickly copy the solution code
+
+### Delete Solutions
+- Click the **Delete** button (trash icon) to remove a solution
+- Your solution is permanently deleted (with confirmation)
+
+### Privacy & Security
+- Solutions are **private** - only you can see your own solutions
+- Each solution is linked to your user account via Firebase authentication
+- All data is encrypted in transit and at rest with Firebase
+
+## 📝 Supported Languages
+
+- ☕ Java (recommended for FAANG interviews)
+- 🐍 Python
+- ⚙️ C++
+- 📜 JavaScript
+- C#
+- Go
+- Rust
 
 ## 📦 Installation
 
@@ -79,6 +113,7 @@ const firebaseConfig = {
 - **revisionLogs**: Records problem revisit attempts and mastery
 - **plannerProgress**: Stores daily study plan data
 - **weeklyReviews**: Contains weekly analysis and reflection notes
+- **solutions**: Stores user code solutions for each problem (private per user)
 
 ## 🌐 Live Site
 
