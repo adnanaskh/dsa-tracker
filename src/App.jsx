@@ -26,7 +26,12 @@ import {
   Edit,
   CheckCircle,
   Clock,
-  XCircle
+  XCircle,
+  Upload,
+  Eye,
+  Trash2,
+  Copy,
+  Check
 } from 'lucide-react';
 
 // --- Firebase Configuration & Initialization ---
@@ -428,6 +433,7 @@ export default function App() {
   const [plannerProgress, setPlannerProgress] = useState({});
   const [revisionLogs, setRevisionLogs] = useState({});
   const [weeklyReviews, setWeeklyReviews] = useState({});
+  const [solutions, setSolutions] = useState({});
 
   // Auth Listener
   useEffect(() => {
@@ -457,6 +463,7 @@ export default function App() {
       setPlannerProgress({});
       setRevisionLogs({});
       setWeeklyReviews({});
+      setSolutions({});
     } catch (err) {
       console.error("Sign-out error:", err);
     }
@@ -466,12 +473,13 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
 
-    const collections = ['questionsProgress', 'plannerProgress', 'revisionLogs', 'weeklyReviews'];
+    const collections = ['questionsProgress', 'plannerProgress', 'revisionLogs', 'weeklyReviews', 'solutions'];
     const setters = {
       questionsProgress: setQuestionsProgress,
       plannerProgress: setPlannerProgress,
       revisionLogs: setRevisionLogs,
-      weeklyReviews: setWeeklyReviews
+      weeklyReviews: setWeeklyReviews,
+      solutions: setSolutions
     };
 
     const unsubscribes = collections.map(colName => {
@@ -610,7 +618,7 @@ export default function App() {
       <main className="p-6">
         <div className="bg-white border border-gray-400 p-6 min-h-[70vh] shadow-sm">
           {activeTab === 'dashboard' && <DashboardTab questionsProgress={questionsProgress} />}
-          {activeTab === 'questions' && <QuestionsTab questionsProgress={questionsProgress} onSave={(id, data) => saveData('questionsProgress', id, data)} onRevisionSave={(id, data) => saveData('revisionLogs', id, data)} />}
+          {activeTab === 'questions' && <QuestionsTab questionsProgress={questionsProgress} solutions={solutions} onSave={(id, data) => saveData('questionsProgress', id, data)} onRevisionSave={(id, data) => saveData('revisionLogs', id, data)} onSolutionSave={(id, data) => saveData('solutions', id, data)} onSolutionDelete={(id) => deleteData('solutions', id)} user={user} />}
           {activeTab === 'planner' && <PlannerTab plannerProgress={plannerProgress} questionsProgress={questionsProgress} onSave={(id, data) => saveData('plannerProgress', id, data)} />}
           {activeTab === 'revision' && <RevisionTab revisionLogs={revisionLogs} onSave={(id, data) => saveData('revisionLogs', id, data)} onDelete={(id) => deleteData('revisionLogs', id)} />}
           {activeTab === 'patterns' && <PatternsTab />}
@@ -715,12 +723,17 @@ function DashboardTab({ questionsProgress }) {
   );
 }
 
-function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
+function QuestionsTab({ questionsProgress, solutions, onSave, onRevisionSave, onSolutionSave, onSolutionDelete, user }) {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [filterTopic, setFilterTopic] = useState('All');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
+  const [uploadingQId, setUploadingQId] = useState(null);
+  const [viewingQId, setViewingQId] = useState(null);
+  const [uploadCode, setUploadCode] = useState('');
+  const [uploadLanguage, setUploadLanguage] = useState('java');
+  const [copiedId, setCopiedId] = useState(null);
 
   const handleEdit = (q) => {
     const progress = questionsProgress[q.id] || {};
@@ -753,6 +766,49 @@ function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
     }
     setEditingId(null);
     setEditingQuestion(null);
+  };
+
+  const handleUploadSolution = () => {
+    if (!uploadCode.trim()) {
+      alert('Please enter some code!');
+      return;
+    }
+    
+    const solutionId = `q_${uploadingQId}`;
+    const question = INITIAL_QUESTIONS.find(q => q.id === uploadingQId);
+    
+    onSolutionSave(solutionId, {
+      questionId: uploadingQId,
+      questionName: question?.name || 'Unknown',
+      code: uploadCode,
+      language: uploadLanguage,
+      uploadedAt: new Date().toISOString(),
+      userId: user.uid,
+      userEmail: user.email
+    });
+    
+    setUploadingQId(null);
+    setUploadCode('');
+    setUploadLanguage('java');
+    alert('Solution uploaded successfully! 🎉');
+  };
+
+  const handleDeleteSolution = (questionId) => {
+    if (window.confirm('Are you sure you want to delete this solution? This action cannot be undone.')) {
+      const solutionId = `q_${questionId}`;
+      onSolutionDelete(solutionId);
+      alert('Solution deleted!');
+    }
+  };
+
+  const getSolution = (questionId) => {
+    return solutions[`q_${questionId}`];
+  };
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(Date.now());
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   const allTopics = ['All', ...new Set(INITIAL_QUESTIONS.map(q => q.topic))];
@@ -795,6 +851,7 @@ function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
               <th className="border border-gray-400 p-2 text-left">PATTERN</th>
               <th className="border border-gray-400 p-2 text-center">STATUS</th>
               <th className="border border-gray-400 p-2 text-center">REVISIT</th>
+              <th className="border border-gray-400 p-2 text-center">SOLUTIONS</th>
               <th className="border border-gray-400 p-2 text-center">ACTION</th>
             </tr>
           </thead>
@@ -804,6 +861,7 @@ function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
               const isDone = p.status === '✅ Done';
               const needsRevisit = p.revisit === '🔄 Revisit';
               const isMastered = p.revisit === '✔️ Mastered';
+              const hasSolution = !!getSolution(q.id);
               return (
                 <tr key={q.id} className={`${isDone ? 'bg-green-50' : needsRevisit ? 'bg-red-50' : 'hover:bg-gray-50'}`}>
                   <td className="border border-gray-400 p-2 text-center text-gray-400 text-xs">{q.id}</td>
@@ -823,6 +881,41 @@ function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
                   <td className="border border-gray-400 p-2 text-center font-bold text-sm">{p.status || '⬜ Pending'}</td>
                   <td className="border border-gray-400 p-2 text-center text-xs font-bold">
                     {needsRevisit ? <span className="text-red-600">🔄 Flagged</span> : isMastered ? <span className="text-green-600">✔️ Mastered</span> : ''}
+                  </td>
+                  <td className="border border-gray-400 p-2 text-center">
+                    <div className="flex gap-1 justify-center flex-wrap">
+                      <button 
+                        onClick={() => { setUploadingQId(q.id); setUploadCode(''); }}
+                        title="Upload/Update Solution"
+                        className={`px-2 py-1 text-xs font-bold border rounded transition-colors ${
+                          hasSolution 
+                            ? 'bg-blue-100 text-blue-700 border-blue-400 hover:bg-blue-200' 
+                            : 'bg-gray-100 text-gray-700 border-gray-400 hover:bg-gray-200'
+                        }`}
+                      >
+                        <Upload className="w-3 h-3 inline mr-1" />
+                        {hasSolution ? 'Update' : 'Upload'}
+                      </button>
+                      {hasSolution && (
+                        <>
+                          <button 
+                            onClick={() => setViewingQId(q.id)}
+                            title="View Solution"
+                            className="px-2 py-1 text-xs font-bold bg-green-100 text-green-700 border border-green-400 hover:bg-green-200 rounded transition-colors"
+                          >
+                            <Eye className="w-3 h-3 inline mr-1" />
+                            View
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteSolution(q.id)}
+                            title="Delete Solution"
+                            className="px-2 py-1 text-xs font-bold bg-red-100 text-red-700 border border-red-400 hover:bg-red-200 rounded transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3 inline" />
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </td>
                   <td className="border border-gray-400 p-2 text-center">
                     <button onClick={() => handleEdit(q)} className="bg-blue-600 text-white px-3 py-1 text-xs font-bold hover:bg-blue-700 border border-blue-800">Update</button>
@@ -879,6 +972,111 @@ function QuestionsTab({ questionsProgress, onSave, onRevisionSave }) {
               <button onClick={handleSave} className="px-4 py-2 text-sm bg-green-600 text-white border border-green-800 hover:bg-green-700 font-bold">Save to Database</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Upload Solution Modal */}
+      {uploadingQId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white border-2 border-gray-800 p-6 w-[600px] shadow-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4 border-b pb-2">
+              <div>
+                <h3 className="text-lg font-bold">Upload/Update Solution</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Q#{uploadingQId}: {INITIAL_QUESTIONS.find(q => q.id === uploadingQId)?.name}</p>
+              </div>
+              <button onClick={() => { setUploadingQId(null); setUploadCode(''); }} className="text-gray-500 hover:text-black font-bold text-xl">✕</button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold mb-2">Programming Language</label>
+                <select 
+                  value={uploadLanguage} 
+                  onChange={(e) => setUploadLanguage(e.target.value)}
+                  className="w-full border border-gray-400 p-2 bg-gray-50 text-sm"
+                >
+                  <option value="java">☕ Java</option>
+                  <option value="python">🐍 Python</option>
+                  <option value="cpp">⚙️ C++</option>
+                  <option value="javascript">📜 JavaScript</option>
+                  <option value="csharp">C#</option>
+                  <option value="go">Go</option>
+                  <option value="rust">Rust</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold mb-2">Your Solution Code</label>
+                <textarea 
+                  value={uploadCode}
+                  onChange={(e) => setUploadCode(e.target.value)}
+                  placeholder="Paste your solution code here...&#10;&#10;Example:&#10;class Solution {&#10;  public int[] twoSum(int[] nums, int target) {&#10;    // Your logic here&#10;  }&#10;}"
+                  className="w-full border border-gray-400 p-3 bg-gray-50 text-sm font-mono h-64 focus:outline-none focus:bg-yellow-50"
+                />
+                <p className="text-xs text-gray-500 mt-1">📝 Tip: Include comments explaining your approach for better learning!</p>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-2">
+              <button 
+                onClick={() => { setUploadingQId(null); setUploadCode(''); }} 
+                className="px-4 py-2 text-sm border border-gray-400 hover:bg-gray-100 font-bold"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleUploadSolution}
+                className="px-4 py-2 text-sm bg-blue-600 text-white border border-blue-800 hover:bg-blue-700 font-bold flex items-center gap-2"
+              >
+                <Upload className="w-4 h-4" />
+                Upload Solution
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* View Solution Modal */}
+      {viewingQId && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          {(() => {
+            const solution = getSolution(viewingQId);
+            const question = INITIAL_QUESTIONS.find(q => q.id === viewingQId);
+            return (
+              <div className="bg-white border-2 border-gray-800 p-6 w-[700px] shadow-lg max-h-[90vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-4 border-b pb-2">
+                  <div>
+                    <h3 className="text-lg font-bold">Your Solution</h3>
+                    <p className="text-xs text-gray-500 mt-0.5">Q#{viewingQId}: {question?.name}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Language: <span className="font-bold text-gray-600">{solution?.language?.toUpperCase()}</span>
+                      {solution?.uploadedAt && ` • Uploaded: ${new Date(solution.uploadedAt).toLocaleDateString()}`}
+                    </p>
+                  </div>
+                  <button onClick={() => setViewingQId(null)} className="text-gray-500 hover:text-black font-bold text-xl">✕</button>
+                </div>
+                
+                <div className="bg-gray-900 text-green-400 p-4 rounded font-mono text-xs mb-4 overflow-x-auto border border-gray-700 max-h-[50vh]">
+                  <pre className="whitespace-pre-wrap break-words">{solution?.code}</pre>
+                </div>
+
+                <div className="flex gap-2 justify-end">
+                  <button 
+                    onClick={() => copyToClipboard(solution?.code)}
+                    className={`px-4 py-2 text-sm font-bold border rounded transition-colors flex items-center gap-2 ${
+                      copiedId ? 'bg-green-100 text-green-700 border-green-400' : 'bg-gray-100 text-gray-700 border-gray-400 hover:bg-gray-200'
+                    }`}
+                  >
+                    {copiedId ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {copiedId ? 'Copied!' : 'Copy Code'}
+                  </button>
+                  <button 
+                    onClick={() => setViewingQId(null)}
+                    className="px-4 py-2 text-sm bg-blue-600 text-white border border-blue-800 hover:bg-blue-700 font-bold"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
