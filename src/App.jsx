@@ -65,6 +65,7 @@ import CommandPalette from './components/CommandPalette';
 import ExportBackupModal from './components/ExportBackupModal';
 import LeaderboardTab from './components/LeaderboardTab';
 import ProfileModal from './components/ProfileModal';
+import EditorialModal from './components/EditorialModal';
 
 // --- Firebase Configuration ---
 const firebaseConfig = {
@@ -131,6 +132,7 @@ export default function App() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [randomQuestionModal, setRandomQuestionModal] = useState(null);
+  const [activeEditorialQuestion, setActiveEditorialQuestion] = useState(null);
   const [customDisplayName, setCustomDisplayName] = useState(() => {
     return localStorage.getItem('dsa_custom_handle') || '';
   });
@@ -789,6 +791,7 @@ export default function App() {
               user={user} 
               isDark={isDark}
               requireAuth={requireAuth}
+              onOpenEditorial={(q) => requireAuth('access complete GFG-style editorial solutions and multi-language code', () => setActiveEditorialQuestion(q))}
             />
           )}
 
@@ -1019,6 +1022,40 @@ export default function App() {
           setIsProfileModalOpen(true);
         }}
       />
+
+      {/* Complete GFG-Style Editorial Solution Modal (Auth-Gated) */}
+      {activeEditorialQuestion && (
+        <EditorialModal
+          isOpen={!!activeEditorialQuestion}
+          question={activeEditorialQuestion}
+          onClose={() => setActiveEditorialQuestion(null)}
+          onMarkDone={(q) => {
+            const prog = questionsProgress[q.id] || {};
+            const next = prog.status === '✅ Done' ? '❌ Todo' : '✅ Done';
+            saveData('questionsProgress', q.id, {
+              ...prog,
+              status: next,
+              completedAt: next === '✅ Done' ? new Date().toISOString() : null
+            });
+          }}
+          onScheduleRevision={(q) => {
+            const prog = questionsProgress[q.id] || {};
+            const next = prog.revisit === '🔄 Revisit' ? 'No' : '🔄 Revisit';
+            saveData('questionsProgress', q.id, { ...prog, revisit: next });
+            if (next === '🔄 Revisit') {
+              saveData('revisionLogs', q.id, {
+                id: q.id,
+                name: q.name,
+                difficulty: q.difficulty,
+                topic: q.topic,
+                nextReviewDate: new Date(Date.now() + 86400000).toISOString()
+              });
+            }
+          }}
+          isDone={(questionsProgress[activeEditorialQuestion.id] || {}).status === '✅ Done'}
+          isRevisit={(questionsProgress[activeEditorialQuestion.id] || {}).revisit === '🔄 Revisit'}
+        />
+      )}
 
       {/* Export & Backup Modal */}
       <ExportBackupModal
@@ -1334,7 +1371,8 @@ function QuestionsTab({
   onSolutionDelete,
   user,
   isDark,
-  requireAuth
+  requireAuth,
+  onOpenEditorial
 }) {
   const [filterTopic, setFilterTopic] = useState('All');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
@@ -1552,7 +1590,8 @@ function QuestionsTab({
               <th className="py-2.5 px-3">PATTERN</th>
               <th className="py-2.5 px-3 text-center">STATUS</th>
               <th className="py-2.5 px-3 text-center">REVISIT</th>
-              <th className="py-2.5 px-3 text-center">SOLUTION</th>
+              <th className="py-2.5 px-3 text-center">EDITORIAL</th>
+              <th className="py-2.5 px-3 text-center">MY CODE</th>
               <th className="py-2.5 px-3 text-center w-14">ACTION</th>
             </tr>
           </thead>
@@ -1626,6 +1665,16 @@ function QuestionsTab({
                       title="Click to toggle Spaced Repetition revisit flag"
                     >
                       {isRevisit ? '🔄 Revisit' : '+ Revisit'}
+                    </button>
+                  </td>
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                    <button
+                      onClick={() => onOpenEditorial(q)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
+                      title="Read complete GFG-style editorial with Python, Java, C++, JS code"
+                    >
+                      <BookOpen className="w-3 h-3 text-purple-500" />
+                      <span>Solution</span>
                     </button>
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
