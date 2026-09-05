@@ -79,4 +79,6 @@ npm run preview
 ## 👨‍💻 Owner & Development
 
 Developed and maintained by **Adnan Ahmad**.
-Live site: [dsa.adnanahmad.tech](https://dsa.adnanahmad.tech)
+- **LinkedIn**: [linkedin.com/in/adnanrahmad](https://www.linkedin.com/in/adnanrahmad)
+- **Live Platform**: [dsa.adnanahmad.tech](https://dsa.adnanahmad.tech)
+- **Portfolio**: [adnanahmad.tech](https://adnanahmad.tech)
