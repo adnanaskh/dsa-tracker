@@ -1,0 +1,17 @@
+{
+  "name": "DSA Mastery Tracker",
+  "short_name": "DSA Tracker",
+  "description": "60-Day FAANG Coding Interview Roadmap & Solution Vault",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

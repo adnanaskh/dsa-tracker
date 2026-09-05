@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://dsa.adnanahmad.tech/sitemap.xml

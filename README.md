@@ -1,136 +1,82 @@
-# DSA Preparation Tracker
+# DSA Preparation Tracker & 60-Day Mastery Roadmap
 
-A comprehensive web application designed to help developers systematically track, manage, and master Data Structure and Algorithm (DSA) preparation through structured problem solving, revision logging, weekly reviews, and progress analytics.
+A modern, high-performance web application designed to help developers systematically track, manage, and master Data Structures and Algorithms (DSA) for FAANG & top tech technical interviews.
 
-## 🎯 Features
+Includes **305 curated LeetCode problems** organized into a sequential **60-Day plan**, with interactive **Spaced Repetition System (SRS)** revision, a **Code Solution Vault**, a **GitHub-style Contribution Heatmap**, and a global **Command Palette (`Ctrl + K`)**.
 
-- **Dashboard**: Real-time progress visualization across all DSA topics
-- **Questions Tracker**: Manage 250+ curated LeetCode problems with difficulty levels and topic categorization
-- **Solution Upload**: Store your code solutions for each problem with support for multiple programming languages
-- **Solution Viewer**: View and review previously uploaded solutions with syntax highlighting
-- **Planner**: Day-by-day study plan with customizable targets and progress tracking
-- **Revision Logger**: Detailed tracking of problem revisits with attempt dates and mastery status
-- **Weekly Reviews**: Comprehensive weekly analysis with statistics and notes
-- **Patterns Reference**: Quick reference guide for common DSA patterns
-- **Authentication**: Secure Google Sign-In integration
-- **Cloud Sync**: Real-time data synchronization with Firebase
+---
+
+## 🎯 Key Features
+
+- **Guest Mode & Instant Access**: No mandatory sign-in. Browse all 305 questions, track progress, and write solutions immediately with automatic `localStorage` persistence.
+- **Optional Cloud Sync**: Sign in with Google anytime to seamlessly backup and synchronize your progress across multiple devices via Firebase Firestore.
+- **60-Day Curated Curriculum**: Logically sequenced roadmap where **Strings** is placed directly in the foundation (Days 6–10) following **Arrays & Hashing**, leading into Two Pointers, Sliding Window, Trees, Graphs, and Dynamic Programming.
+- **Spaced Repetition System (SRS)**: Scientific review scheduling across expanding intervals (1d ➔ 3d ➔ 7d ➔ 14d ➔ 30d) with a dedicated **"Due for Review Today"** queue to build lasting pattern retention.
+- **Syntax-Highlighted Solution Vault**: Store your clean solutions in Java, Python, C++, JavaScript, Go, Rust, or C# with code syntax highlighting, line numbers, and one-click copy.
+- **GitHub-Style Contribution Heatmap**: Visual 20-week study activity grid with current streak and longest streak counters to maintain daily consistency.
+- **Global Command Palette (`Ctrl + K` / `Cmd + K`)**: Instant fuzzy search across problems, patterns, topics, days, and fast tab navigation shortcuts.
+- **Data Backup & Export**: One-click download of your entire progress as JSON (with restore capability) or CSV spreadsheet (compatible with Excel and Google Sheets).
+- **Random Problem Roulette**: Quick practice generator that picks an unsolved problem to simulate unpredictable interview questions.
+- **Dark Mode & Modern UI**: Smooth toggle between clean light and dark OLED themes with persisted preference.
+- **SEO Optimized**: Fully compliant metadata, Open Graph cards, Twitter cards, and Schema.org `WebApplication` structured data.
+
+---
 
 ## 🚀 Tech Stack
 
 - **Frontend**: React 19, Vite
-- **Styling**: Tailwind CSS v4
+- **Styling**: Tailwind CSS v4 (with custom Dark variant)
 - **Icons**: Lucide React
-- **Backend**: Firebase (Authentication & Firestore)
+- **Backend & Auth**: Firebase (Authentication & Cloud Firestore)
+- **State & Sync**: LocalStorage + Firebase Firestore hybrid sync
 - **Build Tool**: Vite with HMR
-- **Linting**: ESLint
 
-## 💾 Solution Upload & Management
+---
 
-### Upload Your Solutions
-- Click the **Upload** button on any problem in the Questions tab
-- Select your programming language (Java, Python, C++, JavaScript, C#, Go, Rust)
-- Paste your solution code with comments explaining your approach
-- Solutions are automatically saved to your profile
+## 📅 Reorganized 60-Day Curriculum Plan
 
-### View Your Solutions
-- Click the **View** button to see your previously uploaded solution
-- Code displays with syntax highlighting
-- Use the **Copy** button to quickly copy the solution code
+| Days | Topic | Questions |
+|---|---|---|
+| **Days 1–5** | Arrays & Hashing | 25 questions |
+| **Days 6–10** | Strings *(Foundational)* | 25 questions |
+| **Days 11–13** | Two Pointers | 15 questions |
+| **Days 14–16** | Sliding Window | 15 questions |
+| **Days 17–19** | Stack & Monotonic Stack | 15 questions |
+| **Days 20–22** | Binary Search | 15 questions |
+| **Days 23–26** | Linked List | 20 questions |
+| **Days 27–30** | Trees & Binary Trees | 20 questions |
+| **Days 31–32** | Tries (Prefix Trees) | 8 questions |
+| **Days 33–35** | Heap / Priority Queue | 15 questions |
+| **Days 36–38** | Backtracking | 15 questions |
+| **Days 39–40** | Intervals & Sweeping | 10 questions |
+| **Days 41–43** | Greedy Algorithms | 15 questions |
+| **Days 44–47** | Graphs (BFS / DFS / Union Find) | 20 questions |
+| **Days 48–49** | Advanced Graphs (Dijkstra, Bellman-Ford) | 10 questions |
+| **Days 50–53** | 1-D Dynamic Programming | 20 questions |
+| **Days 54–56** | 2-D Dynamic Programming | 15 questions |
+| **Days 57–58** | Bit Manipulation | 10 questions |
+| **Day 59** | Math & Geometry | 10 questions |
+| **Day 60** | Sorting Algorithms & Grand Finale Review | 7 questions |
 
-### Delete Solutions
-- Click the **Delete** button (trash icon) to remove a solution
-- Your solution is permanently deleted (with confirmation)
-
-### Privacy & Security
-- Solutions are **private** - only you can see your own solutions
-- Each solution is linked to your user account via Firebase authentication
-- All data is encrypted in transit and at rest with Firebase
-
-## 📝 Supported Languages
-
-- ☕ Java (recommended for FAANG interviews)
-- 🐍 Python
-- ⚙️ C++
-- 📜 JavaScript
-- C#
-- Go
-- Rust
-
-## 📦 Installation
-
-```bash
-npm install
-```
+---
 
 ## 🏃 Getting Started
 
 ### Development Server
-
 ```bash
+npm install
 npm run dev
 ```
 
-The application will start on `http://localhost:5173`
-
 ### Production Build
-
 ```bash
 npm run build
-```
-
-### Preview Production Build
-
-```bash
 npm run preview
 ```
 
-### Linting
-
-```bash
-npm lint
-```
-
-## 🔧 Configuration
-
-### Firebase Setup
-
-Update the Firebase configuration in `src/App.jsx` with your project credentials:
-
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-```
-
-## 📊 Data Structure
-
-- **questionsProgress**: Tracks individual problem solving status
-- **revisionLogs**: Records problem revisit attempts and mastery
-- **plannerProgress**: Stores daily study plan data
-- **weeklyReviews**: Contains weekly analysis and reflection notes
-- **solutions**: Stores user code solutions for each problem (private per user)
-
-## 🌐 Live Site
-
-Visit the application at: [dsa.adnanahmad.tech](https://dsa.adnanahmad.tech)
+---
 
 ## 👨‍💻 Owner & Development
 
-**Complete Ownership, Development, Design & Deployment by:**
-
-- **Adnan Ahmad**
-
-This project was entirely conceptualized, developed, designed, and deployed by Adnan Ahmad.
-
-## 📝 License
-
-All rights reserved © Adnan Ahmad, 2025
-
-## 🙋 Support
-
-For issues, feature requests, or contributions, please contact the developer.
+Developed and maintained by **Adnan Ahmad**.
+Live site: [dsa.adnanahmad.tech](https://dsa.adnanahmad.tech)
