@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   BookOpen, 
@@ -15,7 +15,9 @@ import {
   Layers,
   HelpCircle,
   FileCode,
-  Flame
+  Flame,
+  Share2,
+  Link as LinkIcon
 } from 'lucide-react';
 import { getEditorialSolution } from '../data/solutionsData';
 
@@ -29,19 +31,96 @@ export default function EditorialModal({
   isRevisit = false
 }) {
   const [selectedLanguage, setSelectedLanguage] = useState('python'); // 'python' | 'java' | 'cpp' | 'javascript'
-  const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
-  if (!isOpen || !question) return null;
+  const toSlug = (name) => name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '';
 
-  const editorial = getEditorialSolution(question);
-  if (!editorial) return null;
+  const editorial = question ? getEditorialSolution(question) : null;
+  const slug = question ? toSlug(question.name) : '';
+  const shareableUrl = `https://dsa.adnanahmad.tech/?solution=${slug}`;
+
+  // Dynamic SEO: Update Document Title, Meta Description & Inject JSON-LD Schema
+  useEffect(() => {
+    if (!isOpen || !question || !editorial) return;
+
+    const originalTitle = document.title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const originalDesc = metaDesc ? metaDesc.getAttribute('content') : '';
+
+    // Set page title for search query: "{Problem Name} Solution & Editorial"
+    document.title = `${question.name} Solution & Editorial (Java, Python, C++, JS) | DSA Tracker`;
+
+    if (metaDesc) {
+      metaDesc.setAttribute('content', `${editorial.overview} Complete working solutions in Python, Java, C++, and JavaScript with Time Complexity ${editorial.complexity.time} and Space Complexity ${editorial.complexity.space}.`);
+    }
+
+    // Inject Dynamic JSON-LD TechArticle / QAPage Schema for Googlebot
+    let scriptTag = document.getElementById('editorial-seo-jsonld');
+    if (!scriptTag) {
+      scriptTag = document.createElement('script');
+      scriptTag.id = 'editorial-seo-jsonld';
+      scriptTag.type = 'application/ld+json';
+      document.head.appendChild(scriptTag);
+    }
+
+    const schemaData = {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": shareableUrl
+      },
+      "headline": `${question.name} - Complete Solution & Editorial (Python, Java, C++, JS)`,
+      "description": editorial.overview,
+      "articleSection": question.topic,
+      "keywords": `${question.name} solution, ${question.name} leetcode, ${question.name} editorial, ${question.topic}, ${question.pattern}, dsa problems`,
+      "author": {
+        "@type": "Person",
+        "name": "Adnan Ahmad",
+        "url": "https://adnanahmad.tech"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "DSA Mastery Tracker",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://dsa.adnanahmad.tech/favicon.svg"
+        }
+      },
+      "about": {
+        "@type": "Thing",
+        "name": question.name,
+        "description": `Optimal algorithm for ${question.name} using ${question.pattern} technique.`
+      }
+    };
+
+    scriptTag.textContent = JSON.stringify(schemaData);
+
+    return () => {
+      document.title = originalTitle;
+      if (metaDesc && originalDesc) {
+        metaDesc.setAttribute('content', originalDesc);
+      }
+      const tag = document.getElementById('editorial-seo-jsonld');
+      if (tag) tag.remove();
+    };
+  }, [isOpen, question, editorial, shareableUrl]);
+
+  if (!isOpen || !question || !editorial) return null;
 
   const currentCode = editorial.code[selectedLanguage] || editorial.code.python || '';
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(currentCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const handleCopyShareLink = () => {
+    navigator.clipboard.writeText(shareableUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   const difficultyColors = {
@@ -72,7 +151,7 @@ export default function EditorialModal({
               </span>
             </div>
 
-            <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
               <span>{question.name}</span>
               <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                 GFG-Style Editorial
@@ -81,18 +160,38 @@ export default function EditorialModal({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {/* Share Link Button */}
+            <button
+              onClick={handleCopyShareLink}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-xs font-semibold transition-colors"
+              title="Copy direct shareable link for this solution"
+            >
+              {copiedLink ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Copied Link!</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Share Solution</span>
+                </>
+              )}
+            </button>
+
             {question.link && (
               <a
                 href={question.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 text-xs font-semibold transition-colors"
+                className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 text-xs font-semibold transition-colors"
                 title="Open original problem on LeetCode"
               >
                 <span>LeetCode</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}
+
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 text-gray-500 dark:text-gray-400 transition-colors"
@@ -101,6 +200,23 @@ export default function EditorialModal({
               <X className="w-5 h-5" />
             </button>
           </div>
+        </div>
+
+        {/* Public Direct Link Pill Banner */}
+        <div className="px-4 py-2 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-transparent border-b border-gray-200 dark:border-slate-800 flex items-center justify-between gap-2 text-[11px] text-gray-600 dark:text-gray-300">
+          <div className="flex items-center gap-1.5 truncate">
+            <LinkIcon className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+            <span className="font-semibold text-gray-800 dark:text-gray-200">Direct SEO Link:</span>
+            <code className="font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-gray-200 dark:border-slate-700 text-purple-600 dark:text-purple-400 truncate">
+              {shareableUrl}
+            </code>
+          </div>
+          <button
+            onClick={handleCopyShareLink}
+            className="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline shrink-0"
+          >
+            {copiedLink ? 'Copied' : 'Copy'}
+          </button>
         </div>
 
         {/* Scrollable Editorial Body */}
@@ -193,7 +309,7 @@ export default function EditorialModal({
                   onClick={handleCopyCode}
                   className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
                 >
-                  {copied ? (
+                  {copiedCode ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-400" />
                       <span className="text-emerald-400">Copied!</span>
@@ -276,7 +392,7 @@ export default function EditorialModal({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onMarkDone(question)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
                 isDone
                   ? 'bg-emerald-600 text-white'
                   : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-emerald-500 hover:text-white'
@@ -288,7 +404,7 @@ export default function EditorialModal({
 
             <button
               onClick={() => onScheduleRevision(question)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
                 isRevisit
                   ? 'bg-purple-600 text-white'
                   : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-purple-500 hover:text-white'
@@ -301,7 +417,7 @@ export default function EditorialModal({
 
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors"
+            className="px-4 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
           >
             Close Editorial
           </button>

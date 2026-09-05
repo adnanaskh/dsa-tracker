@@ -138,6 +138,55 @@ export default function App() {
   });
   const [cloudLeaderboard, setCloudLeaderboard] = useState([]);
 
+  // Helper to generate SEO clean slugs for problem deep links
+  const toSlug = useCallback((name) => {
+    return name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '';
+  }, []);
+
+  // Open Editorial Solution and synchronize browser URL without page reload
+  const openEditorialSolution = useCallback((q) => {
+    setActiveEditorialQuestion(q);
+    if (q) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('solution', toSlug(q.name));
+        window.history.pushState({ solutionId: q.id }, '', url.toString());
+      } catch {}
+    }
+  }, [toSlug]);
+
+  // Close Editorial Solution and clean browser URL
+  const closeEditorialSolution = useCallback(() => {
+    setActiveEditorialQuestion(null);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('solution');
+      url.searchParams.delete('q');
+      window.history.pushState({}, '', url.toString());
+    } catch {}
+  }, []);
+
+  // Deep-Linking Handler on Page Load (?solution=two-sum or ?q=3)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get('solution') || params.get('q');
+      if (query) {
+        const clean = query.trim().toLowerCase();
+        const matched = INITIAL_QUESTIONS.find(q => 
+          String(q.id) === clean || 
+          toSlug(q.name) === clean
+        );
+        if (matched) {
+          setActiveTab('questions');
+          setActiveEditorialQuestion(matched);
+        }
+      }
+    } catch (e) {
+      console.error("Deep-linking error:", e);
+    }
+  }, [toSlug]);
+
   // Auth Protection Guard
   const requireAuth = useCallback((featureName, callback) => {
     if (!user) {
@@ -791,7 +840,7 @@ export default function App() {
               user={user} 
               isDark={isDark}
               requireAuth={requireAuth}
-              onOpenEditorial={(q) => requireAuth('access complete GFG-style editorial solutions and multi-language code', () => setActiveEditorialQuestion(q))}
+              onOpenEditorial={(q) => openEditorialSolution(q)}
             />
           )}
 
@@ -1023,34 +1072,38 @@ export default function App() {
         }}
       />
 
-      {/* Complete GFG-Style Editorial Solution Modal (Auth-Gated) */}
+      {/* Complete GFG-Style Editorial Solution Modal (100% Public & Deep-Linkable) */}
       {activeEditorialQuestion && (
         <EditorialModal
           isOpen={!!activeEditorialQuestion}
           question={activeEditorialQuestion}
-          onClose={() => setActiveEditorialQuestion(null)}
+          onClose={closeEditorialSolution}
           onMarkDone={(q) => {
-            const prog = questionsProgress[q.id] || {};
-            const next = prog.status === '✅ Done' ? '❌ Todo' : '✅ Done';
-            saveData('questionsProgress', q.id, {
-              ...prog,
-              status: next,
-              completedAt: next === '✅ Done' ? new Date().toISOString() : null
+            requireAuth('mark problems as done', () => {
+              const prog = questionsProgress[q.id] || {};
+              const next = prog.status === '✅ Done' ? '❌ Todo' : '✅ Done';
+              saveData('questionsProgress', q.id, {
+                ...prog,
+                status: next,
+                completedAt: next === '✅ Done' ? new Date().toISOString() : null
+              });
             });
           }}
           onScheduleRevision={(q) => {
-            const prog = questionsProgress[q.id] || {};
-            const next = prog.revisit === '🔄 Revisit' ? 'No' : '🔄 Revisit';
-            saveData('questionsProgress', q.id, { ...prog, revisit: next });
-            if (next === '🔄 Revisit') {
-              saveData('revisionLogs', q.id, {
-                id: q.id,
-                name: q.name,
-                difficulty: q.difficulty,
-                topic: q.topic,
-                nextReviewDate: new Date(Date.now() + 86400000).toISOString()
-              });
-            }
+            requireAuth('schedule spaced repetition revisions', () => {
+              const prog = questionsProgress[q.id] || {};
+              const next = prog.revisit === '🔄 Revisit' ? 'No' : '🔄 Revisit';
+              saveData('questionsProgress', q.id, { ...prog, revisit: next });
+              if (next === '🔄 Revisit') {
+                saveData('revisionLogs', q.id, {
+                  id: q.id,
+                  name: q.name,
+                  difficulty: q.difficulty,
+                  topic: q.topic,
+                  nextReviewDate: new Date(Date.now() + 86400000).toISOString()
+                });
+              }
+            });
           }}
           isDone={(questionsProgress[activeEditorialQuestion.id] || {}).status === '✅ Done'}
           isRevisit={(questionsProgress[activeEditorialQuestion.id] || {}).revisit === '🔄 Revisit'}
