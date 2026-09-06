@@ -307,9 +307,6 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
             <h3 className="text-base font-bold text-gray-900 dark:text-slate-100">
               Study Activity & Practice Heatmap
             </h3>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
-              Full Year: Jan – Dec {selectedYear}
-            </span>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
             {yearStats.yearTotalActivity} {yearStats.yearTotalActivity === 1 ? 'submission' : 'submissions'} in {selectedYear} • {yearStats.yearActiveDays} active {yearStats.yearActiveDays === 1 ? 'day' : 'days'}
