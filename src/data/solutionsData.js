@@ -9,17 +9,23 @@ export const DETAILED_SOLUTIONS = {
     "topic": "Arrays & Hashing",
     "pattern": "Hashing",
     "overview": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
-    "intuition": "A hash set allows O(1) average lookup and insertion time. By storing seen elements in a set during iteration, we can detect duplicates immediately upon encountering a repeat element.",
+    "intuition": "A Hash Set allows O(1) average lookup and insertion time. By storing seen elements in a set during iteration, we can detect duplicates immediately upon encountering a repeat element without having to compare against all other elements.",
     "approaches": [
       {
         "name": "Method 1: Brute Force (Nested Loops)",
-        "description": "Compare every pair (i, j) with i != j. Takes O(N\u00b2) time and O(1) auxiliary space.",
-        "timeComplexity": "O(N\u00b2)",
+        "description": "Compare every pair (i, j) with i != j using two nested loops. Takes O(N²) time and O(1) auxiliary space.",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Hash Set (Optimal Approach)",
-        "description": "Maintain a hash set of visited values. If nums[i] is already in seen, return True. Otherwise insert nums[i].",
+        "name": "Method 2: Sorting",
+        "description": "Sort the array in ascending order and check adjacent elements nums[i] == nums[i-1]. Takes O(N log N) time and O(1) extra space.",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(1)"
+      },
+      {
+        "name": "Method 3: Hash Set (Optimal Approach)",
+        "description": "Maintain a hash set of visited values. If nums[i] is already in seen, return True immediately (early exit). Otherwise insert nums[i].",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
@@ -29,14 +35,14 @@ export const DETAILED_SOLUTIONS = {
       "Iterate through each number 'num' in 'nums'.",
       "If 'num' exists in 'seen', return True (duplicate found).",
       "Otherwise, add 'num' to 'seen'.",
-      "If loop terminates without finding duplicates, return False."
+      "If the loop terminates without finding duplicates, return False."
     ],
     "code": {
       "python": "class Solution:\n    def containsDuplicate(self, nums: list[int]) -> bool:\n        seen = set()\n        for num in nums:\n            if num in seen:\n                return True\n            seen.add(num)\n        return False"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass over the array of length N with O(1) average hash set operations.",
-      "space": "O(N) \u2014 In the worst case where all elements are distinct, the hash set stores N elements."
+      "time": "O(N) — Single pass over the array of length N with O(1) average hash set operations.",
+      "space": "O(N) — In the worst case where all elements are distinct, the hash set stores N elements."
     },
     "edgeCases": [
       "Array with a single element: returns False.",
@@ -52,17 +58,17 @@ export const DETAILED_SOLUTIONS = {
     "topic": "Arrays & Hashing",
     "pattern": "Hashing",
     "overview": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An anagram is formed by rearranging the characters of a word using all the original characters exactly once.",
-    "intuition": "Two strings are anagrams if and only if their lengths match and each character occurs with identical frequency in both strings. We can track character frequencies using a hash map or fixed-size array of length 26.",
+    "intuition": "Two strings are anagrams if and only if their lengths match and each character occurs with identical frequency in both strings. We can track character frequencies using a frequency array of size 26 or a hash map.",
     "approaches": [
       {
         "name": "Method 1: Sorting",
-        "description": "Sort both strings and check if sorted(s) == sorted(t). Takes O(N log N) time.",
+        "description": "Sort both strings and compare sorted(s) == sorted(t). Takes O(N log N) time.",
         "timeComplexity": "O(N log N)",
         "spaceComplexity": "O(N)"
       },
       {
         "name": "Method 2: Hash Map / Frequency Array (Optimal)",
-        "description": "Count character counts of s (+) and t (-). If all net frequencies equal zero, return True.",
+        "description": "Count character occurrences in s (+) and t (-). If all net frequencies equal zero, return True.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(1) (26 lowercase English letters)"
       }
@@ -78,8 +84,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        if len(s) != len(t):\n            return False\n            \n        counts = {}\n        for ch1, ch2 in zip(s, t):\n            counts[ch1] = counts.get(ch1, 0) + 1\n            counts[ch2] = counts.get(ch2, 0) - 1\n            \n        return all(count == 0 for count in counts.values())"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single traversal over both strings of length N.",
-      "space": "O(1) \u2014 At most 26 keys in the hash map for lowercase English alphabet."
+      "time": "O(N) — Single traversal over both strings of length N.",
+      "space": "O(1) — At most 26 keys in the hash map for lowercase English alphabet."
     },
     "edgeCases": [
       "Different string lengths (instant False).",
@@ -100,7 +106,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Brute Force (Nested Loops)",
         "description": "Check every pair (i, j) with two nested loops until nums[i] + nums[j] == target.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -122,8 +128,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        seen = {} # value -> index\n        \n        for i, num in enumerate(nums):\n            complement = target - num\n            if complement in seen:\n                return [seen[complement], i]\n            seen[num] = i\n            \n        return []"
     },
     "complexity": {
-      "time": "O(N) \u2014 Linear scan over array with O(1) average hash map lookup and insert operations.",
-      "space": "O(N) \u2014 Hash map stores up to N - 1 entries before finding the complementary pair."
+      "time": "O(N) — Linear scan over array with O(1) average hash map lookup and insert operations.",
+      "space": "O(N) — Hash map stores up to N - 1 entries before finding the complementary pair."
     },
     "edgeCases": [
       "Target formed by duplicate numbers (e.g. nums=[3, 3], target=6 -> [0, 1]).",
@@ -143,8 +149,8 @@ export const DETAILED_SOLUTIONS = {
     "approaches": [
       {
         "name": "Method 1: Brute Force",
-        "description": "Check every possible buy day i and sell day j with j > i in O(N\u00b2) time.",
-        "timeComplexity": "O(N\u00b2)",
+        "description": "Check every possible buy day i and sell day j with j > i in O(N²) time.",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -165,8 +171,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        \n        for price in prices:\n            if price < min_price:\n                min_price = price\n            else:\n                max_profit = max(max_profit, price - min_price)\n                \n        return max_profit"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear pass through the prices array.",
-      "space": "O(1) \u2014 Uses constant auxiliary variables."
+      "time": "O(N) — Single linear pass through the prices array.",
+      "space": "O(1) — Uses constant auxiliary variables."
     },
     "edgeCases": [
       "Strictly decreasing prices (e.g. [7, 6, 4, 3, 1] -> 0 profit).",
@@ -181,42 +187,47 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Arrays & Hashing",
     "pattern": "Bit Manipulation",
-    "overview": "In 'Single Number', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Bit Manipulation paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Single Number' leverages Bit Manipulation. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given a non-empty array of integers nums, every element appears twice except for one. Find that single one. You must implement a solution with a linear runtime complexity and use only constant extra space.",
+    "intuition": "The Bitwise XOR operation (^) satisfies three crucial mathematical properties:\n1. Identity: a ^ 0 = a\n2. Inversion / Self-inverse: a ^ a = 0\n3. Commutative & Associative: a ^ b ^ c = c ^ a ^ b\nWhen we XOR all numbers in the array together, every number that appears twice cancels itself out (a ^ a = 0), leaving only the single number (0 ^ unique = unique).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Bit Manipulation)",
-        "description": "Apply the Bit Manipulation pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Hash Map / Hash Set",
+        "description": "Count occurrences using a frequency dictionary or set. Requires O(N) auxiliary space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Mathematical Sum Formula",
+        "description": "2 * sum(set(nums)) - sum(nums) equals the unique single number. Requires O(N) space for set.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 3: Bitwise XOR (Optimal Approach)",
+        "description": "XOR all elements in a single accumulator variable. Takes O(N) time and O(1) extra space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Bit Manipulation strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize an accumulator variable 'res = 0'.",
+      "Iterate through each number 'num' in 'nums'.",
+      "Compute 'res = res ^ num'.",
+      "After the loop finishes, all duplicate pairs have canceled out. Return 'res'."
     ],
     "code": {
-      "python": "class Solution:\n    def singleNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Manipulation Solution for Single Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        res = 0\n        for num in nums:\n            res ^= num\n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — We perform a single pass over the array of N elements.",
+      "space": "O(1) — Only a single integer accumulator is maintained."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array with only a single element (returns that element).",
+      "Negative integers and zero (XOR operates on two's complement bitwise representations correctly).",
+      "Large arrays up to 3 * 10^4 elements."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Bit Manipulation eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Bit Manipulation)."
+    "interviewTips": "Emphasize how XOR achieves O(1) space, which directly satisfies the follow-up question posed by interviewers who reject the Hash Set solution."
   },
   "6": {
     "id": 6,
@@ -224,42 +235,42 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Hashing",
-    "overview": "In 'Group Anagrams', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Hashing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Group Anagrams' leverages Hashing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array of strings strs, group the anagrams together. You can return the answer in any order. An Anagram is a word formed by rearranging the letters of another word using all original characters exactly once.",
+    "intuition": "Two strings are anagrams if and only if they produce the same character count signature. By using a canonical representation (either the sorted string or a 26-element character count tuple) as the key in a hash map, all anagrams naturally map to the exact same hash bucket.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Categorize by Sorted String",
+        "description": "Sort each string of length K to create the hash key: tuple(sorted(s)). Takes O(N * K log K) time.",
+        "timeComplexity": "O(N * K log K)",
+        "spaceComplexity": "O(N * K)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Hashing)",
-        "description": "Apply the Hashing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Categorize by Count Tuple (Optimal)",
+        "description": "Count the frequency of each of the 26 lowercase English letters to form a 26-element tuple key. Takes O(N * K) time.",
+        "timeComplexity": "O(N * K)",
+        "spaceComplexity": "O(N * K)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Hashing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize a hash map 'groups' mapping canonical key -> list of strings (using collections.defaultdict(list)).",
+      "Iterate through each word 's' in 'strs':",
+      "  a. Create a canonical key: ''.join(sorted(s)) or a 26-element frequency count tuple.",
+      "  b. Append 's' to 'groups[key]'.",
+      "Return list(groups.values())."
     ],
     "code": {
-      "python": "class Solution:\n    def groupAnagrams(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Hashing Solution for Group Anagrams.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Hashing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:\n        from collections import defaultdict\n        groups = defaultdict(list)\n        \n        for s in strs:\n            # Generate 26-character count signature\n            count = [0] * 26\n            for ch in s:\n                count[ord(ch) - ord('a')] += 1\n            groups[tuple(count)].append(s)\n            \n        return list(groups.values())"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N * K) — Where N is the number of strings and K is the maximum string length. Counting characters takes O(K) per string.",
+      "space": "O(N * K) — Total information stored in the hash map across all grouped strings."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array containing empty strings [''] (valid single-element group).",
+      "Array with single character strings ['a'].",
+      "All words are unique with no anagram pairs."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Hashing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Hashing)."
+    "interviewTips": "Discuss the trade-off between sorting (simpler, O(N * K log K)) vs counting tuple (optimal, O(N * K) with O(26) key overhead)."
   },
   "7": {
     "id": 7,
@@ -267,42 +278,50 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Heap / Bucket Sort",
-    "overview": "In 'Top K Frequent Elements', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Heap / Bucket Sort paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Top K Frequent Elements' leverages Heap / Bucket Sort. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order. The problem requires a runtime complexity better than O(N log N).",
+    "intuition": "First, we compute the frequency of each number using a hash map. To extract the top K elements in sub-O(N log N) time, we can either use a Min-Heap of fixed size K (O(N log K)) or Bucket Sort (O(N) linear time) where the bucket index represents element frequency.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Sort by Frequency",
+        "description": "Count frequencies and sort all unique elements by frequency descending. Takes O(U log U) where U is unique elements.",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Heap / Bucket Sort)",
-        "description": "Apply the Heap / Bucket Sort pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N log N)",
+        "name": "Method 2: Min-Heap of Size K",
+        "description": "Maintain a heap of size K storing (frequency, num). Evict minimum when size exceeds K. Takes O(N log K) time.",
+        "timeComplexity": "O(N log K)",
+        "spaceComplexity": "O(N + K)"
+      },
+      {
+        "name": "Method 3: Bucket Sort (Optimal Linear Time)",
+        "description": "Create N+1 frequency buckets. Place numbers into bucket[freq]. Traverse buckets backwards from N to 0 to collect top K elements.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Heap / Bucket Sort strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Count occurrences of each number in nums using collections.Counter.",
+      "Initialize 'buckets', a list of empty lists of length len(nums) + 1.",
+      "For each number and its count (num, freq) in counter, append 'num' to 'buckets[freq]'.",
+      "Initialize an empty result list 'res'.",
+      "Iterate through 'buckets' in reverse order (from index N down to 1):",
+      "  a. For each number in the current bucket, append it to 'res'.",
+      "  b. If len(res) == k, break and return 'res'."
     ],
     "code": {
-      "python": "class Solution:\n    def topKFrequentElements(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Heap / Bucket Sort Solution for Top K Frequent Elements.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Heap / Bucket Sort invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def topKFrequent(self, nums: list[int], k: int) -> list[int]:\n        from collections import Counter\n        counts = Counter(nums)\n        \n        # Bucket sort: index = frequency, value = list of numbers\n        buckets = [[] for _ in range(len(nums) + 1)]\n        for num, freq in counts.items():\n            buckets[freq].append(num)\n            \n        res = []\n        for freq in range(len(buckets) - 1, 0, -1):\n            for num in buckets[freq]:\n                res.append(num)\n                if len(res) == k:\n                    return res\n                    \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Counting frequencies takes O(N), bucket insertion takes O(N), and reverse traversal visits at most N numbers.",
+      "space": "O(N) — Hash map and bucket array both store at most N elements."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "k equals total number of unique elements (returns all elements).",
+      "Array with all identical elements (e.g. nums=[1, 1, 1], k=1).",
+      "Negative numbers and zeroes in array."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Heap / Bucket Sort eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Heap / Bucket Sort)."
+    "interviewTips": "Explain why Bucket Sort works in strictly O(N) linear time: the maximum possible frequency of any element is bounded by the array length N."
   },
   "8": {
     "id": 8,
@@ -310,42 +329,47 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Prefix / Suffix",
-    "overview": "In 'Product of Array Except Self', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Prefix / Suffix paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Product of Array Except Self' leverages Prefix / Suffix. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i]. The product of any prefix or suffix is guaranteed to fit in a 32-bit integer. You must solve it in O(N) time and without using the division operation.",
+    "intuition": "For any index i, the product of all elements except nums[i] is equivalent to:\n(Product of all elements to the left of i) * (Product of all elements to the right of i).\nWe can compute prefix products in a forward pass and multiply suffix products on the fly during a backward pass without allocating extra prefix/suffix arrays.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Prefix / Suffix)",
-        "description": "Apply the Prefix / Suffix pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Two Auxiliary Arrays (Prefix & Suffix)",
+        "description": "Build prefix_products and suffix_products arrays. res[i] = prefix[i-1] * suffix[i+1]. Takes O(N) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Space-Optimized Single Output Array (Optimal)",
+        "description": "Store prefix products directly in output array 'res', then traverse backwards with a running suffix variable. Takes O(1) auxiliary space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(1) (excluding output array)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Prefix / Suffix strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize 'res' array of length N filled with 1.",
+      "Initialize 'prefix = 1'.",
+      "Iterate forward i from 0 to N-1:",
+      "  a. Set res[i] = prefix.",
+      "  b. Update prefix *= nums[i].",
+      "Initialize 'postfix = 1'.",
+      "Iterate backward i from N-1 down to 0:",
+      "  a. Set res[i] *= postfix.",
+      "  b. Update postfix *= nums[i].",
+      "Return 'res'."
     ],
     "code": {
-      "python": "class Solution:\n    def productOfArrayExceptSelf(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Prefix / Suffix Solution for Product of Array Except Self.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Prefix / Suffix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def productExceptSelf(self, nums: list[int]) -> list[int]:\n        n = len(nums)\n        res = [1] * n\n        \n        # Pass 1: Compute prefix products\n        prefix = 1\n        for i in range(n):\n            res[i] = prefix\n            prefix *= nums[i]\n            \n        # Pass 2: Multiply by suffix products\n        postfix = 1\n        for i in range(n - 1, -1, -1):\n            res[i] *= postfix\n            postfix *= nums[i]\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Two sequential linear traversals over the array.",
+      "space": "O(1) — No extra auxiliary memory used besides the required output array."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array containing a single zero (all positions except the zero will be 0, the zero index has product of non-zeroes).",
+      "Array containing two or more zeroes (all positions become 0).",
+      "Array with negative numbers (signs alternate properly)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Prefix / Suffix eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Prefix / Suffix)."
+    "interviewTips": "Interviewers frequently disallow the division operator to prevent solutions that compute total product and divide by nums[i]. Explain why prefix/suffix products seamlessly handle zeroes."
   },
   "9": {
     "id": 9,
@@ -353,42 +377,44 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Hashing",
-    "overview": "In 'Valid Sudoku', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Hashing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Valid Sudoku' leverages Hashing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to 3 rules: 1. Each row contains digits 1-9 without repetition. 2. Each column contains digits 1-9 without repetition. 3. Each 3x3 sub-box contains digits 1-9 without repetition.",
+    "intuition": "To validate the grid in a single pass, we can maintain 3 collections of hash sets:\n- rows[r]: set of digits seen in row r\n- cols[c]: set of digits seen in column c\n- boxes[box_idx]: set of digits seen in 3x3 sub-box (box_idx = (r // 3) * 3 + (c // 3))\nAs we traverse each non-empty cell (r, c), if the character already exists in rows[r], cols[c], or boxes[box_idx], the board is invalid.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Three Separate Passes",
+        "description": "Validate 9 rows, then 9 columns, then 9 sub-boxes in three distinct loops. Takes O(81) time.",
+        "timeComplexity": "O(1) (fixed 81 cells)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Hashing)",
-        "description": "Apply the Hashing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: One-Pass Hash Sets (Optimal Approach)",
+        "description": "Single traversal over all 81 cells updating row, column, and sub-box sets concurrently.",
+        "timeComplexity": "O(1) (fixed 81 cells)",
+        "spaceComplexity": "O(1) (max 81 entries in sets)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Hashing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize rows = [set() for _ in range(9)], cols = [set() for _ in range(9)], and boxes = [set() for _ in range(9)].",
+      "Iterate through every row 'r' from 0 to 8 and column 'c' from 0 to 8:",
+      "  a. If board[r][c] == '.', continue to next cell.",
+      "  b. Compute sub-box index: box_idx = (r // 3) * 3 + (c // 3).",
+      "  c. If board[r][c] in rows[r] or in cols[c] or in boxes[box_idx], return False.",
+      "  d. Insert board[r][c] into rows[r], cols[c], and boxes[box_idx].",
+      "If traversal completes with no duplicate conflicts, return True."
     ],
     "code": {
-      "python": "class Solution:\n    def validSudoku(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Hashing Solution for Valid Sudoku.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Hashing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def isValidSudoku(self, board: list[list[str]]) -> bool:\n        rows = [set() for _ in range(9)]\n        cols = [set() for _ in range(9)]\n        boxes = [set() for _ in range(9)]\n        \n        for r in range(9):\n            for c in range(9):\n                val = board[r][c]\n                if val == '.':\n                    continue\n                    \n                box_idx = (r // 3) * 3 + (c // 3)\n                \n                if val in rows[r] or val in cols[c] or val in boxes[box_idx]:\n                    return False\n                    \n                rows[r].add(val)\n                cols[c].add(val)\n                boxes[box_idx].add(val)\n                \n        return True"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(1) — Constant time, exactly 81 cell checks regardless of input.",
+      "space": "O(1) — Memory footprint is bounded by 3 * 9 * 9 = 243 set elements."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Completely empty board with only '.' characters (returns True).",
+      "Duplicate in the same 3x3 box across different rows and columns.",
+      "Partially filled valid board that is not necessarily solvable (still returns True per problem rules)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Hashing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Hashing)."
+    "interviewTips": "Explain the sub-box indexing formula: (r // 3) * 3 + (c // 3). The integer division (r // 3) identifies the vertical box tier (0, 1, or 2), and (c // 3) identifies the horizontal box column (0, 1, or 2)."
   },
   "10": {
     "id": 10,
@@ -396,42 +422,49 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "String Manipulation",
-    "overview": "In 'Encode and Decode Strings', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the String Manipulation paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Encode and Decode Strings' leverages String Manipulation. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Design an algorithm to encode a list of strings to a single string, and decode that string back to the original list of strings. The strings may contain any of the 256 valid ASCII characters, including delimiters and spaces.",
+    "intuition": "Standard delimiters (like comma or semicolon) fail if the input strings themselves contain that delimiter. To create a stateless, lossless encoding, we use Length-Prefix Encoding: prepend each string with its length followed by a non-numeric delimiter like '#':\nExample: ['lint', 'code'] -> '4#lint4#code'.\nDuring decoding, we read the integer length before '#', extract the exact slice of characters, and advance our pointer.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (String Manipulation)",
-        "description": "Apply the String Manipulation pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Escape Characters",
+        "description": "Use a chosen delimiter (e.g. ',') and escape literal commas with a backslash. More complex and prone to edge case parsing bugs.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Length-Prefix Encoding (Optimal Approach)",
+        "description": "Encode format: <length>#<string>. Reading <length> allows exact slicing without ambiguity.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(1) auxiliary"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the String Manipulation strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Encoding:",
+      "  a. Initialize empty string 'res'.",
+      "  b. For each string 's' in 'strs', append f'{len(s)}#{s}' to 'res'.",
+      "  c. Return 'res'.",
+      "Decoding:",
+      "  a. Initialize empty list 'res' and pointer 'i = 0'.",
+      "  b. While i < len(s):",
+      "     i. Find the index 'j' of the first '#' starting from i.",
+      "     ii. Parse length = int(s[i:j]).",
+      "     iii. Extract substring = s[j + 1 : j + 1 + length].",
+      "     iv. Append substring to 'res' and advance pointer 'i = j + 1 + length'.",
+      "  c. Return 'res'."
     ],
     "code": {
-      "python": "class Solution:\n    def encodeAndDecodeStrings(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String Manipulation Solution for Encode and Decode Strings.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Codec:\n    def encode(self, strs: list[str]) -> str:\n        res = ''\n        for s in strs:\n            res += f'{len(s)}#{s}'\n        return res\n\n    def decode(self, s: str) -> list[str]:\n        res = []\n        i = 0\n        while i < len(s):\n            j = i\n            while s[j] != '#':\n                j += 1\n            length = int(s[i:j])\n            res.append(s[j + 1 : j + 1 + length])\n            i = j + 1 + length\n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Where N is the total number of characters across all strings for both encode and decode.",
+      "space": "O(1) — No auxiliary data structures used besides the input/output strings."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty list of strings [] (encodes to empty string '').",
+      "List containing empty strings [''] (encodes to '0#').",
+      "Strings containing digits and the delimiter '#' (e.g. ['4#test'] encodes to '6#4#test' and decodes properly)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how String Manipulation eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (String Manipulation)."
+    "interviewTips": "Length-Prefix encoding is the foundational design pattern behind network serialization protocols (like HTTP/2 frame headers and binary protocols)."
   },
   "11": {
     "id": 11,
@@ -439,42 +472,48 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Hashing",
-    "overview": "In 'Longest Consecutive Sequence', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Hashing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Consecutive Sequence' leverages Hashing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence. The algorithm must run in strictly O(N) time complexity.",
+    "intuition": "Sorting takes O(N log N) time, which violates the O(N) constraint. To achieve linear time, we insert all numbers into a Hash Set for O(1) lookups. A number 'num' is the start of a consecutive sequence if and only if 'num - 1' is NOT in the set. By only expanding streaks from sequence origins, each number is visited at most twice.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Sorting",
+        "description": "Sort the array and scan linearly to count consecutive streaks. Takes O(N log N) time.",
+        "timeComplexity": "O(N log N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Hashing)",
-        "description": "Apply the Hashing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Hash Set Intelligent Streak (Optimal Approach)",
+        "description": "Check if (num - 1) not in num_set to identify sequence heads. Expand while (num + streak) in num_set. Takes O(N) time.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Hashing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Insert all elements of 'nums' into a hash set 'num_set'.",
+      "Initialize 'longest = 0'.",
+      "Iterate through each 'num' in 'num_set':",
+      "  a. Check if 'num - 1' is NOT in 'num_set' (identifies the beginning of a streak).",
+      "  b. If true, set 'current_num = num' and 'current_streak = 1'.",
+      "  c. While 'current_num + 1' in 'num_set':",
+      "     i. current_num += 1",
+      "     ii. current_streak += 1",
+      "  d. Update longest = max(longest, current_streak).",
+      "Return longest."
     ],
     "code": {
-      "python": "class Solution:\n    def longestConsecutiveSequence(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Hashing Solution for Longest Consecutive Sequence.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Hashing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestConsecutive(self, nums: list[int]) -> int:\n        num_set = set(nums)\n        longest = 0\n        \n        for num in num_set:\n            # Only start streak if num is the beginning of a sequence\n            if (num - 1) not in num_set:\n                current_num = num\n                streak = 1\n                \n                while (current_num + 1) in num_set:\n                    current_num += 1\n                    streak += 1\n                    \n                longest = max(longest, streak)\n                \n        return longest"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Inserting into the set takes O(N). Although there is a nested while loop, the inner loop only executes for sequence heads. Each number is visited at most twice (once in outer loop, once in inner while loop).",
+      "space": "O(N) — The hash set stores up to N distinct elements."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty array nums = [] (returns 0).",
+      "Single element array (returns 1).",
+      "Array with all identical duplicate elements (e.g. [0, 0, 0] returns 1).",
+      "Array with negative numbers and large integers (e.g. [-2, -1, 0, 1])."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Hashing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Hashing)."
+    "interviewTips": "Be prepared to rigorously prove to the interviewer why the nested while loop is strictly O(N) amortized time: the if-condition `(num - 1) not in num_set` ensures that only sequence starting elements enter the while loop."
   },
   "12": {
     "id": 12,
