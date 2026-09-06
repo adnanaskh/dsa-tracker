@@ -235,42 +235,123 @@ export default function App() {
 
       if (userQuery) {
         const cleanU = userQuery.trim().toLowerCase();
-        
-        // 1. Check loaded cloudLeaderboard
-        const userMatch = cloudLeaderboard.find(u => 
-          (u.username && u.username.toLowerCase() === cleanU) ||
-          (u.uid && u.uid.toLowerCase() === cleanU) ||
-          (u.displayName && u.displayName.toLowerCase().replace(/[^a-z0-9_]/g, '') === cleanU)
-        );
 
-        if (userMatch) {
-          setViewingPublicProfile(userMatch);
-          setIsProfileModalOpen(true);
-        } else {
-          // 2. Fetch directly from Firestore (completely public / works without sign in)
-          (async () => {
-            try {
-              let targetUid = null;
-              // Check username mapping index
-              const unameSnap = await getDoc(doc(db, 'artifacts', appId, 'usernames', cleanU));
-              if (unameSnap.exists()) {
-                targetUid = unameSnap.data().uid;
-              } else {
-                targetUid = cleanU;
-              }
+        (async () => {
+          try {
+            // 1. Check in-memory cloudLeaderboard
+            let userMatch = cloudLeaderboard.find(u => {
+              const uUname = (u.username || u.email?.split('@')[0] || u.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || '').toLowerCase();
+              const uDName = (u.displayName || '').toLowerCase();
+              return (
+                uUname === cleanU ||
+                u.uid?.toLowerCase() === cleanU ||
+                uDName === cleanU ||
+                uDName.replace(/[^a-z0-9_]/g, '') === cleanU
+              );
+            });
 
-              if (targetUid) {
-                const userSnap = await getDoc(doc(db, 'artifacts', appId, 'leaderboard', targetUid));
-                if (userSnap.exists()) {
-                  setViewingPublicProfile({ uid: userSnap.id, ...userSnap.data() });
-                  setIsProfileModalOpen(true);
+            // 2. Query Firestore if not found in memory
+            if (!userMatch) {
+              // Try username index mapping doc first
+              try {
+                const unameSnap = await getDoc(doc(db, 'artifacts', appId, 'usernames', cleanU));
+                if (unameSnap.exists()) {
+                  const targetUid = unameSnap.data().uid;
+                  const targetDoc = await getDoc(doc(db, 'artifacts', appId, 'leaderboard', targetUid));
+                  if (targetDoc.exists()) {
+                    userMatch = { uid: targetDoc.id, ...targetDoc.data() };
+                  }
                 }
+              } catch {}
+
+              // Try direct uid doc
+              if (!userMatch) {
+                try {
+                  const directDoc = await getDoc(doc(db, 'artifacts', appId, 'leaderboard', cleanU));
+                  if (directDoc.exists()) {
+                    userMatch = { uid: directDoc.id, ...directDoc.data() };
+                  }
+                } catch {}
               }
-            } catch (err) {
-              console.error("Direct public profile fetch error:", err);
+
+              // Scan entire leaderboard collection for matching email / username / display name
+              if (!userMatch) {
+                try {
+                  const boardSnap = await getDocs(collection(db, 'artifacts', appId, 'leaderboard'));
+                  boardSnap.forEach(d => {
+                    const data = d.data();
+                    const uHandle = (data.username || data.email?.split('@')[0] || data.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || '').toLowerCase();
+                    const dName = (data.displayName || '').toLowerCase();
+                    if (
+                      uHandle === cleanU ||
+                      d.id.toLowerCase() === cleanU ||
+                      dName === cleanU ||
+                      dName.replace(/[^a-z0-9_]/g, '') === cleanU ||
+                      (data.email && data.email.toLowerCase().startsWith(cleanU))
+                    ) {
+                      userMatch = { uid: d.id, ...data };
+                    }
+                  });
+                } catch {}
+              }
             }
-          })();
-        }
+
+            // 3. If matched, fetch their full subcollections if not present
+            if (userMatch) {
+              if (!userMatch.questionsProgress) {
+                try {
+                  const qSnap = await getDocs(collection(db, 'artifacts', appId, 'users', userMatch.uid, 'questionsProgress'));
+                  const qProg = {};
+                  qSnap.forEach(qd => { qProg[qd.id] = qd.data(); });
+                  userMatch.questionsProgress = qProg;
+                } catch {}
+              }
+              if (!userMatch.revisionLogs) {
+                try {
+                  const rSnap = await getDocs(collection(db, 'artifacts', appId, 'users', userMatch.uid, 'revisionLogs'));
+                  const rLogs = {};
+                  rSnap.forEach(rd => { rLogs[rd.id] = rd.data(); });
+                  userMatch.revisionLogs = rLogs;
+                } catch {}
+              }
+
+              setViewingPublicProfile(userMatch);
+              setIsProfileModalOpen(true);
+            } else {
+              // 4. Fallback for new/unregistered usernames: Always display public profile view
+              setViewingPublicProfile({
+                uid: cleanU,
+                displayName: cleanU,
+                username: cleanU,
+                solvedCount: 0,
+                streak: 0,
+                maxStreak: 0,
+                easyCount: 0,
+                medCount: 0,
+                hardCount: 0,
+                bio: 'DSA Explorer & Competitive Programmer',
+                isGuestProfile: true
+              });
+              setIsProfileModalOpen(true);
+            }
+          } catch (err) {
+            console.error("Public profile resolution error:", err);
+            setViewingPublicProfile({
+              uid: cleanU,
+              displayName: cleanU,
+              username: cleanU,
+              solvedCount: 0,
+              streak: 0,
+              maxStreak: 0,
+              easyCount: 0,
+              medCount: 0,
+              hardCount: 0,
+              bio: 'DSA Explorer & Competitive Programmer',
+              isGuestProfile: true
+            });
+            setIsProfileModalOpen(true);
+          }
+        })();
       }
     } catch (e) {
       console.error("Deep-linking error:", e);
@@ -759,6 +840,17 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setAuthLoading(false);
+      if (firebaseUser) {
+        if (!localStorage.getItem('dsa_custom_username') && firebaseUser.email) {
+          const defaultU = firebaseUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '');
+          setCustomUsername(defaultU);
+          localStorage.setItem('dsa_custom_username', defaultU);
+        }
+        if (!localStorage.getItem('dsa_custom_handle') && firebaseUser.displayName) {
+          setCustomDisplayName(firebaseUser.displayName);
+          localStorage.setItem('dsa_custom_handle', firebaseUser.displayName);
+        }
+      }
     });
     return () => unsubscribe();
   }, []);
