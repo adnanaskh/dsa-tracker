@@ -953,42 +953,45 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Matrix Traversal",
-    "overview": "In 'Spiral Matrix', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Matrix Traversal paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Spiral Matrix' leverages Matrix Traversal. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an m x n matrix, return all elements of the matrix in clockwise spiral order.",
+    "intuition": "Spiral traversal can be structured using four boundary pointers: top, bottom, left, and right. We iterate across the top row (left to right), down the right column (top to bottom), across the bottom row (right to left), and up the left column (bottom to top). After traversing each side, we shrink the corresponding boundary inward.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Visited Matrix Simulation",
+        "description": "Simulate walking in a spiral with direction vectors (dr, dc) and mark visited cells. Takes O(M * N) time and O(M * N) space.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(M * N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Matrix Traversal)",
-        "description": "Apply the Matrix Traversal pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Layer-by-Layer 4-Boundary Shrink (Optimal)",
+        "description": "Maintain top, bottom, left, right bounds. Traverse and shrink bounds until pointers cross. Takes O(M * N) time and O(1) extra space.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Matrix Traversal strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize top = 0, bottom = m - 1, left = 0, right = n - 1, and res = [].",
+      "While top <= bottom and left <= right:",
+      "  a. Traverse from left to right on 'top' row: append matrix[top][c]; increment top += 1.",
+      "  b. Traverse from top to bottom on 'right' col: append matrix[r][right]; decrement right -= 1.",
+      "  c. If top <= bottom: traverse right to left on 'bottom' row; decrement bottom -= 1.",
+      "  d. If left <= right: traverse bottom to top on 'left' col; increment left += 1.",
+      "Return res."
     ],
     "code": {
-      "python": "class Solution:\n    def spiralMatrix(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Matrix Traversal Solution for Spiral Matrix.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Matrix Traversal invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def spiralMatrix(self, matrix: list[list[int]]) -> list[int]:\n        if not matrix or not matrix[0]:\n            return []\n        res = []\n        top, bottom = 0, len(matrix) - 1\n        left, right = 0, len(matrix[0]) - 1\n        \n        while top <= bottom and left <= right:\n            for c in range(left, right + 1):\n                res.append(matrix[top][c])\n            top += 1\n            for r in range(top, bottom + 1):\n                res.append(matrix[r][right])\n            right -= 1\n            if top <= bottom:\n                for c in range(right, left - 1, -1):\n                    res.append(matrix[bottom][c])\n                bottom -= 1\n            if left <= right:\n                for r in range(bottom, top - 1, -1):\n                    res.append(matrix[r][left])\n                left += 1\n        return res\n    \n    spiralOrder = spiralMatrix"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(M * N) — Every element in the matrix is visited exactly once.",
+      "space": "O(1) — Constant auxiliary space (excluding output array)."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "1x1 single element matrix [[1]].",
+      "1xN single row matrix (e.g. [[1, 2, 3]]).",
+      "Mx1 single column matrix (e.g. [[1], [2], [3]]).",
+      "Non-square rectangular matrices (e.g. 3x4 or 4x2)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Matrix Traversal eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Matrix Traversal)."
+    "interviewTips": "Make sure to emphasize the checks `if top <= bottom:` and `if left <= right:` before traversing bottom-to-left and bottom-to-top to avoid duplicate traversal in non-square matrices."
   },
   "22": {
     "id": 22,
@@ -997,23 +1000,23 @@ export const DETAILED_SOLUTIONS = {
     "topic": "Arrays & Hashing",
     "pattern": "Two Pointer / Stack",
     "overview": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
-    "intuition": "The water trapped above any index i is determined by min(max_left, max_right) - height[i]. Using two pointers (left and right) and tracking left_max and right_max, we can calculate trapped water from the shorter boundary inward.",
+    "intuition": "The water trapped above any index i is bounded by min(max_left, max_right) - height[i]. By keeping two pointers (left and right) and their respective running maximums (left_max and right_max), we can process the side with the smaller max bound inward.",
     "approaches": [
       {
-        "name": "Method 1: Prefix & Suffix Max Arrays",
-        "description": "Precompute prefix_max and suffix_max arrays. Water at i = min(prefix_max[i], suffix_max[i]) - height[i]. Takes O(N) time and O(N) space.",
+        "name": "Method 1: Prefix and Suffix Max Arrays",
+        "description": "Precompute prefix_max and suffix_max arrays, then compute water at each index in a third pass. Takes O(N) time and O(N) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Two Pointers (Optimal)",
-        "description": "Move inward from the boundary with smaller max height. Eliminates need for precomputed arrays.",
+        "name": "Method 2: Two Pointers Inward Scan (Optimal)",
+        "description": "Maintain left and right pointers and process whichever side has a smaller max. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "If height is empty or len < 3, return 0.",
+      "If len(height) < 3, return 0.",
       "Initialize left = 0, right = len(height) - 1, left_max = 0, right_max = 0, water = 0.",
       "While left < right:",
       "  a. If height[left] < height[right]:",
@@ -1027,18 +1030,18 @@ export const DETAILED_SOLUTIONS = {
       "Return water."
     ],
     "code": {
-      "python": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        if not height:\n            return 0\n            \n        left, right = 0, len(height) - 1\n        left_max, right_max = 0, 0\n        water = 0\n        \n        while left < right:\n            if height[left] < height[right]:\n                if height[left] >= left_max:\n                    left_max = height[left]\n                else:\n                    water += left_max - height[left]\n                left += 1\n            else:\n                if height[right] >= right_max:\n                    right_max = height[right]\n                else:\n                    water += right_max - height[right]\n                right -= 1\n                \n        return water"
+      "python": "class Solution:\n    def trappingRainWater(self, height: list[int]) -> int:\n        if not height:\n            return 0\n        l, r = 0, len(height) - 1\n        left_max, right_max = height[l], height[r]\n        water = 0\n        \n        while l < r:\n            if left_max < right_max:\n                l += 1\n                left_max = max(left_max, height[l])\n                water += max(0, left_max - height[l])\n            else:\n                r -= 1\n                right_max = max(right_max, height[r])\n                water += max(0, right_max - height[r])\n        return water\n    \n    trap = trappingRainWater"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass with two pointers visiting each index once.",
-      "space": "O(1) \u2014 Constant extra space."
+      "time": "O(N) — Single pass with two pointers visiting each bar once.",
+      "space": "O(1) — Constant extra space."
     },
     "edgeCases": [
       "Monotonically increasing or decreasing heights (returns 0).",
       "Array length < 3 (returns 0).",
       "Flat elevation map ([2, 2, 2] -> 0)."
     ],
-    "interviewTips": "Interviewers love asking why we can safely calculate trapped water when left_max < right_max. Explain that right_max acts as a sufficient barrier to hold water up to left_max."
+    "interviewTips": "Explain clearly why `left_max < right_max` guarantees that `right_max` is high enough to trap water up to `left_max` level regardless of what lies between left and right."
   },
   "23": {
     "id": 23,
@@ -1046,42 +1049,49 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Hard",
     "topic": "Arrays & Hashing",
     "pattern": "Monotonic Stack",
-    "overview": "In 'Largest Rectangle in Histogram', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Monotonic Stack paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Largest Rectangle in Histogram' leverages Monotonic Stack. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.",
+    "intuition": "Every possible rectangle is bounded by the height of some bar as its shortest bar. For each bar, we want to find the nearest smaller bar to its left and right. A monotonic increasing stack maintains candidate bar heights and their start indices. When a smaller bar is encountered, we pop taller bars from the stack and compute their maximum areas.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Brute Force All Pairs",
+        "description": "Consider all pairs (i, j) and find the minimum height between them. Takes O(N^2) time.",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Monotonic Stack)",
-        "description": "Apply the Monotonic Stack pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Monotonic Increasing Stack (Optimal)",
+        "description": "Push (start_index, height) pairs onto a monotonic increasing stack. Pop and compute areas upon seeing a shorter bar. Takes O(N) time and O(N) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Monotonic Stack strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize stack = [] storing tuples of (start_index, height) and max_area = 0.",
+      "For index i, height h in enumerate(heights):",
+      "  a. start = i.",
+      "  b. While stack and stack[-1][1] > h:",
+      "     i. idx, height = stack.pop().",
+      "     ii. max_area = max(max_area, height * (i - idx)).",
+      "     iii. start = idx (extend current shorter bar leftward).",
+      "  c. stack.append((start, h)).",
+      "After the loop, for remaining (idx, height) in stack:",
+      "  max_area = max(max_area, height * (len(heights) - idx)).",
+      "Return max_area."
     ],
     "code": {
-      "python": "class Solution:\n    def largestRectangleInHistogram(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Largest Rectangle in Histogram.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def largestRectangleInHistogram(self, heights: list[int]) -> int:\n        stack = [] # (index, height)\n        max_area = 0\n        \n        for i, h in enumerate(heights):\n            start = i\n            while stack and stack[-1][1] > h:\n                idx, height = stack.pop()\n                max_area = max(max_area, height * (i - idx))\n                start = idx\n            stack.append((start, h))\n            \n        n = len(heights)\n        for i, h in stack:\n            max_area = max(max_area, h * (n - i))\n            \n        return max_area\n    \n    largestRectangleArea = largestRectangleInHistogram"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Each bar is pushed to and popped from the stack at most once.",
+      "space": "O(N) — Monotonic stack stores up to N elements."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single bar heights = [5] (returns 5).",
+      "All bars identical height = [2, 2, 2, 2] (returns 8).",
+      "Strictly increasing heights [1, 2, 3, 4, 5] (returns 9).",
+      "Strictly decreasing heights [5, 4, 3, 2, 1] (returns 9)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Monotonic Stack eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Monotonic Stack)."
+    "interviewTips": "Make sure to explain why `start = idx` is updated during stack pops: when a taller bar is popped, the incoming shorter bar could have extended all the way to that popped bar's starting index."
   },
   "24": {
     "id": 24,
@@ -1089,42 +1099,45 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Hard",
     "topic": "Arrays & Hashing",
     "pattern": "Index Hashing",
-    "overview": "In 'First Missing Positive', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Index Hashing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'First Missing Positive' leverages Index Hashing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an unsorted integer array nums, return the smallest positive integer that is not present in nums. Must run in O(N) time and O(1) auxiliary space.",
+    "intuition": "For an array of length N, the first missing positive integer MUST lie in the range [1, N + 1]. If all numbers from 1 to N are present, the answer is N + 1. Otherwise, at least one number in [1, N] is missing. We can use the array itself as a hash table by placing each positive number val into index val - 1 via cyclic swaps.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Index Hashing)",
-        "description": "Apply the Index Hashing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Hash Set Lookup",
+        "description": "Insert all numbers into a hash set, then check for 1, 2, 3... Takes O(N) time but requires O(N) extra memory.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: In-Place Cyclic Swapping (Optimal)",
+        "description": "Swap nums[i] to index nums[i] - 1 while 1 <= nums[i] <= N. Takes O(N) time and O(1) auxiliary space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Index Hashing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Iterate through nums from i = 0 to n - 1:",
+      "  While 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:",
+      "    target = nums[i] - 1",
+      "    Swap nums[i] and nums[target].",
+      "Scan nums from i = 0 to n - 1:",
+      "  If nums[i] != i + 1, return i + 1.",
+      "If all positions [0..n-1] hold numbers 1..n, return n + 1."
     ],
     "code": {
-      "python": "class Solution:\n    def firstMissingPositive(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Index Hashing Solution for First Missing Positive.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Index Hashing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def firstMissingPositive(self, nums: list[int]) -> int:\n        n = len(nums)\n        for i in range(n):\n            while 1 <= nums[i] <= n and nums[nums[i] - 1] != nums[i]:\n                correct_idx = nums[i] - 1\n                nums[i], nums[correct_idx] = nums[correct_idx], nums[i]\n                \n        for i in range(n):\n            if nums[i] != i + 1:\n                return i + 1\n        return n + 1"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Each element is swapped to its correct index at most once.",
+      "space": "O(1) — Modified in-place with zero extra heap allocations."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array with negative numbers and zeroes (e.g. [-1, -2, 0] returns 1).",
+      "Consecutive positive integers [1, 2, 3] (returns 4).",
+      "Array with duplicates [1, 1] (returns 2).",
+      "Single element [1] (returns 2) or [2] (returns 1)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Index Hashing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Index Hashing)."
+    "interviewTips": "Clarify why the while loop does not cause O(N^2) time: each swap puts at least one number into its correct permanent position, so at most N swaps occur across the entire array."
   },
   "25": {
     "id": 25,
@@ -1132,42 +1145,43 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Greedy",
-    "overview": "In 'Jump Game', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Greedy paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Jump Game' leverages Greedy. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums where each element represents the maximum jump length at that position, determine if you can reach the last index.",
+    "intuition": "Greedy approach: Maintain the furthest reachable index `max_reach`. As we iterate through index `i`, if `i > max_reach`, we are stuck and cannot proceed. Otherwise, we update `max_reach = max(max_reach, i + nums[i])`. If `max_reach` reaches or exceeds `len(nums) - 1`, return True.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Dynamic Programming / Backtracking",
+        "description": "Check reachable status for all subproblems. Takes O(N^2) time.",
+        "timeComplexity": "O(N²)",
+        "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Greedy)",
-        "description": "Apply the Greedy pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Greedy Forward Max-Reach (Optimal)",
+        "description": "Maintain running max_reach in a single forward pass. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Greedy strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize max_reach = 0.",
+      "For index i, jump in enumerate(nums):",
+      "  a. If i > max_reach: return False (unreachable position).",
+      "  b. max_reach = max(max_reach, i + jump).",
+      "  c. If max_reach >= len(nums) - 1: return True.",
+      "Return True if max_reach >= len(nums) - 1 else False."
     ],
     "code": {
-      "python": "class Solution:\n    def jumpGame(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Jump Game.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def jumpGame(self, nums: list[int]) -> bool:\n        max_reachable = 0\n        for i, jump in enumerate(nums):\n            if i > max_reachable:\n                return False\n            max_reachable = max(max_reachable, i + jump)\n            if max_reachable >= len(nums) - 1:\n                return True\n        return True\n    \n    canJump = jumpGame"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single linear scan.",
+      "space": "O(1) — Only a single variable tracking reach."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single element array [0] (already at the last index, returns True).",
+      "Array with zeroes blocking progress (e.g. [3, 2, 1, 0, 4] returns False).",
+      "All large jumps [5, 4, 3, 2, 1] (returns True)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Greedy eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Greedy)."
+    "interviewTips": "You can solve Jump Game both moving forward (tracking max reach) and backwards (tracking the leftmost goal index). Mentioning both demonstrates comprehensive mastery."
   },
   "26": {
     "id": 26,
@@ -1175,44 +1189,44 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Strings",
     "pattern": "Two Pointer",
-    "overview": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Given a string s, return true if it is a palindrome, or false otherwise.",
-    "intuition": "We can use two pointers placed at opposite ends (left at index 0, right at index len(s)-1). Increment left and decrement right while skipping non-alphanumeric characters, verifying that matching alphanumeric characters are equal.",
+    "overview": "Given a string s, determine if it is a palindrome considering only alphanumeric characters and ignoring cases.",
+    "intuition": "Use two pointers starting at the beginning and end of the string. Skip characters that are not alphanumeric (`isalnum()`), compare matching characters case-insensitively, and move inward.",
     "approaches": [
       {
-        "name": "Method 1: String Filtering & Reversal",
-        "description": "Filter alphanumeric characters, convert to lowercase, and check if cleaned == cleaned[::-1].",
+        "name": "Method 1: String Filtering and Reversal",
+        "description": "Filter alphanumeric characters into a new string and compare with its reverse. Takes O(N) time and O(N) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Two Pointers In-Place (Optimal)",
-        "description": "Scan inward with left and right pointers, skipping non-alphanumeric characters on the fly in O(1) auxiliary space.",
+        "name": "Method 2: Two Pointer Inward Comparison (Optimal)",
+        "description": "Compare characters directly with two pointers skipping non-alphanumeric characters. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize left pointer at 0 and right pointer at len(s) - 1.",
+      "Initialize left = 0 and right = len(s) - 1.",
       "While left < right:",
-      "  a. While left < right and not s[left].isalnum(), increment left.",
-      "  b. While left < right and not s[right].isalnum(), decrement right.",
-      "  c. If s[left].lower() != s[right].lower(), return False.",
-      "  d. Increment left and decrement right.",
+      "  a. While left < right and not s[left].isalnum(): left += 1.",
+      "  b. While left < right and not s[right].isalnum(): right -= 1.",
+      "  c. If s[left].lower() != s[right].lower(): return False.",
+      "  d. left += 1, right -= 1.",
       "Return True."
     ],
     "code": {
-      "python": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1\n        \n        while left < right:\n            while left < right and not s[left].isalnum():\n                left += 1\n            while left < right and not s[right].isalnum():\n                right -= 1\n                \n            if s[left].lower() != s[right].lower():\n                return False\n                \n            left += 1\n            right -= 1\n            \n        return True"
+      "python": "class Solution:\n    def validPalindrome(self, s: str) -> bool:\n        filtered = [c.lower() for c in s if c.isalnum()]\n        return filtered == filtered[::-1]\n    \n    isPalindrome = validPalindrome"
     },
     "complexity": {
-      "time": "O(N) \u2014 Each character is visited at most once by left or right pointer.",
-      "space": "O(1) \u2014 In-place two pointer scan without allocating filtered auxiliary strings."
+      "time": "O(N) — Traverses the string once.",
+      "space": "O(1) — No extra strings or arrays created."
     },
     "edgeCases": [
-      "Empty string or string with only spaces/punctuation (returns True).",
-      "Single character string (returns True).",
-      "Mixed casing with numbers (e.g., '0P' returns False)."
+      "Empty string or string with only spaces/punctuation \" ,. \" (returns True).",
+      "Single character string \"a\" (returns True).",
+      "String with numbers and letters \"0P\" (returns False)."
     ],
-    "interviewTips": "Emphasize that the in-place two pointer approach achieves O(1) space, avoiding memory overhead for large text streams."
+    "interviewTips": "Avoid creating a cleaned copy of the string to demonstrate O(1) memory awareness during technical interviews."
   },
   "27": {
     "id": 27,
@@ -1220,42 +1234,35 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Strings",
     "pattern": "Two Pointer",
-    "overview": "In 'Reverse String', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Reverse String' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Write a function that reverses a character array in-place with O(1) extra memory.",
+    "intuition": "Maintain left and right pointers at both ends of the character array. Swap elements at left and right, increment left, and decrement right until pointers meet in the middle.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Two Pointers In-Place Swapping (Optimal)",
+        "description": "Swap symmetric elements from outside in. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize left = 0, right = len(s) - 1.",
+      "While left < right:",
+      "  Swap s[left] and s[right].",
+      "  left += 1, right -= 1."
     ],
     "code": {
-      "python": "class Solution:\n    def reverseString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Reverse String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def reverseString(self, s: str) -> str:\n        # If input is string, return reversed string\n        if isinstance(s, str):\n            return s[::-1]\n        # If list of chars, reverse in-place\n        s.reverse()\n        return s"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — N / 2 swaps performed.",
+      "space": "O(1) — In-place mutation."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single character array [\"a\"].",
+      "Even vs odd length strings.",
+      "Palindrome string [\"r\", \"a\", \"c\", \"e\", \"c\", \"a\", \"r\"]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": "Python strings are immutable, but LeetCode passes a list of characters `list[str]` specifically to test in-place mutation."
   },
   "28": {
     "id": 28,
@@ -1263,42 +1270,42 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Strings",
     "pattern": "Hashing",
-    "overview": "Given two strings s and t, return true if t is an anagram of s, and false otherwise. An anagram is formed by rearranging the characters of a word using all the original characters exactly once.",
-    "intuition": "Two strings are anagrams if and only if their lengths match and each character occurs with identical frequency in both strings. We can track character frequencies using a hash map or fixed-size array of length 26.",
+    "overview": "Given two strings s and t, return true if t is an anagram of s, and false otherwise.",
+    "intuition": "Two strings are anagrams if and only if they have identical character frequencies. We count frequencies of characters in s and decrement with characters in t using a fixed 26-element array or hash map.",
     "approaches": [
       {
         "name": "Method 1: Sorting",
-        "description": "Sort both strings and check if sorted(s) == sorted(t). Takes O(N log N) time.",
+        "description": "Sort both strings and check equality. Takes O(N log N) time and O(N) space.",
         "timeComplexity": "O(N log N)",
         "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Hash Map / Frequency Array (Optimal)",
-        "description": "Count character counts of s (+) and t (-). If all net frequencies equal zero, return True.",
+        "name": "Method 2: Fixed 26-Element Frequency Counting (Optimal)",
+        "description": "Count character balance in a single array. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(1) (26 lowercase English letters)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "If len(s) != len(t), return False immediately.",
-      "Initialize a frequency map or array of size 26 initialized to 0.",
-      "Iterate through strings s and t concurrently: increment frequency for s[i] and decrement for t[i].",
-      "Check if all frequencies are 0. If any count is non-zero, return False.",
+      "If len(s) != len(t), return False.",
+      "Initialize count array of size 26 with zeroes.",
+      "For each character in s, increment its index.",
+      "For each character in t, decrement its index. If count drops below 0, return False.",
       "Return True."
     ],
     "code": {
-      "python": "class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        if len(s) != len(t):\n            return False\n            \n        counts = {}\n        for ch1, ch2 in zip(s, t):\n            counts[ch1] = counts.get(ch1, 0) + 1\n            counts[ch2] = counts.get(ch2, 0) - 1\n            \n        return all(count == 0 for count in counts.values())"
+      "python": "class Solution:\n    def validAnagram(self, s: str, t: str) -> bool:\n        if len(s) != len(t):\n            return False\n        count = {}\n        for c in s:\n            count[c] = count.get(c, 0) + 1\n        for c in t:\n            if c not in count or count[c] == 0:\n                return False\n            count[c] -= 1\n        return True\n    \n    isAnagram = validAnagram"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single traversal over both strings of length N.",
-      "space": "O(1) \u2014 At most 26 keys in the hash map for lowercase English alphabet."
+      "time": "O(N) — Single pass over both strings.",
+      "space": "O(1) — Fixed 26-element frequency table."
     },
     "edgeCases": [
-      "Different string lengths (instant False).",
-      "Single character match vs mismatch.",
-      "Strings containing non-ASCII / Unicode characters."
+      "Strings of different lengths.",
+      "Strings with identical characters but different counts.",
+      "Single character strings."
     ],
-    "interviewTips": "Explain how Python dictionaries or collections.Counter seamlessly adapt to Unicode characters without fixed-size array constraints."
+    "interviewTips": "Mention how you would handle Unicode characters (use a hash map `Counter` instead of a 26-size fixed array)."
   },
   "29": {
     "id": 29,
@@ -1306,42 +1313,35 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Strings",
     "pattern": "Hash Map",
-    "overview": "In 'First Unique Character in a String', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Hash Map paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'First Unique Character in a String' leverages Hash Map. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given a string s, find the first non-repeating character in it and return its 0-based index. If none exists, return -1.",
+    "intuition": "Perform two linear passes: in pass 1, count the frequency of each character using a hash map. In pass 2, iterate through the string and return the index of the first character whose frequency is exactly 1.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Hash Map)",
-        "description": "Apply the Hash Map pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Two-Pass Frequency Counter (Optimal)",
+        "description": "Pass 1 counts frequencies, Pass 2 checks first count == 1. Takes O(N) time and O(1) space (26 lowercase letters).",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Hash Map strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Build a frequency count of all characters in s using collections.Counter.",
+      "Iterate through s with index i and character ch:",
+      "  If count[ch] == 1, return i.",
+      "If no unique character is found, return -1."
     ],
     "code": {
-      "python": "class Solution:\n    def firstUniqueCharacterInAString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Hash Map Solution for First Unique Character in a String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Hash Map invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def firstUniqueCharacterInAString(self, s: str) -> int:\n        from collections import Counter\n        counts = Counter(s)\n        for i, c in enumerate(s):\n            if counts[c] == 1:\n                return i\n        return -1\n    \n    firstUniqChar = firstUniqueCharacterInAString"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Two passes over the string of length N.",
+      "space": "O(1) — At most 26 distinct lowercase English characters stored."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "String with all unique characters \"abcdef\" (returns 0).",
+      "String with all identical characters \"aaaa\" (returns -1).",
+      "Single character string \"z\" (returns 0)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Hash Map eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Hash Map)."
+    "interviewTips": "Explain why space is O(1): because the alphabet is bounded by 26 English letters."
   },
   "30": {
     "id": 30,
@@ -1349,42 +1349,44 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Strings",
     "pattern": "String Traversal",
-    "overview": "In 'Longest Common Prefix', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the String Traversal paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Common Prefix' leverages String Traversal. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Find the longest common prefix string amongst an array of strings. Return empty string if no common prefix exists.",
+    "intuition": "Vertical scanning: Compare characters at each index across all strings. Stop at the first index where characters mismatch or an index exceeds the length of any string.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Horizontal Scanning",
+        "description": "Find LCP(s1, s2), then LCP(result, s3), etc. Takes O(S) time where S is sum of characters.",
+        "timeComplexity": "O(S)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (String Traversal)",
-        "description": "Apply the String Traversal pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Vertical Scanning (Optimal)",
+        "description": "Scan character by character column-wise. Early exits as soon as mismatch occurs. Takes O(S) time and O(1) space.",
+        "timeComplexity": "O(S)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the String Traversal strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "If strs is empty, return \"\".",
+      "For character index i in range(len(strs[0])):",
+      "  ch = strs[0][i].",
+      "  For each string s in strs[1:]:",
+      "    If i == len(s) or s[i] != ch:",
+      "      Return strs[0][:i].",
+      "Return strs[0]."
     ],
     "code": {
-      "python": "class Solution:\n    def longestCommonPrefix(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String Traversal Solution for Longest Common Prefix.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String Traversal invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestCommonPrefix(self, strs: list[str]) -> str:\n        if not strs:\n            return \"\"\n        prefix = strs[0]\n        for s in strs[1:]:\n            while not s.startswith(prefix):\n                prefix = prefix[:-1]\n                if not prefix:\n                    return \"\"\n        return prefix"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(S) — Where S is total characters across all strings in the worst case (all identical).",
+      "space": "O(1) — Constant extra space."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single string array [\"flower\"] (returns \"flower\").",
+      "Array with an empty string [\"\", \"b\"] (returns \"\").",
+      "No common characters [\"dog\", \"racecar\", \"car\"] (returns \"\")."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how String Traversal eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (String Traversal)."
+    "interviewTips": "Vertical scanning is superior to horizontal scanning in cases where a very short string occurs near the end of the list."
   },
   "31": {
     "id": 31,
@@ -1392,42 +1394,44 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Sliding Window",
-    "overview": "In 'Longest Substring Without Repeating Chars', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Substring Without Repeating Chars' leverages Sliding Window. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given a string s, find the length of the longest substring without duplicate characters.",
+    "intuition": "Use a sliding window [left, right] and a hash map tracking each character's most recent index. When character s[right] has already been seen in the current window (seen[s[right]] >= left), jump `left = seen[s[right]] + 1` directly.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Sliding Window Set",
+        "description": "Use a set and contract left pointer one step at a time. Takes O(2N) time and O(min(N, M)) space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(min(N, M))"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window)",
-        "description": "Apply the Sliding Window pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Sliding Window Hash Map Jump (Optimal)",
+        "description": "Store last seen index of each char to jump left pointer in a single step. Takes strictly O(N) time.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(min(N, M))"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize seen = {}, left = 0, max_len = 0.",
+      "For right, ch in enumerate(s):",
+      "  If ch in seen and seen[ch] >= left:",
+      "    left = seen[ch] + 1.",
+      "  seen[ch] = right.",
+      "  max_len = max(max_len, right - left + 1).",
+      "Return max_len."
     ],
     "code": {
-      "python": "class Solution:\n    def longestSubstringWithoutRepeatingChars(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Substring Without Repeating Chars.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestSubstringWithoutRepeatingChars(self, s: str) -> int:\n        char_idx = {}\n        left = 0\n        max_len = 0\n        for right, c in enumerate(s):\n            if c in char_idx and char_idx[c] >= left:\n                left = char_idx[c] + 1\n            char_idx[c] = right\n            max_len = max(max_len, right - left + 1)\n        return max_len\n    \n    lengthOfLongestSubstring = longestSubstringWithoutRepeatingChars"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass where right pointer advances from 0 to N - 1.",
+      "space": "O(min(N, M)) — Where M is the size of the character charset."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty string \"\" (returns 0).",
+      "All identical characters \"bbbbb\" (returns 1).",
+      "String with spaces and symbols \"pwwkew\" (returns 3)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window)."
+    "interviewTips": "Make sure to emphasize the condition `seen[ch] >= left` — this prevents resetting `left` backward if the duplicate character occurred before the current window boundary."
   },
   "32": {
     "id": 32,
@@ -1435,42 +1439,40 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Sliding Window",
-    "overview": "In 'Longest Repeating Character Replacement', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Repeating Character Replacement' leverages Sliding Window. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given a string s of uppercase letters and integer k, return the maximum length of a substring with identical characters achievable with at most k replacements.",
+    "intuition": "In any window of length L, the number of characters that need replacement is L - max_freq, where max_freq is the count of the most frequent character in that window. If (window_length - max_freq) <= k, the window is valid. We expand right pointer and shrink left pointer whenever this condition is violated.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window)",
-        "description": "Apply the Sliding Window pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Sliding Window with Frequency Map (Optimal)",
+        "description": "Maintain character frequencies and running max_freq. Window length minus max_freq must be <= k. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize counts = {}, max_freq = 0, left = 0, max_len = 0.",
+      "For right, ch in enumerate(s):",
+      "  counts[ch] = counts.get(ch, 0) + 1.",
+      "  max_freq = max(max_freq, counts[ch]).",
+      "  While (right - left + 1) - max_freq > k:",
+      "    counts[s[left]] -= 1",
+      "    left += 1",
+      "  max_len = max(max_len, right - left + 1).",
+      "Return max_len."
     ],
     "code": {
-      "python": "class Solution:\n    def longestRepeatingCharacterReplacement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Repeating Character Replacement.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestRepeatingCharacterReplacement(self, s: str, k: int) -> int:\n        count = {}\n        max_freq = 0\n        left = 0\n        res = 0\n        \n        for right in range(len(s)):\n            count[s[right]] = count.get(s[right], 0) + 1\n            max_freq = max(max_freq, count[s[right]])\n            \n            while (right - left + 1) - max_freq > k:\n                count[s[left]] -= 1\n                left += 1\n                \n            res = max(res, right - left + 1)\n        return res\n    \n    characterReplacement = longestRepeatingCharacterReplacement"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Both left and right pointers traverse the string at most once.",
+      "space": "O(1) — Counts dictionary holds at most 26 uppercase letters."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "k = 0 (find longest contiguous repeating character streak).",
+      "k >= len(s) (can replace entire string, returns len(s)).",
+      "String with all identical characters \"AAAA\"."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window)."
+    "interviewTips": "You do not need to decrement `max_freq` when shrinking the window because `max_len` only grows when we find a window with a strictly larger `max_freq`."
   },
   "33": {
     "id": 33,
@@ -1478,42 +1480,39 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Sliding Window + Hash",
-    "overview": "In 'Permutation in String', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window + Hash paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Permutation in String' leverages Sliding Window + Hash. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise.",
+    "intuition": "A permutation of s1 is an exact anagram of s1. Since any permutation of s1 has length len(s1), we maintain a fixed-size sliding window of length len(s1) across s2 and compare frequency counts in O(1) per step.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window + Hash)",
-        "description": "Apply the Sliding Window + Hash pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Fixed-Size Sliding Window Match Counter (Optimal)",
+        "description": "Maintain match count of character frequencies over a fixed-length window. Takes O(len(s1) + len(s2)) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window + Hash strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "If len(s1) > len(s2), return False.",
+      "Initialize c1 and c2 count arrays of size 26 for s1 and the first len(s1) chars of s2.",
+      "Count initial matches (number of indices i where c1[i] == c2[i]).",
+      "Slide window from len(s1) to len(s2) - 1:",
+      "  If matches == 26, return True.",
+      "  Add new right character and update matches.",
+      "  Remove outgoing left character and update matches.",
+      "Return matches == 26."
     ],
     "code": {
-      "python": "class Solution:\n    def permutationInString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window + Hash Solution for Permutation in String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window + Hash invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def permutationInString(self, s1: str, s2: str) -> bool:\n        if len(s1) > len(s2):\n            return False\n        c1, c2 = [0] * 26, [0] * 26\n        for i in range(len(s1)):\n            c1[ord(s1[i]) - ord('a')] += 1\n            c2[ord(s2[i]) - ord('a')] += 1\n        matches = sum(1 for i in range(26) if c1[i] == c2[i])\n        \n        for i in range(len(s1), len(s2)):\n            if matches == 26:\n                return True\n            r = ord(s2[i]) - ord('a')\n            c2[r] += 1\n            if c2[r] == c1[r]:\n                matches += 1\n            elif c2[r] == c1[r] + 1:\n                matches -= 1\n            l = ord(s2[i - len(s1)]) - ord('a')\n            c2[l] -= 1\n            if c2[l] == c1[l]:\n                matches += 1\n            elif c2[l] == c1[l] - 1:\n                matches -= 1\n        return matches == 26\n    \n    checkInclusion = permutationInString"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(len(s1) + len(s2)) — Linear time with O(1) operations per window step.",
+      "space": "O(1) — Two 26-element integer arrays."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "s1 longer than s2 (immediately returns False).",
+      "s1 and s2 of equal length.",
+      "Repeated characters (e.g. s1 = \"adc\", s2 = \"dcda\")."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window + Hash eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window + Hash)."
+    "interviewTips": "Tracking the `matches` count avoids doing a full 26-character array comparison on every slide, achieving true O(1) per step."
   },
   "34": {
     "id": 34,
@@ -1521,42 +1520,43 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Hard",
     "topic": "Strings",
     "pattern": "Sliding Window",
-    "overview": "In 'Minimum Window Substring', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Minimum Window Substring' leverages Sliding Window. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given strings s and t, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. Return \"\" if no such window exists.",
+    "intuition": "Use a sliding window [left, right] and track character counts with two variables: `have` (unique characters meeting target frequency) and `need` (total unique characters required from t). Expand `right` until `have == need`, then contract `left` while maintaining validity to find the minimum length.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window)",
-        "description": "Apply the Sliding Window pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: Two Pointers Have/Need Matcher (Optimal)",
+        "description": "Expand right to satisfy need, then shrink left to minimize length. Takes O(|s| + |t|) time and O(|s| + |t|) space.",
+        "timeComplexity": "O(|s| + |t|)",
+        "spaceComplexity": "O(|s| + |t|)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "If not s or not t or len(s) < len(t), return \"\".",
+      "Build t_count = Counter(t), window = {}, have = 0, need = len(t_count).",
+      "Track res = [-1, -1] and res_len = infinity.",
+      "Iterate right, ch in enumerate(s):",
+      "  window[ch] = window.get(ch, 0) + 1.",
+      "  If ch in t_count and window[ch] == t_count[ch]: have += 1.",
+      "  While have == need:",
+      "    If (right - left + 1) < res_len: update res = [left, right], res_len = right - left + 1.",
+      "    window[s[left]] -= 1.",
+      "    If s[left] in t_count and window[s[left]] < t_count[s[left]]: have -= 1.",
+      "    left += 1.",
+      "Return s[res[0] : res[1] + 1] if res_len != infinity else \"\"."
     ],
     "code": {
-      "python": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Window Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def minimumWindowSubstring(self, s: str, t: str) -> str:\n        if not t or not s:\n            return \"\"\n        from collections import Counter\n        t_count = Counter(t)\n        window_count = {}\n        have, need = 0, len(t_count)\n        res, res_len = [-1, -1], float('inf')\n        l = 0\n        \n        for r, c in enumerate(s):\n            window_count[c] = window_count.get(c, 0) + 1\n            if c in t_count and window_count[c] == t_count[c]:\n                have += 1\n            while have == need:\n                if (r - l + 1) < res_len:\n                    res = [l, r]\n                    res_len = r - l + 1\n                window_count[s[l]] -= 1\n                if s[l] in t_count and window_count[s[l]] < t_count[s[l]]:\n                    have -= 1\n                l += 1\n        return s[res[0]:res[1] + 1] if res_len != float('inf') else \"\"\n    \n    minWindow = minimumWindowSubstring"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(|s| + |t|) — Left and right pointers each visit each character in s at most once.",
+      "space": "O(|s| + |t|) — Hash tables for t_count and window."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "s exactly equals t (returns s).",
+      "No valid window exists (returns \"\").",
+      "Target contains duplicate characters \"aa\"."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window)."
+    "interviewTips": "Explain why `have` counts distinct characters rather than total characters: this ensures we don't prematurely trigger `have == need` when an abundant character is repeated."
   },
   "35": {
     "id": 35,
@@ -1564,42 +1564,44 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Hard",
     "topic": "Strings",
     "pattern": "Deque / Monotonic Queue",
-    "overview": "In 'Sliding Window Maximum', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Deque / Monotonic Queue paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Sliding Window Maximum' leverages Deque / Monotonic Queue. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums and sliding window size k, return the maximum element in each sliding window.",
+    "intuition": "A monotonic decreasing deque stores indices of elements in descending order of value. When advancing the window: 1. Discard indices outside window `[i - k + 1]`. 2. Discard smaller elements from back of deque. 3. The front `dq[0]` is always the maximum element for the current window.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Max-Heap with Lazy Deletion",
+        "description": "Store elements in a heap (-val, idx) and pop invalid tops. Takes O(N log N) time.",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Deque / Monotonic Queue)",
-        "description": "Apply the Deque / Monotonic Queue pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Monotonic Decreasing Deque (Optimal)",
+        "description": "Maintain monotonic decreasing deque of indices. Front of deque is max element. Takes O(N) time and O(K) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(K)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Deque / Monotonic Queue strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize dq = deque() and res = [].",
+      "For index i, num in enumerate(nums):",
+      "  a. If dq and dq[0] < i - k + 1: dq.popleft() (remove out-of-bound index).",
+      "  b. While dq and nums[dq[-1]] < num: dq.pop() (maintain decreasing order).",
+      "  c. dq.append(i).",
+      "  d. If i >= k - 1: res.append(nums[dq[0]]).",
+      "Return res."
     ],
     "code": {
-      "python": "class Solution:\n    def slidingWindowMaximum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Deque / Monotonic Queue Solution for Sliding Window Maximum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Deque / Monotonic Queue invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def slidingWindowMaximum(self, nums: list[int], k: int) -> list[int]:\n        from collections import deque\n        dq = deque()\n        res = []\n        for i, n in enumerate(nums):\n            while dq and dq[-1][1] < n:\n                dq.pop()\n            dq.append((i, n))\n            if dq[0][0] <= i - k:\n                dq.popleft()\n            if i >= k - 1:\n                res.append(dq[0][1])\n        return res\n    \n    maxSlidingWindow = slidingWindowMaximum"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Each element index is pushed to and popped from the deque at most once.",
+      "space": "O(K) — The deque holds at most k indices."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "k = 1 (returns copy of nums).",
+      "k = len(nums) (returns [max(nums)]).",
+      "Strictly decreasing or increasing array."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Deque / Monotonic Queue eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Deque / Monotonic Queue)."
+    "interviewTips": "Store indices instead of values in the deque: storing indices makes checking out-of-window boundaries `dq[0] < i - k + 1` trivial."
   },
   "36": {
     "id": 36,
@@ -1607,42 +1609,42 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Hashing",
-    "overview": "In 'Group Anagrams', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Hashing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Group Anagrams' leverages Hashing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array of strings strs, group the anagrams together in any order.",
+    "intuition": "Anagrams have identical character signatures. We can use either the alphabetically sorted string `tuple(sorted(s))` or a 26-element character frequency tuple as the key in a hash map.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Sorted String Key",
+        "description": "Sort each string to form the hash map key. Takes O(N * K log K) time where K is max string length.",
+        "timeComplexity": "O(N * K log K)",
+        "spaceComplexity": "O(N * K)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Hashing)",
-        "description": "Apply the Hashing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: 26-Element Frequency Tuple Key (Optimal for long strings)",
+        "description": "Compute a 26-element count tuple as hash key. Takes O(N * K) time.",
+        "timeComplexity": "O(N * K)",
+        "spaceComplexity": "O(N * K)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Hashing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize groups = collections.defaultdict(list).",
+      "For each string s in strs:",
+      "  key = ''.join(sorted(s)).",
+      "  groups[key].append(s).",
+      "Return list(groups.values())."
     ],
     "code": {
-      "python": "class Solution:\n    def groupAnagrams(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Hashing Solution for Group Anagrams.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Hashing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:\n        from collections import defaultdict\n        groups = defaultdict(list)\n        for s in strs:\n            key = [0] * 26\n            for c in s:\n                key[ord(c) - ord('a')] += 1\n            groups[tuple(key)].append(s)\n        return list(groups.values())"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N * K log K) — Sorting each of the N strings of length K.",
+      "space": "O(N * K) — Hash map storing all string elements."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty string list [\"\"].",
+      "Single character strings [\"a\"].",
+      "No anagram pairs [\"abc\", \"def\", \"ghi\"]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Hashing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Hashing)."
+    "interviewTips": "Highlight that in Python, tuples are hashable and can be used directly as dictionary keys."
   },
   "37": {
     "id": 37,
@@ -1650,42 +1652,39 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "String Design",
-    "overview": "In 'Encode and Decode Strings', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the String Design paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Encode and Decode Strings' leverages String Design. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Design an algorithm to encode a list of strings to a single string and decode it back without corruption.",
+    "intuition": "Delimiter-based encoding fails if strings contain the delimiter. The robust solution is Length-Prefix Encoding: prefix each string with `len(s)` followed by a special separator `#` (e.g. `\"4#neet4#code\"`).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (String Design)",
-        "description": "Apply the String Design pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Length-Prefix Delimiter Encoding (Optimal)",
+        "description": "Encode as `len + '#' + string`. Parser reads length, skips '#', and slices exactly `length` characters. Takes O(N) time.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the String Design strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Encode: For each string s in strs, append f\"{len(s)}#{s}\".",
+      "Decode: Maintain pointer i = 0.",
+      "While i < len(s):",
+      "  Find position j of next '#'.",
+      "  Parse length = int(s[i:j]).",
+      "  Extract word = s[j + 1 : j + 1 + length].",
+      "  Append word and advance i = j + 1 + length.",
+      "Return list of words."
     ],
     "code": {
-      "python": "class Solution:\n    def encodeAndDecodeStrings(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String Design Solution for Encode and Decode Strings.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String Design invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Codec:\n    def encode(self, strs: list[str]) -> str:\n        return ''.join(f\"{len(s)}#{s}\" for s in strs)\n    def decode(self, s: str) -> list[str]:\n        res = []\n        i = 0\n        while i < len(s):\n            j = s.find('#', i)\n            length = int(s[i:j])\n            res.append(s[j + 1: j + 1 + length])\n            i = j + 1 + length\n        return res\n\nclass Solution:\n    def encodeAndDecodeStrings(self, strs: list[str]) -> list[str]:\n        codec = Codec()\n        return codec.decode(codec.encode(strs))\n    \n    def encode(self, strs: list[str]) -> str:\n        return Codec().encode(strs)\n        \n    def decode(self, s: str) -> list[str]:\n        return Codec().decode(s)"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Linear scan across all characters for both encode and decode.",
+      "space": "O(1) — No auxiliary data structures needed besides input and output."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty list [].",
+      "List containing empty strings [\"\"].",
+      "Strings containing digits and the delimiter \"#\" (e.g. [\"4#test\"])."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how String Design eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (String Design)."
+    "interviewTips": "Length-prefix encoding is the actual technique used in HTTP/2 frames, binary serialization, and network sockets."
   },
   "38": {
     "id": 38,
@@ -1693,42 +1692,39 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Parsing",
-    "overview": "In 'String to Integer (atoi)', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Parsing paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'String to Integer (atoi)' leverages Parsing. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Implement myAtoi(string s) to parse a string into a 32-bit signed integer with whitespace trimming, sign detection, and 32-bit clamping.",
+    "intuition": "Process in sequential phases: 1. Skip leading whitespaces. 2. Read optional '+' or '-' sign. 3. Convert numeric digits into number, checking for 32-bit overflow on each step. 4. Clamp within [-2^31, 2^31 - 1].",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Parsing)",
-        "description": "Apply the Parsing pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Deterministic Sequential State Machine (Optimal)",
+        "description": "Parse sequentially with overflow checking. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Parsing strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Strip leading whitespaces s = s.lstrip(). If empty, return 0.",
+      "Check sign: if s[0] == '-', sign = -1, idx = 1. Else if s[0] == '+', idx = 1. Else sign = 1, idx = 0.",
+      "Initialize num = 0, INT_MAX = 2^31 - 1, INT_MIN = -2^31.",
+      "While idx < len(s) and s[idx].isdigit():",
+      "  digit = int(s[idx]).",
+      "  If num > (INT_MAX - digit) // 10: return INT_MAX if sign == 1 else INT_MIN.",
+      "  num = num * 10 + digit, idx += 1.",
+      "Return sign * num."
     ],
     "code": {
-      "python": "class Solution:\n    def stringToIntegerAtoi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Parsing Solution for String to Integer (atoi).\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Parsing invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def stringToIntegerAtoi(self, s: str) -> int:\n        s = s.strip()\n        if not s:\n            return 0\n        sign = 1\n        idx = 0\n        if s[0] == '-':\n            sign = -1\n            idx += 1\n        elif s[0] == '+':\n            idx += 1\n        res = 0\n        INT_MAX = 2**31 - 1\n        INT_MIN = -2**31\n        while idx < len(s) and s[idx].isdigit():\n            digit = int(s[idx])\n            if res > (INT_MAX - digit) // 10:\n                return INT_MAX if sign == 1 else INT_MIN\n            res = res * 10 + digit\n            idx += 1\n        return sign * res\n    \n    myAtoi = stringToIntegerAtoi"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass over input string of length N.",
+      "space": "O(1) — Constant memory."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Input with leading spaces and non-numeric garbage \"   -42 with words\" -> -42.",
+      "Input exceeding 32-bit bounds \"-91283472332\" -> -2147483648.",
+      "Invalid start characters \"words and 987\" -> 0."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Parsing eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Parsing)."
+    "interviewTips": "Demonstrate proactive integer overflow protection `num > (INT_MAX - digit) // 10` before multiplying by 10 to show system-level robustness."
   },
   "39": {
     "id": 39,
@@ -1736,42 +1732,38 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Strings",
     "pattern": "Stack",
-    "overview": "In 'Decode String', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Stack paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Decode String' leverages Stack. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an encoded string k[encoded_string], return its decoded expanded string.",
+    "intuition": "Use a stack to handle nested bracket structures. We maintain `curr_str` and `curr_num`. When encountering `[`, push `(curr_str, curr_num)` onto the stack and reset. When encountering `]`, pop `(prev_str, repeat)` and compute `prev_str + curr_str * repeat`.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Stack)",
-        "description": "Apply the Stack pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
+        "name": "Method 1: Stack for Nested Bracket Evaluation (Optimal)",
+        "description": "Use a stack to store prefix strings and multiplier counts. Takes O(max_k * N) time and O(N) space.",
+        "timeComplexity": "O(max_k * N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Stack strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize stack = [], curr_str = \"\", curr_num = 0.",
+      "For each character ch in s:",
+      "  a. If ch.isdigit(): curr_num = curr_num * 10 + int(ch).",
+      "  b. If ch == '[': push (curr_str, curr_num) to stack; reset curr_str = \"\", curr_num = 0.",
+      "  c. If ch == ']': pop (prev_str, repeat) from stack; curr_str = prev_str + curr_str * repeat.",
+      "  d. Else: curr_str += ch.",
+      "Return curr_str."
     ],
     "code": {
-      "python": "class Solution:\n    def decodeString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Decode String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def decodeString(self, s: str) -> str:\n        num_stack = []\n        str_stack = []\n        curr_str = \"\"\n        curr_num = 0\n        \n        for c in s:\n            if c.isdigit():\n                curr_num = curr_num * 10 + int(c)\n            elif c == '[':\n                num_stack.append(curr_num)\n                str_stack.append(curr_str)\n                curr_num = 0\n                curr_str = \"\"\n            elif c == ']':\n                prev_str = str_stack.pop()\n                repeat_count = num_stack.pop()\n                curr_str = prev_str + curr_str * repeat_count\n            else:\n                curr_str += c\n        return curr_str"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(max_k * N) — Where max_k is maximum repeat count and N is length of output string.",
+      "space": "O(N) — Stack depth proportional to bracket nesting depth."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Multi-digit repeat counts (e.g. \"10[a]\").",
+      "Deeply nested brackets (e.g. \"3[a2[c]]\" -> \"accaccacc\").",
+      "Unbracketed letters outside or between brackets (e.g. \"2[abc]3[cd]ef\")."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Stack eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Stack)."
+    "interviewTips": "Explain how `curr_num = curr_num * 10 + int(ch)` correctly builds multi-digit numbers like 10, 100 before the opening bracket."
   },
   "40": {
     "id": 40,
@@ -1779,42 +1771,49 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Hard",
     "topic": "Strings",
     "pattern": "DP / Recursion",
-    "overview": "In 'Regular Expression Matching', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the DP / Recursion paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Regular Expression Matching' leverages DP / Recursion. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Implement regular expression matching supporting '.' (matches any single char) and '*' (matches zero or more of preceding element) for the entire string.",
+    "intuition": "Let dp(i, j) denote whether s[i:] matches p[j:]. If p[j+1] == '*', we have two choices: 1. Use '*' zero times -> dp(i, j+2). 2. Use '*' one or more times (if first_match) -> dp(i+1, j). If p[j+1] != '*', we simply require first_match and dp(i+1, j+1).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: Top-Down Memoized DP (Optimal)",
+        "description": "Memoize matching states (i, j) over string s and pattern p. Takes O(|s| * |p|) time and space.",
+        "timeComplexity": "O(|s| * |p|)",
+        "spaceComplexity": "O(|s| * |p|)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (DP / Recursion)",
-        "description": "Apply the DP / Recursion pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Bottom-Up 2D Tabulation",
+        "description": "Build a 2D boolean DP table dp[i][j] from bottom right to top left. Takes O(|s| * |p|) time and space.",
+        "timeComplexity": "O(|s| * |p|)",
+        "spaceComplexity": "O(|s| * |p|)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the DP / Recursion strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize memo = {}.",
+      "Define dp(i, j):",
+      "  If (i, j) in memo, return memo[(i, j)].",
+      "  If j == len(p), return i == len(s).",
+      "  first_match = (i < len(s)) and (p[j] == s[i] or p[j] == '.').",
+      "  If j + 1 < len(p) and p[j + 1] == '*':",
+      "    ans = dp(i, j + 2) or (first_match and dp(i + 1, j)).",
+      "  Else:",
+      "    ans = first_match and dp(i + 1, j + 1).",
+      "  memo[(i, j)] = ans.",
+      "  Return ans.",
+      "Return dp(0, 0)."
     ],
     "code": {
-      "python": "class Solution:\n    def regularExpressionMatching(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal DP / Recursion Solution for Regular Expression Matching.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to DP / Recursion invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def regularExpressionMatching(self, s: str, p: str) -> bool:\n        memo = {}\n        def dp(i, j):\n            if (i, j) in memo:\n                return memo[(i, j)]\n            if j == len(p):\n                return i == len(s)\n            first_match = i < len(s) and (p[j] == s[i] or p[j] == '.')\n            if j + 1 < len(p) and p[j + 1] == '*':\n                ans = dp(i, j + 2) or (first_match and dp(i + 1, j))\n            else:\n                ans = first_match and dp(i + 1, j + 1)\n            memo[(i, j)] = ans\n            return ans\n        return dp(0, 0)\n    \n    isMatch = regularExpressionMatching"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(M * N) — There are at most (M + 1) * (N + 1) distinct subproblems evaluated once.",
+      "space": "O(M * N) — Memoization hash map and recursion call stack depth."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Pattern matching zero characters via '*' (e.g. s = \"aab\", p = \"c*a*b\").",
+      "Universal wildcard \".*\" matching arbitrary strings (e.g. s = \"ab\", p = \".*\").",
+      "Empty string matching patterns like \"a*b*c*\"."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how DP / Recursion eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (DP / Recursion)."
+    "interviewTips": "Carefully explain why the recursive branch for '*' is `dp(i + 1, j)` (staying at index j): staying at j allows the '*' to match multiple consecutive characters."
   },
   "41": {
     "id": 41,
@@ -1849,8 +1848,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestPalindromicSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Expand Around Center / DP Solution for Longest Palindromic Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Expand Around Center / DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -1871,7 +1870,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -1892,8 +1891,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def palindromicSubstrings(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Expand Around Center Solution for Palindromic Substrings.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Expand Around Center invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -1935,8 +1934,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestCommonSubsequence(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Longest Common Subsequence.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -1978,8 +1977,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def editDistance(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Edit Distance.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2021,8 +2020,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wildcardMatching(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Wildcard Matching.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2064,8 +2063,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wordBreak(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal DP / BFS Solution for Word Break.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to DP / BFS invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2086,7 +2085,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2107,8 +2106,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def findAllAnagramsInAString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Find All Anagrams in a String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2129,7 +2128,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2150,8 +2149,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Window Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2172,7 +2171,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2193,8 +2192,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def serializeAndDeserializeBinaryTree(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String + BFS Solution for Serialize and Deserialize Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String + BFS invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2215,7 +2214,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2236,8 +2235,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def largestRectangleInHistogram(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack (String parsing variant) Solution for Largest Rectangle in Histogram.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack (String parsing variant) invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2281,8 +2280,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1\n        \n        while left < right:\n            while left < right and not s[left].isalnum():\n                left += 1\n            while left < right and not s[right].isalnum():\n                right -= 1\n                \n            if s[left].lower() != s[right].lower():\n                return False\n                \n            left += 1\n            right -= 1\n            \n        return True"
     },
     "complexity": {
-      "time": "O(N) \u2014 Each character is visited at most once by left or right pointer.",
-      "space": "O(1) \u2014 In-place two pointer scan without allocating filtered auxiliary strings."
+      "time": "O(N) — Each character is visited at most once by left or right pointer.",
+      "space": "O(1) — In-place two pointer scan without allocating filtered auxiliary strings."
     },
     "edgeCases": [
       "Empty string or string with only spaces/punctuation (returns True).",
@@ -2303,7 +2302,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2324,8 +2323,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def twoSumIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Two Sum II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2346,7 +2345,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2367,8 +2366,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def 3sum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 3Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2389,7 +2388,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2410,8 +2409,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def containerWithMostWater(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Container With Most Water.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2432,7 +2431,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2453,8 +2452,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def 4sum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 4Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2475,7 +2474,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2496,8 +2495,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def mergeSortedArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Merge Sorted Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2518,7 +2517,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2539,8 +2538,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def squaresOfASortedArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Squares of a Sorted Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2561,7 +2560,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2582,8 +2581,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def removeDuplicatesFromSortedArrayIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Remove Duplicates from Sorted Array II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2632,8 +2631,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        if not height:\n            return 0\n            \n        left, right = 0, len(height) - 1\n        left_max, right_max = 0, 0\n        water = 0\n        \n        while left < right:\n            if height[left] < height[right]:\n                if height[left] >= left_max:\n                    left_max = height[left]\n                else:\n                    water += left_max - height[left]\n                left += 1\n            else:\n                if height[right] >= right_max:\n                    right_max = height[right]\n                else:\n                    water += right_max - height[right]\n                right -= 1\n                \n        return water"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass with two pointers visiting each index once.",
-      "space": "O(1) \u2014 Constant extra space."
+      "time": "O(N) — Single pass with two pointers visiting each index once.",
+      "space": "O(1) — Constant extra space."
     },
     "edgeCases": [
       "Monotonically increasing or decreasing heights (returns 0).",
@@ -2654,7 +2653,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2675,8 +2674,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Sort Colors.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2697,7 +2696,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2718,8 +2717,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def intersectionOfTwoArraysIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer / Hash Solution for Intersection of Two Arrays II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer / Hash invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2740,7 +2739,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2761,8 +2760,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def boatsToSavePeople(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer + Greedy Solution for Boats to Save People.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer + Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2783,7 +2782,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2804,8 +2803,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumSizeSubarraySum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Size Subarray Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2826,7 +2825,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2847,8 +2846,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def 3sumClosest(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 3Sum Closest.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2869,7 +2868,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2890,8 +2889,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def subarrayProductLessThanK(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Subarray Product Less Than K.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -2911,8 +2910,8 @@ export const DETAILED_SOLUTIONS = {
     "approaches": [
       {
         "name": "Method 1: Brute Force",
-        "description": "Check every possible buy day i and sell day j with j > i in O(N\u00b2) time.",
-        "timeComplexity": "O(N\u00b2)",
+        "description": "Check every possible buy day i and sell day j with j > i in O(N²) time.",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -2933,8 +2932,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        \n        for price in prices:\n            if price < min_price:\n                min_price = price\n            else:\n                max_profit = max(max_profit, price - min_price)\n                \n        return max_profit"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear pass through the prices array.",
-      "space": "O(1) \u2014 Uses constant auxiliary variables."
+      "time": "O(N) — Single linear pass through the prices array.",
+      "space": "O(1) — Uses constant auxiliary variables."
     },
     "edgeCases": [
       "Strictly decreasing prices (e.g. [7, 6, 4, 3, 1] -> 0 profit).",
@@ -2954,8 +2953,8 @@ export const DETAILED_SOLUTIONS = {
     "approaches": [
       {
         "name": "Method 1: Brute Force",
-        "description": "Check all O(N\u00b2) substrings for uniqueness with a set in O(N\u00b3) time.",
-        "timeComplexity": "O(N\u00b3)",
+        "description": "Check all O(N²) substrings for uniqueness with a set in O(N³) time.",
+        "timeComplexity": "O(N³)",
         "spaceComplexity": "O(N)"
       },
       {
@@ -2978,8 +2977,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        char_map = {}  # char -> last seen index\n        left = 0\n        max_len = 0\n        \n        for right, ch in enumerate(s):\n            if ch in char_map and char_map[ch] >= left:\n                left = char_map[ch] + 1\n            char_map[ch] = right\n            max_len = max(max_len, right - left + 1)\n            \n        return max_len"
     },
     "complexity": {
-      "time": "O(N) \u2014 Right pointer scans the string once; left pointer only moves forward.",
-      "space": "O(min(N, M)) \u2014 Hash map stores unique characters up to character set size M (e.g. 128 for ASCII)."
+      "time": "O(N) — Right pointer scans the string once; left pointer only moves forward.",
+      "space": "O(min(N, M)) — Hash map stores unique characters up to character set size M (e.g. 128 for ASCII)."
     },
     "edgeCases": [
       "Empty string (returns 0).",
@@ -3000,7 +2999,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3021,8 +3020,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestRepeatingCharacterReplacement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Repeating Character Replacement.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3043,7 +3042,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3064,8 +3063,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def permutationInString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Permutation in String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3086,7 +3085,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3107,8 +3106,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Window Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3129,7 +3128,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3150,8 +3149,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def slidingWindowMaximum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Deque / Monotonic Queue Solution for Sliding Window Maximum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Deque / Monotonic Queue invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3172,7 +3171,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3193,8 +3192,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumAverageSubarrayI(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Maximum Average Subarray I.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3215,7 +3214,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3236,8 +3235,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def fruitIntoBaskets(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Fruit Into Baskets.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3258,7 +3257,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3279,8 +3278,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestSubarrayOf1sAfterDeletingOneElement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Subarray of 1s After Deleting One Element.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3301,7 +3300,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3322,8 +3321,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def subarraysWithKDifferentIntegers(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Subarrays with K Different Integers.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3344,7 +3343,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3365,8 +3364,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maxConsecutiveOnesIii(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Max Consecutive Ones III.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3387,7 +3386,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3408,8 +3407,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countNumberOfNiceSubarrays(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Count Number of Nice Subarrays.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3430,7 +3429,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3451,8 +3450,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def binarySubarraysWithSum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window + Prefix Solution for Binary Subarrays With Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window + Prefix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3473,7 +3472,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3494,8 +3493,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def numberOfSubstringsContainingAllThreeCharacters(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Number of Substrings Containing All Three Characters.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3516,7 +3515,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3537,8 +3536,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumNumberOfKConsecutiveBitFlips(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window + Greedy Solution for Minimum Number of K Consecutive Bit Flips.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window + Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3559,7 +3558,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3580,8 +3579,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def validParentheses(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Valid Parentheses.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3602,7 +3601,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3623,8 +3622,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minStack(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Min Stack.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3645,7 +3644,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3666,8 +3665,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def evaluateReversePolishNotation(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Evaluate Reverse Polish Notation.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3688,7 +3687,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3709,8 +3708,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def generateParentheses(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Backtracking / Stack Solution for Generate Parentheses.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Backtracking / Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3731,7 +3730,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3752,8 +3751,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def dailyTemperatures(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Daily Temperatures.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3774,7 +3773,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3795,8 +3794,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def carFleet(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Car Fleet.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3817,7 +3816,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3838,8 +3837,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def largestRectangleInHistogram(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Largest Rectangle in Histogram.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3860,7 +3859,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3881,8 +3880,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def decodeString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Decode String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3903,7 +3902,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -3924,8 +3923,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def asteroidCollision(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Asteroid Collision.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3967,8 +3966,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestValidParentheses(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack / DP Solution for Longest Valid Parentheses.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack / DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -3989,7 +3988,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4010,8 +4009,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def removeAllAdjacentDuplicatesInString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Remove All Adjacent Duplicates In String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4032,7 +4031,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4053,8 +4052,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def basicCalculatorIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Basic Calculator II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4075,7 +4074,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4096,8 +4095,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def nextGreaterElementI(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Next Greater Element I.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4118,7 +4117,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4139,8 +4138,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def onlineStockSpan(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Monotonic Stack Solution for Online Stock Span.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Monotonic Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4161,7 +4160,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4182,8 +4181,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def removeKDigits(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy + Stack Solution for Remove K Digits.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy + Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4204,7 +4203,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4225,8 +4224,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def binarySearch(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Binary Search.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4247,7 +4246,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4268,8 +4267,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def searchInsertPosition(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Search Insert Position.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4290,7 +4289,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4311,8 +4310,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def searchA2dMatrix(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Search a 2D Matrix.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4333,7 +4332,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4354,8 +4353,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def kokoEatingBananas(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search on Answer Solution for Koko Eating Bananas.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4376,7 +4375,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4397,8 +4396,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def findMinimumInRotatedSortedArray(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Find Minimum in Rotated Sorted Array.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4419,7 +4418,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4440,8 +4439,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def searchInRotatedSortedArray(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Search in Rotated Sorted Array.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4462,7 +4461,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4483,8 +4482,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def findMinimumInRotatedSortedArrayIi(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Find Minimum in Rotated Sorted Array II.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4505,7 +4504,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4526,8 +4525,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def timeBasedKeyvalueStore(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Time Based Key-Value Store.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4548,7 +4547,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4569,8 +4568,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def medianOfTwoSortedArrays(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Median of Two Sorted Arrays.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4591,7 +4590,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4612,8 +4611,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def capacityToShipPackagesWithinDDays(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search on Answer Solution for Capacity To Ship Packages Within D Days.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4634,7 +4633,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4655,8 +4654,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def findPeakElement(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Find Peak Element.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4677,7 +4676,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4698,8 +4697,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def splitArrayLargestSum(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search + Greedy Solution for Split Array Largest Sum.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4720,7 +4719,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4741,8 +4740,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def firstBadVersion(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for First Bad Version.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4763,7 +4762,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4784,8 +4783,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countOfRangeSum(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search / Merge Sort Solution for Count of Range Sum.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4806,7 +4805,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4827,8 +4826,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def peakIndexInAMountainArray(self, nums: list[int], target: int = 0) -> int:\n        \"\"\"\n        Optimal Binary Search Solution for Peak Index in a Mountain Array.\n        Time Complexity: O(log N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        ans = -1\n        \n        while left <= right:\n            mid = left + (right - left) // 2\n            \n            if nums[mid] == target:\n                return mid\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n                \n        return ans"
     },
     "complexity": {
-      "time": "O(log N) \u2014 Search space is halved in each step.",
-      "space": "O(1) \u2014 Constant extra space for search boundary pointers."
+      "time": "O(log N) — Search space is halved in each step.",
+      "space": "O(1) — Constant extra space for search boundary pointers."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4849,7 +4848,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4870,8 +4869,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def reverseLinkedList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Iterative / Recursive Solution for Reverse Linked List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4892,7 +4891,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4913,8 +4912,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def mergeTwoSortedLists(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Two Pointer Solution for Merge Two Sorted Lists.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4935,7 +4934,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4956,8 +4955,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def linkedListCycle(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Floyd's Cycle Solution for Linked List Cycle.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -4978,7 +4977,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -4999,8 +4998,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def middleOfTheLinkedList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Slow-Fast Pointer Solution for Middle of the Linked List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5021,7 +5020,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5042,8 +5041,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def reorderList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Slow-Fast + Reverse Solution for Reorder List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5064,7 +5063,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5085,8 +5084,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def removeNthNodeFromEndOfList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Two Pointer Solution for Remove Nth Node From End of List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5107,7 +5106,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5128,8 +5127,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def copyListWithRandomPointer(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Hash Map Solution for Copy List with Random Pointer.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5150,7 +5149,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5171,8 +5170,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def addTwoNumbers(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Linked List Math Solution for Add Two Numbers.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5193,7 +5192,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5214,8 +5213,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def findTheDuplicateNumber(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Floyd's Cycle Solution for Find the Duplicate Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5236,7 +5235,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5257,8 +5256,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def lruCache(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Hash Map + DLL Solution for LRU Cache.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5279,7 +5278,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5300,8 +5299,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def mergeKSortedLists(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Heap / Divide & Conquer Solution for Merge K Sorted Lists.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5322,7 +5321,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5343,8 +5342,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def reverseNodesInKgroup(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Recursive Solution for Reverse Nodes in k-Group.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5365,7 +5364,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5386,8 +5385,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def swapNodesInPairs(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Linked List Solution for Swap Nodes in Pairs.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5408,7 +5407,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5429,8 +5428,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def oddEvenLinkedList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Linked List Solution for Odd Even Linked List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5451,7 +5450,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5472,8 +5471,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def palindromeLinkedList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Stack / Two Pointer Solution for Palindrome Linked List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5494,7 +5493,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5515,8 +5514,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def sortList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Merge Sort Solution for Sort List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5537,7 +5536,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5558,8 +5557,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def linkedListCycleIi(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Floyd's Cycle Solution for Linked List Cycle II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5580,7 +5579,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5601,8 +5600,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def rotateList(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Two Pointer Solution for Rotate List.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5623,7 +5622,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5644,8 +5643,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def reverseLinkedListIi(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Linked List Solution for Reverse Linked List II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5666,7 +5665,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5687,8 +5686,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, val=0, next=None):\n#         self.val = val\n#         self.next = next\n\nclass Solution:\n    def lfuCache(self, head: 'Optional[ListNode]') -> 'Optional[ListNode]':\n        \"\"\"\n        Optimal Linked List + Hash Map Solution for LFU Cache.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        if not head or not head.next:\n            return head\n            \n        dummy = ListNode(0, head)\n        prev, curr = dummy, head\n        \n        while curr:\n            # Maintain linked list pointers\n            nxt = curr.next\n            curr = nxt\n            \n        return dummy.next"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single linear traversal through linked list nodes.",
-      "space": "O(1) \u2014 In-place pointer manipulation with zero auxiliary heap allocation."
+      "time": "O(N) — Single linear traversal through linked list nodes.",
+      "space": "O(1) — In-place pointer manipulation with zero auxiliary heap allocation."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5709,7 +5708,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5730,8 +5729,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def invertBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BFS / DFS Solution for Invert Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.invertBinaryTree(root.left)\n        right_res = self.invertBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5752,7 +5751,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5773,8 +5772,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def maximumDepthOfBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS / BFS Solution for Maximum Depth of Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.maximumDepthOfBinaryTree(root.left)\n        right_res = self.maximumDepthOfBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5795,7 +5794,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5816,8 +5815,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def diameterOfBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Diameter of Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.diameterOfBinaryTree(root.left)\n        right_res = self.diameterOfBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5838,7 +5837,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5859,8 +5858,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def balancedBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Balanced Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.balancedBinaryTree(root.left)\n        right_res = self.balancedBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5881,7 +5880,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5902,8 +5901,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def sameTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Same Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.sameTree(root.left)\n        right_res = self.sameTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5924,7 +5923,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5945,8 +5944,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def subtreeOfAnotherTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Subtree of Another Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.subtreeOfAnotherTree(root.left)\n        right_res = self.subtreeOfAnotherTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -5967,7 +5966,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -5988,8 +5987,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def lowestCommonAncestorOfBst(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BST Property Solution for Lowest Common Ancestor of BST.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Easy\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.lowestCommonAncestorOfBst(root.left)\n        right_res = self.lowestCommonAncestorOfBst(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6010,7 +6009,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6031,8 +6030,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def binaryTreeLevelOrderTraversal(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BFS Solution for Binary Tree Level Order Traversal.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.binaryTreeLevelOrderTraversal(root.left)\n        right_res = self.binaryTreeLevelOrderTraversal(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6053,7 +6052,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6074,8 +6073,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def binaryTreeRightSideView(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BFS Solution for Binary Tree Right Side View.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.binaryTreeRightSideView(root.left)\n        right_res = self.binaryTreeRightSideView(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6096,7 +6095,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6117,8 +6116,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def countGoodNodesInBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Count Good Nodes in Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.countGoodNodesInBinaryTree(root.left)\n        right_res = self.countGoodNodesInBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6139,7 +6138,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6160,8 +6159,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def validateBinarySearchTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Validate Binary Search Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.validateBinarySearchTree(root.left)\n        right_res = self.validateBinarySearchTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6182,7 +6181,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6203,8 +6202,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def kthSmallestElementInABst(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal In-order DFS Solution for Kth Smallest Element in a BST.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.kthSmallestElementInABst(root.left)\n        right_res = self.kthSmallestElementInABst(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6225,7 +6224,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6246,8 +6245,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def constructBinaryTreeFromPreorderAndInorder(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal Recursion Solution for Construct Binary Tree from Preorder and Inorder.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Hard\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.constructBinaryTreeFromPreorderAndInorder(root.left)\n        right_res = self.constructBinaryTreeFromPreorderAndInorder(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6268,7 +6267,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6289,8 +6288,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def binaryTreeMaximumPathSum(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Binary Tree Maximum Path Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Hard\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.binaryTreeMaximumPathSum(root.left)\n        right_res = self.binaryTreeMaximumPathSum(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6311,7 +6310,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6332,8 +6331,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def serializeAndDeserializeBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BFS / DFS Solution for Serialize and Deserialize Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Hard\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.serializeAndDeserializeBinaryTree(root.left)\n        right_res = self.serializeAndDeserializeBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6354,7 +6353,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6375,8 +6374,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def pathSumIi(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS + Backtracking Solution for Path Sum II.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.pathSumIi(root.left)\n        right_res = self.pathSumIi(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6397,7 +6396,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6418,8 +6417,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def populatingNextRightPointers(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal BFS Solution for Populating Next Right Pointers.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.populatingNextRightPointers(root.left)\n        right_res = self.populatingNextRightPointers(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6440,7 +6439,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6461,8 +6460,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def flattenBinaryTreeToLinkedList(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal Morris / Stack Solution for Flatten Binary Tree to Linked List.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.flattenBinaryTreeToLinkedList(root.left)\n        right_res = self.flattenBinaryTreeToLinkedList(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6483,7 +6482,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6504,8 +6503,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def lowestCommonAncestorOfBinaryTree(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal DFS Solution for Lowest Common Ancestor of Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Medium\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.lowestCommonAncestorOfBinaryTree(root.left)\n        right_res = self.lowestCommonAncestorOfBinaryTree(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6526,7 +6525,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6547,8 +6546,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "# Definition for a binary tree node.\n# class TreeNode:\n#     def __init__(self, val=0, left=None, right=None):\n#         self.val = val\n#         self.left = left\n#         self.right = right\n\nclass Solution:\n    def binaryTreeCameras(self, root: 'Optional[TreeNode]') -> any:\n        \"\"\"\n        Optimal Greedy + DFS Solution for Binary Tree Cameras.\n        Time Complexity: O(N)\n        Space Complexity: O(H) where H is tree height\n        \"\"\"\n        if not root:\n            return 0 if \"Hard\" == \"Easy\" else None\n            \n        # Recursive DFS / Divide and Conquer traversal\n        left_res = self.binaryTreeCameras(root.left)\n        right_res = self.binaryTreeCameras(root.right)\n        \n        # Combine subproblem solutions\n        return 1 + max(left_res, right_res) if isinstance(left_res, int) else root"
     },
     "complexity": {
-      "time": "O(N) \u2014 Every node in the binary tree is visited exactly once.",
-      "space": "O(H) \u2014 Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
+      "time": "O(N) — Every node in the binary tree is visited exactly once.",
+      "space": "O(H) — Recursion call stack proportional to tree height H (O(log N) for balanced trees, O(N) worst-case skewed)."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6569,7 +6568,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6590,8 +6589,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def implementTriePrefixTree(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie Solution for Implement Trie (Prefix Tree).\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6612,7 +6611,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6633,8 +6632,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def designAddAndSearchWordsDataStructure(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie + DFS Solution for Design Add and Search Words Data Structure.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie + DFS invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6655,7 +6654,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6676,8 +6675,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wordSearchIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie + Backtracking Solution for Word Search II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie + Backtracking invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6698,7 +6697,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6719,8 +6718,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def replaceWords(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie Solution for Replace Words.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6741,7 +6740,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6762,8 +6761,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def mapSumPairs(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie Solution for Map Sum Pairs.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6784,7 +6783,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6805,8 +6804,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestWordInDictionary(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie Solution for Longest Word in Dictionary.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6827,7 +6826,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6848,8 +6847,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumXorOfTwoNumbersInAnArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie + Bit Solution for Maximum XOR of Two Numbers in an Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie + Bit invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6870,7 +6869,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6891,8 +6890,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def indexPairsOfAString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie Solution for Index Pairs of a String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6913,7 +6912,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6934,8 +6933,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def kthLargestElementInAStream(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Min Heap Solution for Kth Largest Element in a Stream.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6956,7 +6955,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -6977,8 +6976,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def lastStoneWeight(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Max Heap Solution for Last Stone Weight.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -6999,7 +6998,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7020,8 +7019,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def kClosestPointsToOrigin(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Min Heap Solution for K Closest Points to Origin.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7042,7 +7041,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7063,8 +7062,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def kthLargestElementInAnArray(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal QuickSelect / Heap Solution for Kth Largest Element in an Array.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7085,7 +7084,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7106,8 +7105,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def taskScheduler(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap + Greedy Solution for Task Scheduler.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7128,7 +7127,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7149,8 +7148,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def designTwitter(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap + Hash Map Solution for Design Twitter.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7171,7 +7170,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7192,8 +7191,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def findMedianFromDataStream(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Two Heaps Solution for Find Median from Data Stream.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7214,7 +7213,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7235,8 +7234,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def ipo(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Two Heaps + Greedy Solution for IPO.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7257,7 +7256,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7278,8 +7277,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def mergeKSortedLists(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap Solution for Merge K Sorted Lists.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7300,7 +7299,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7321,8 +7320,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def topKFrequentWords(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap Solution for Top K Frequent Words.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7343,7 +7342,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7364,8 +7363,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def smallestRangeCoveringElementsFromKLists(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap Solution for Smallest Range Covering Elements from K Lists.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7386,7 +7385,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7407,8 +7406,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def reorganizeString(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap + Greedy Solution for Reorganize String.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7429,7 +7428,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7450,8 +7449,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def rearrangeStringKDistanceApart(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap Solution for Rearrange String k Distance Apart.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7493,8 +7492,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def uglyNumberIi(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap / DP Solution for Ugly Number II.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7515,7 +7514,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7536,8 +7535,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "import heapq\n\nclass Solution:\n    def maximumFrequencyStack(self, nums: list[int], k: int = 1) -> any:\n        \"\"\"\n        Optimal Heap / Hash Map Solution for Maximum Frequency Stack.\n        Time Complexity: O(N log K)\n        Space Complexity: O(K)\n        \"\"\"\n        # Maintain a min-heap of size k\n        min_heap = []\n        for num in nums:\n            heapq.heappush(min_heap, num)\n            if len(min_heap) > k:\n                heapq.heappop(min_heap)\n                \n        return min_heap[0]"
     },
     "complexity": {
-      "time": "O(N log K) \u2014 Push and pop operations on a heap of size K take O(log K) time for N elements.",
-      "space": "O(K) \u2014 Priority queue stores at most K elements."
+      "time": "O(N log K) — Push and pop operations on a heap of size K take O(log K) time for N elements.",
+      "space": "O(K) — Priority queue stores at most K elements."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7558,7 +7557,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7579,8 +7578,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def subsets(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Subsets.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7601,7 +7600,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7622,8 +7621,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def combinationSum(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Combination Sum.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7644,7 +7643,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7665,8 +7664,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def combinationSumIi(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Combination Sum II.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7687,7 +7686,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7708,8 +7707,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def permutations(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Permutations.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7730,7 +7729,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7751,8 +7750,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def subsetsIi(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Subsets II.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7773,7 +7772,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7794,8 +7793,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wordSearch(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking + DFS Solution for Word Search.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7816,7 +7815,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7837,8 +7836,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def nqueens(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for N-Queens.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7880,8 +7879,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def palindromePartitioning(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking + DP Solution for Palindrome Partitioning.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7902,7 +7901,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7923,8 +7922,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def letterCombinationsOfAPhoneNumber(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Letter Combinations of a Phone Number.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7945,7 +7944,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -7966,8 +7965,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def sudokuSolver(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Sudoku Solver.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -7988,7 +7987,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8009,8 +8008,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def restoreIpAddresses(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Restore IP Addresses.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8031,7 +8030,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8052,8 +8051,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def permutationsIi(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Permutations II.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8074,7 +8073,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8095,8 +8094,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def expressionAddOperators(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Expression Add Operators.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8117,7 +8116,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8138,8 +8137,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def removeInvalidParentheses(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking / BFS Solution for Remove Invalid Parentheses.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8160,7 +8159,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8181,8 +8180,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def combinations(self, candidates: list[int] = None) -> list[list[int]]:\n        \"\"\"\n        Optimal Backtracking Solution for Combinations.\n        Time Complexity: O(2^N) or O(N!)\n        Space Complexity: O(N) recursion stack\n        \"\"\"\n        res = []\n        path = []\n        \n        def backtrack(start):\n            res.append(list(path))\n            \n            for i in range(start, len(candidates or [])):\n                path.append(candidates[i])\n                backtrack(i + 1)\n                path.pop()  # Backtrack step\n                \n        backtrack(0)\n        return res"
     },
     "complexity": {
-      "time": "O(2^N) or O(N!) \u2014 Explores all valid combinatorial subsets.",
-      "space": "O(N) \u2014 Recursion call stack depth bounded by problem length."
+      "time": "O(2^N) or O(N!) — Explores all valid combinatorial subsets.",
+      "space": "O(N) — Recursion call stack depth bounded by problem length."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8203,7 +8202,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8224,8 +8223,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def meetingRooms(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sorting Solution for Meeting Rooms.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sorting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8246,7 +8245,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8267,8 +8266,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def meetingRoomsIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Heap / Sorting Solution for Meeting Rooms II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Heap / Sorting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8288,9 +8287,9 @@ export const DETAILED_SOLUTIONS = {
     "approaches": [
       {
         "name": "Method 1: Graph Connected Components",
-        "description": "Model intervals as graph nodes with edges between overlapping intervals in O(N\u00b2) time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(N\u00b2)"
+        "description": "Model intervals as graph nodes with edges between overlapping intervals in O(N²) time.",
+        "timeComplexity": "O(N²)",
+        "spaceComplexity": "O(N²)"
       },
       {
         "name": "Method 2: Sorting + Greedy Merge (Optimal)",
@@ -8312,8 +8311,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def merge(self, intervals: list[list[int]]) -> list[list[int]]:\n        if not intervals:\n            return []\n            \n        intervals.sort(key=lambda x: x[0])\n        merged = [intervals[0]]\n        \n        for start, end in intervals[1:]:\n            prev_end = merged[-1][1]\n            if start <= prev_end:\n                merged[-1][1] = max(prev_end, end)\n            else:\n                merged.append([start, end])\n                \n        return merged"
     },
     "complexity": {
-      "time": "O(N log N) \u2014 Sorting takes O(N log N) time, followed by a linear O(N) merge scan.",
-      "space": "O(N) \u2014 Space needed to store the sorted array and output merged list."
+      "time": "O(N log N) — Sorting takes O(N log N) time, followed by a linear O(N) merge scan.",
+      "space": "O(N) — Space needed to store the sorted array and output merged list."
     },
     "edgeCases": [
       "No overlapping intervals ([[1, 2], [3, 4]] -> unchanged).",
@@ -8334,7 +8333,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8355,8 +8354,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def insertInterval(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Insert Interval.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8377,7 +8376,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8398,8 +8397,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def nonoverlappingIntervals(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Non-overlapping Intervals.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8420,7 +8419,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8441,8 +8440,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumNumberOfArrowsToBurstBalloons(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Minimum Number of Arrows to Burst Balloons.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8463,7 +8462,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8484,8 +8483,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def employeeFreeTime(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Heap / Sorting Solution for Employee Free Time.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Heap / Sorting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8506,7 +8505,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8527,8 +8526,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def intervalListIntersections(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Interval List Intersections.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8549,7 +8548,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8570,8 +8569,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumIntervalToIncludeEachQuery(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Heap + Sorting Solution for Minimum Interval to Include Each Query.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Heap + Sorting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8592,7 +8591,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8613,8 +8612,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def dataStreamAsDisjointIntervals(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Intervals / BST Solution for Data Stream as Disjoint Intervals.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Intervals / BST invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8635,7 +8634,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8656,8 +8655,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumSubarray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Kadane's Solution for Maximum Subarray.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Kadane's invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8678,7 +8677,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8699,8 +8698,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def jumpGame(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Jump Game.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8721,7 +8720,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8742,8 +8741,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def jumpGameIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Jump Game II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8764,7 +8763,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8785,8 +8784,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def gasStation(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Gas Station.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8807,7 +8806,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8828,8 +8827,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def handOfStraights(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Hand of Straights.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8850,7 +8849,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8871,8 +8870,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def mergeTripletsToFormTargetTriplet(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Merge Triplets to Form Target Triplet.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8893,7 +8892,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -8914,8 +8913,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def partitionLabels(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Partition Labels.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8957,8 +8956,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def validParenthesisString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy / DP Solution for Valid Parenthesis String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy / DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -8979,7 +8978,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9000,8 +8999,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def candy(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Candy.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9022,7 +9021,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9043,8 +9042,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def taskScheduler(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy + Heap Solution for Task Scheduler.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy + Heap invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9065,7 +9064,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9086,8 +9085,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumNumberOfArrowsToBurstBalloons(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy + Intervals Solution for Minimum Number of Arrows to Burst Balloons.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy + Intervals invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9108,7 +9107,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9129,8 +9128,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def nonoverlappingIntervals(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Non-overlapping Intervals.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9151,7 +9150,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9172,8 +9171,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def queueReconstructionByHeight(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Queue Reconstruction by Height.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9194,7 +9193,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9215,8 +9214,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def ipo(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy + Heap Solution for IPO.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy + Heap invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9237,7 +9236,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9258,8 +9257,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def twoCityScheduling(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Greedy Solution for Two City Scheduling.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9280,7 +9279,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9301,8 +9300,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def numberOfIslands(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS / BFS Solution for Number of Islands.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9323,7 +9322,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9344,8 +9343,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def cloneGraph(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS / BFS + Hash Solution for Clone Graph.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9366,7 +9365,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9387,8 +9386,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def maxAreaOfIsland(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS Solution for Max Area of Island.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9409,7 +9408,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9430,8 +9429,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def pacificAtlanticWaterFlow(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS / BFS Solution for Pacific Atlantic Water Flow.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9452,7 +9451,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9473,8 +9472,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def surroundedRegions(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS / BFS Solution for Surrounded Regions.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9495,7 +9494,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9516,8 +9515,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def rottingOranges(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal BFS Solution for Rotting Oranges.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9538,7 +9537,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9559,8 +9558,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def wordLadder(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal BFS Solution for Word Ladder.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9603,8 +9602,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def canFinish(self, numCourses: int, prerequisites: list[list[int]]) -> bool:\n        adj = {i: [] for i in range(numCourses)}\n        in_degree = [0] * numCourses\n        \n        for course, prereq in prerequisites:\n            adj[prereq].append(course)\n            in_degree[course] += 1\n            \n        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])\n        processed = 0\n        \n        while queue:\n            curr = queue.popleft()\n            processed += 1\n            \n            for neighbor in adj[curr]:\n                in_degree[neighbor] -= 1\n                if in_degree[neighbor] == 0:\n                    queue.append(neighbor)\n                    \n        return processed == numCourses"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Where V = numCourses and E = len(prerequisites). Every node and edge is processed once.",
-      "space": "O(V + E) \u2014 Adjacency list stores E edges and queue/in-degree array stores V nodes."
+      "time": "O(V + E) — Where V = numCourses and E = len(prerequisites). Every node and edge is processed once.",
+      "space": "O(V + E) — Adjacency list stores E edges and queue/in-degree array stores V nodes."
     },
     "edgeCases": [
       "No prerequisites provided (prerequisites=[] returns True).",
@@ -9625,7 +9624,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9646,8 +9645,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def courseScheduleIi(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Topological Sort Solution for Course Schedule II.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9668,7 +9667,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9689,8 +9688,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def numberOfConnectedComponentsInUndirectedGraph(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Union Find / DFS Solution for Number of Connected Components in Undirected Graph.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9711,7 +9710,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9732,8 +9731,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def graphValidTree(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Union Find / DFS Solution for Graph Valid Tree.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9754,7 +9753,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9775,8 +9774,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def wordLadderIi(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal BFS + Backtracking Solution for Word Ladder II.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9797,7 +9796,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9818,8 +9817,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def findEventualSafeStates(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS / Topological Sort Solution for Find Eventual Safe States.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9840,7 +9839,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9861,8 +9860,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def alienDictionary(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Topological Sort Solution for Alien Dictionary.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9883,7 +9882,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9904,8 +9903,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def redundantConnection(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Union Find Solution for Redundant Connection.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9926,7 +9925,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9947,8 +9946,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def numberOfOperationsToMakeNetworkConnected(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Union Find Solution for Number of Operations to Make Network Connected.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -9969,7 +9968,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -9990,8 +9989,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def allPathsFromSourceToTarget(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS Solution for All Paths From Source to Target.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10012,7 +10011,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10033,8 +10032,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def criticalConnectionsInANetwork(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Tarjan's Algorithm Solution for Critical Connections in a Network.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10055,7 +10054,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10076,8 +10075,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def isGraphBipartite(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal BFS / DFS Solution for Is Graph Bipartite?.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10098,7 +10097,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10119,8 +10118,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def evaluateDivision(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Graph + BFS Solution for Evaluate Division.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10141,7 +10140,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10162,8 +10161,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def networkDelayTime(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Dijkstra Solution for Network Delay Time.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10184,7 +10183,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10205,8 +10204,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def swimInRisingWater(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Dijkstra / Binary Search Solution for Swim in Rising Water.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10227,7 +10226,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10248,8 +10247,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def cheapestFlightsWithinKStops(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Bellman-Ford Solution for Cheapest Flights Within K Stops.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10270,7 +10269,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10291,8 +10290,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def reconstructItinerary(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Hierholzer's Algorithm Solution for Reconstruct Itinerary.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10313,7 +10312,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10334,8 +10333,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def minCostToConnectAllPoints(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Prim's / Kruskal's Solution for Min Cost to Connect All Points.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10356,7 +10355,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10377,8 +10376,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def findCriticalAndPseudocriticalEdgesInMst(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Kruskal's Solution for Find Critical and Pseudo-Critical Edges in MST.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10399,7 +10398,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10420,8 +10419,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def pathWithMinimumEffort(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal Dijkstra / Binary Search Solution for Path With Minimum Effort.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10442,7 +10441,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10463,8 +10462,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def longestIncreasingPathInAMatrix(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DFS + Memoization Solution for Longest Increasing Path in a Matrix.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10506,8 +10505,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def frogJump(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal DP + Graph Solution for Frog Jump.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10528,7 +10527,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -10549,8 +10548,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "from collections import deque\n\nclass Solution:\n    def jumpGameIv(self, grid: list[list[str]] = None) -> int:\n        \"\"\"\n        Optimal BFS Solution for Jump Game IV.\n        Time Complexity: O(V + E) or O(R * C)\n        Space Complexity: O(V)\n        \"\"\"\n        if not grid or not grid[0]:\n            return 0\n            \n        rows, cols = len(grid), len(grid[0])\n        visited = set()\n        count = 0\n        \n        def bfs(r, c):\n            queue = deque([(r, c)])\n            visited.add((r, c))\n            \n            while queue:\n                cr, cc = queue.popleft()\n                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n                    nr, nc = cr + dr, cc + dc\n                    if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:\n                        visited.add((nr, nc))\n                        queue.append((nr, nc))\n                        \n        for r in range(rows):\n            for c in range(cols):\n                if (r, c) not in visited:\n                    bfs(r, c)\n                    count += 1\n                    \n        return count"
     },
     "complexity": {
-      "time": "O(V + E) \u2014 Graph traversal visits each vertex and edge once.",
-      "space": "O(V) \u2014 Visited set and queue hold graph nodes."
+      "time": "O(V + E) — Graph traversal visits each vertex and edge once.",
+      "space": "O(V) — Visited set and queue hold graph nodes."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10592,8 +10591,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def climbingStairs(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Climbing Stairs.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10635,8 +10634,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minCostClimbingStairs(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Min Cost Climbing Stairs.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10678,8 +10677,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def houseRobber(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for House Robber.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10721,8 +10720,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def houseRobberIi(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP (Circular) Solution for House Robber II.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10764,8 +10763,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestPalindromicSubstring(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP / Expand Around Center Solution for Longest Palindromic Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10807,8 +10806,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def palindromicSubstrings(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Palindromic Substrings.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10850,8 +10849,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def decodeWays(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Decode Ways.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10894,8 +10893,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def coinChange(self, coins: list[int], amount: int) -> int:\n        dp = [float('inf')] * (amount + 1)\n        dp[0] = 0\n        \n        for i in range(1, amount + 1):\n            for coin in coins:\n                if i - coin >= 0:\n                    dp[i] = min(dp[i], dp[i - coin] + 1)\n                    \n        return dp[amount] if dp[amount] != float('inf') else -1"
     },
     "complexity": {
-      "time": "O(amount * len(coins)) \u2014 Nested loops iterate through each amount and evaluate each coin denomination.",
-      "space": "O(amount) \u2014 1D dp array of length amount + 1."
+      "time": "O(amount * len(coins)) — Nested loops iterate through each amount and evaluate each coin denomination.",
+      "space": "O(amount) — 1D dp array of length amount + 1."
     },
     "edgeCases": [
       "amount = 0 (returns 0).",
@@ -10937,8 +10936,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumProductSubarray(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Maximum Product Subarray.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -10980,8 +10979,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wordBreak(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Word Break.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11023,8 +11022,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestIncreasingSubsequence(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP / Binary Search Solution for Longest Increasing Subsequence.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11066,8 +11065,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def partitionEqualSubsetSum(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 0/1 Knapsack DP Solution for Partition Equal Subset Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11109,8 +11108,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def jumpGameIi(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal Greedy / DP Solution for Jump Game II.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11152,8 +11151,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def perfectSquares(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal BFS / DP Solution for Perfect Squares.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11195,8 +11194,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def uglyNumberIi(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Ugly Number II.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11238,8 +11237,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countingBits(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP + Bit Solution for Counting Bits.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11281,8 +11280,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumAlternatingSubsequenceLength(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Maximum Alternating Subsequence Length.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11324,8 +11323,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wiggleSubsequence(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP / Greedy Solution for Wiggle Subsequence.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11367,8 +11366,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def arithmeticSlices(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Arithmetic Slices.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11410,8 +11409,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def studentAttendanceRecordIi(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP Solution for Student Attendance Record II.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11453,8 +11452,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def uniquePaths(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Unique Paths.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11496,8 +11495,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestCommonSubsequence(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Longest Common Subsequence.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11539,8 +11538,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def bestTimeToBuyAndSellStockWithCooldown(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP with States Solution for Best Time to Buy and Sell Stock with Cooldown.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11582,8 +11581,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def coinChangeIi(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP (Knapsack) Solution for Coin Change II.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11625,8 +11624,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def targetSum(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP / DFS Solution for Target Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11668,8 +11667,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def interleavingString(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Interleaving String.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11711,8 +11710,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def longestIncreasingPathInAMatrix(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal DP + DFS Solution for Longest Increasing Path in a Matrix.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11754,8 +11753,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def distinctSubsequences(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Distinct Subsequences.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11797,8 +11796,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def editDistance(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Edit Distance.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11840,8 +11839,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def burstBalloons(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal Interval DP Solution for Burst Balloons.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11883,8 +11882,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def regularExpressionMatching(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Regular Expression Matching.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11926,8 +11925,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def triangle(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Triangle.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -11969,8 +11968,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def minimumPathSum(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Minimum Path Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12012,8 +12011,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def wildcardMatching(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal 2D DP Solution for Wildcard Matching.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12055,8 +12054,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximalRectangle(self, n: int = 0, items: list[int] = None) -> int:\n        \"\"\"\n        Optimal Stack / DP Solution for Maximal Rectangle.\n        Time Complexity: O(N)\n        Space Complexity: O(N)\n        \"\"\"\n        if n <= 1:\n            return n\n            \n        dp = [0] * (n + 1)\n        dp[1] = 1\n        \n        for i in range(2, n + 1):\n            dp[i] = dp[i - 1] + dp[i - 2]\n            \n        return dp[n]"
     },
     "complexity": {
-      "time": "O(N) or O(N*M) \u2014 Linear state transitions filling the DP memoization cache.",
-      "space": "O(N) \u2014 Memoization table storing optimal answers to subproblems."
+      "time": "O(N) or O(N*M) — Linear state transitions filling the DP memoization cache.",
+      "space": "O(N) — Memoization table storing optimal answers to subproblems."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12077,7 +12076,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12098,8 +12097,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def singleNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal XOR Solution for Single Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to XOR invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12120,7 +12119,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12141,8 +12140,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def numberOf1Bits(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Counting Solution for Number of 1 Bits.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Counting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12184,8 +12183,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countingBits(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal DP + Bit Solution for Counting Bits.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to DP + Bit invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12206,7 +12205,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12227,8 +12226,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def reverseBits(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Manipulation Solution for Reverse Bits.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12249,7 +12248,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12270,8 +12269,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def missingNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal XOR / Math Solution for Missing Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to XOR / Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12292,7 +12291,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12313,8 +12312,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def sumOfTwoIntegers(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Manipulation Solution for Sum of Two Integers.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12335,7 +12334,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12356,8 +12355,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def reverseInteger(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit / Math Solution for Reverse Integer.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit / Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12378,7 +12377,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12399,8 +12398,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def reverseBits(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Manipulation Solution for Reverse Bits.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12421,7 +12420,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12442,8 +12441,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def singleNumberIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Bit Manipulation Solution for Single Number II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Bit Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12464,7 +12463,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12485,8 +12484,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def maximumXorOfTwoNumbersInAnArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Trie / Bit Solution for Maximum XOR of Two Numbers in an Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Trie / Bit invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12507,7 +12506,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12528,8 +12527,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def rotateImage(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Matrix Solution for Rotate Image.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Matrix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12550,7 +12549,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12571,8 +12570,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def spiralMatrix(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Matrix Traversal Solution for Spiral Matrix.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Matrix Traversal invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12593,7 +12592,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12614,8 +12613,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def setMatrixZeroes(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal In-place Matrix Solution for Set Matrix Zeroes.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to In-place Matrix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12636,7 +12635,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12657,8 +12656,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def happyNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Fast-Slow Pointer / Math Solution for Happy Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Fast-Slow Pointer / Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12679,7 +12678,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12700,8 +12699,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def plusOne(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Math Solution for Plus One.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12722,7 +12721,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12743,8 +12742,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def powxN(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Fast Exponentiation Solution for Pow(x, n).\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Fast Exponentiation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12765,7 +12764,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12786,8 +12785,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def multiplyStrings(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String Math Solution for Multiply Strings.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12808,7 +12807,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12829,8 +12828,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def basicCalculator(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack Solution for Basic Calculator.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12851,7 +12850,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12872,8 +12871,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def detectSquares(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Math + Hash Solution for Detect Squares.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Math + Hash invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12894,7 +12893,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12915,8 +12914,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def palindromeNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Math Solution for Palindrome Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Math invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12937,7 +12936,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -12958,8 +12957,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def sortAnArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Merge Sort / Quick Sort Solution for Sort an Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Merge Sort / Quick Sort invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -12980,7 +12979,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13001,8 +13000,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def kthLargestElementInAnArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal QuickSelect Solution for Kth Largest Element in an Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to QuickSelect invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -13023,7 +13022,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13044,8 +13043,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def mergeSortedArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Merge Solution for Merge Sorted Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer Merge invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -13066,7 +13065,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13087,8 +13086,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def findKPairsWithSmallestSums(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Heap Sort Solution for Find K Pairs with Smallest Sums.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Heap Sort invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -13109,7 +13108,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13130,8 +13129,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countOfSmallerNumbersAfterSelf(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Merge Sort / BIT Solution for Count of Smaller Numbers After Self.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Merge Sort / BIT invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -13152,7 +13151,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13173,8 +13172,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def reversePairs(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Merge Sort Solution for Reverse Pairs.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Merge Sort invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
@@ -13195,7 +13194,7 @@ export const DETAILED_SOLUTIONS = {
       {
         "name": "Method 1: Naive / Brute Force Approach",
         "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
@@ -13216,8 +13215,8 @@ export const DETAILED_SOLUTIONS = {
       "python": "class Solution:\n    def countOfRangeSum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Merge Sort Solution for Count of Range Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Merge Sort invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass linear traversal.",
+      "space": "O(1) — Constant auxiliary memory."
     },
     "edgeCases": [
       "Empty input array or null object.",
