@@ -521,42 +521,48 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Dutch National Flag",
-    "overview": "In 'Sort Colors', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Dutch National Flag paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Sort Colors' leverages Dutch National Flag. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array nums with n objects colored red (0), white (1), or blue (2), sort them in-place so that objects of the same color are adjacent, in the order red (0), white (1), and blue (2). We must solve this in a single pass using O(1) constant extra space.",
+    "intuition": "The Dutch National Flag algorithm (invented by Edsger W. Dijkstra) partitions an array into three regions: zeros on the left, ones in the middle, and twos on the right. By maintaining three pointers (low, mid, high), the region nums[0..low-1] holds 0s, nums[low..mid-1] holds 1s, and nums[high+1..n-1] holds 2s. As mid scans through the array, elements are swapped into their designated partitions in a single linear pass.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Two-Pass Counting Sort",
+        "description": "Count the frequencies of 0, 1, and 2 in a first pass, then overwrite the array with the counted numbers in a second pass. Takes O(N) time and O(1) space, but requires two passes.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Dutch National Flag)",
-        "description": "Apply the Dutch National Flag pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Dutch National Flag 3-Way Partitioning (Optimal)",
+        "description": "Maintain three pointers: low, mid, and high. Swap elements to place 0s at the front and 2s at the back in a single pass. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Dutch National Flag strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize three pointers: low = 0, mid = 0, high = len(nums) - 1.",
+      "While mid <= high:",
+      "  a. If nums[mid] == 0:",
+      "     i. Swap nums[low] and nums[mid].",
+      "     ii. Increment low += 1 and mid += 1 (since the swapped element from low is guaranteed to be 1).",
+      "  b. If nums[mid] == 1:",
+      "     i. Increment mid += 1.",
+      "  c. If nums[mid] == 2:",
+      "     i. Swap nums[mid] and nums[high].",
+      "     ii. Decrement high -= 1 (do NOT increment mid, as the incoming element from high has not yet been processed)."
     ],
     "code": {
-      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Dutch National Flag Solution for Sort Colors.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Dutch National Flag invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> None:\n        low = 0\n        mid = 0\n        high = len(nums) - 1\n        \n        while mid <= high:\n            if nums[mid] == 0:\n                nums[low], nums[mid] = nums[mid], nums[low]\n                low += 1\n                mid += 1\n            elif nums[mid] == 1:\n                mid += 1\n            else:\n                nums[mid], nums[high] = nums[high], nums[mid]\n                high -= 1"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass where each element is examined and swapped at most once.",
+      "space": "O(1) — In-place mutation with zero auxiliary memory allocated."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Already sorted array [0, 0, 1, 1, 2, 2].",
+      "Reverse sorted array [2, 2, 1, 1, 0, 0].",
+      "Array with only one distinct color (e.g. [2, 2, 2] or [0, 0]).",
+      "Single element array [0] or [1]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Dutch National Flag eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Dutch National Flag)."
+    "interviewTips": "Interviewers frequently ask why 'mid' is incremented when swapping with 'low', but NOT when swapping with 'high'. Explain that elements to the left of 'mid' are already inspected (guaranteed to be 1), whereas elements coming from 'high' are unexamined and must be checked on the next iteration."
   },
   "13": {
     "id": 13,
@@ -564,42 +570,46 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Prefix Sum",
-    "overview": "In 'Subarray Sum Equals K', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Prefix Sum paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Subarray Sum Equals K' leverages Prefix Sum. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array of integers nums and an integer k, return the total number of continuous subarrays whose sum equals to k.",
+    "intuition": "Let prefix[i] be the cumulative sum from index 0 to i. The sum of a contiguous subarray from index j+1 to i is prefix[i] - prefix[j]. Therefore, the subarray sum equals k if and only if prefix[i] - prefix[j] = k, or equivalently prefix[j] = prefix[i] - k. By storing the frequency of all seen prefix sums in a Hash Map, we can query in O(1) time how many earlier prefix sums satisfy this equation at each step.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Cumulative Sum Brute Force",
+        "description": "Evaluate all pairs (i, j) and calculate subarray sums. Takes O(N^2) time and O(1) space.",
+        "timeComplexity": "O(N²)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Prefix Sum)",
-        "description": "Apply the Prefix Sum pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Prefix Sum + Hash Map (Optimal)",
+        "description": "Maintain a running prefix sum and a hash map tracking prefix frequencies. Takes O(N) time and O(N) space.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Prefix Sum strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize prefix_map = {0: 1} to handle subarrays starting from index 0.",
+      "Initialize curr_sum = 0 and count = 0.",
+      "Iterate through each number 'x' in nums:",
+      "  a. curr_sum += x.",
+      "  b. Check if (curr_sum - k) is in prefix_map.",
+      "  c. If present, add prefix_map[curr_sum - k] to count.",
+      "  d. Update prefix_map[curr_sum] = prefix_map.get(curr_sum, 0) + 1.",
+      "Return count."
     ],
     "code": {
-      "python": "class Solution:\n    def subarraySumEqualsK(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Prefix Sum Solution for Subarray Sum Equals K.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Prefix Sum invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def subarraySumEqualsK(self, nums: list[int], k: int) -> int:\n        prefix_map = {0: 1}\n        curr_sum = 0\n        count = 0\n        \n        for x in nums:\n            curr_sum += x\n            target = curr_sum - k\n            if target in prefix_map:\n                count += prefix_map[target]\n            prefix_map[curr_sum] = prefix_map.get(curr_sum, 0) + 1\n            \n        return count"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single linear scan with O(1) hash map operations.",
+      "space": "O(N) — Hash map stores up to N distinct prefix sums."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array containing negative numbers and zeroes (e.g. [1, -1, 0, 1], k = 0).",
+      "Target k = 0 with multiple overlapping cancellations.",
+      "No valid subarray summing to k (returns 0).",
+      "Single element array matching k (e.g. [5], k = 5 returns 1)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Prefix Sum eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Prefix Sum)."
+    "interviewTips": "Always emphasize the base initialization `prefix_map = {0: 1}`. If `curr_sum == k`, `curr_sum - k == 0`, so the `{0: 1}` entry correctly captures valid subarrays that begin from the very first element `nums[0]`."
   },
   "14": {
     "id": 14,
@@ -607,42 +617,47 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Sliding Window+Hash",
-    "overview": "In 'Find All Anagrams in a String', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Sliding Window+Hash paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Find All Anagrams in a String' leverages Sliding Window+Hash. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given two strings s and p, return an array of all the start indices of p's anagrams in s. Strings consist only of lowercase English letters.",
+    "intuition": "An anagram is a permutation of characters with identical frequency counts. Since p has a fixed length np = len(p), every valid anagram in s must also span exactly np characters. We maintain a fixed-size sliding window of size np over s, keeping track of letter frequencies. As the window shifts, we add the new incoming character and remove the oldest outgoing character, comparing frequency vectors in O(26) = O(1) time.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Brute Force Sorting / Hashing",
+        "description": "Extract every substring of length len(p) in s, sort it, and compare with sorted p. Takes O(|s| * |p| log |p|) time.",
+        "timeComplexity": "O(|s| * |p| log |p|)",
+        "spaceComplexity": "O(|p|)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window+Hash)",
-        "description": "Apply the Sliding Window+Hash pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Fixed-Size Sliding Window (Optimal)",
+        "description": "Slide a window of size len(p) across s, updating character count arrays incrementally in O(1) per shift. Takes O(|s|) time and O(1) space.",
+        "timeComplexity": "O(|s|)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window+Hash strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "If len(s) < len(p), return [].",
+      "Initialize frequency arrays p_count = [0]*26 and s_count = [0]*26.",
+      "Populate p_count with character frequencies of p, and s_count with the first len(p) characters of s.",
+      "Initialize res = []. If s_count == p_count, append 0 to res.",
+      "Slide the window across s from index len(p) to len(s) - 1:",
+      "  a. Increment frequency for incoming character s[i].",
+      "  b. Decrement frequency for outgoing character s[i - len(p)].",
+      "  c. If s_count == p_count, append (i - len(p) + 1) to res.",
+      "Return res."
     ],
     "code": {
-      "python": "class Solution:\n    def findAllAnagramsInAString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window+Hash Solution for Find All Anagrams in a String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window+Hash invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def findAllAnagramsInAString(self, s: str, p: str) -> list[int]:\n        ns, np = len(s), len(p)\n        if ns < np:\n            return []\n            \n        p_count = [0] * 26\n        s_count = [0] * 26\n        \n        for ch in p:\n            p_count[ord(ch) - ord('a')] += 1\n            \n        for i in range(np):\n            s_count[ord(s[i]) - ord('a')] += 1\n            \n        res = []\n        if s_count == p_count:\n            res.append(0)\n            \n        for i in range(np, ns):\n            s_count[ord(s[i]) - ord('a')] += 1\n            s_count[ord(s[i - np]) - ord('a')] -= 1\n            if s_count == p_count:\n                res.append(i - np + 1)\n                \n        return res"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(|s|) — Each character is visited once when entering the window and once when leaving. Array comparison takes O(26) = O(1) steps.",
+      "space": "O(1) — Fixed size 26-element arrays for ASCII lowercase letters."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "len(s) < len(p) (returns empty list []).",
+      "Overlapping anagram occurrences (e.g. s = 'abab', p = 'ab' -> [0, 1, 2]).",
+      "Exact match where s == p (returns [0]).",
+      "s and p consist of uniform repeated characters (e.g. s = 'aaaaa', p = 'aa')."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window+Hash eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window+Hash)."
+    "interviewTips": "Highlight that comparing two fixed 26-element integer arrays takes constant O(1) time. You can also mention tracking a `matches` variable (0 to 26) to avoid full array comparisons if requested."
   },
   "15": {
     "id": 15,
@@ -650,85 +665,94 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Kadane's Algorithm",
-    "overview": "In 'Maximum Subarray', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Kadane's Algorithm paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Maximum Subarray' leverages Kadane's Algorithm. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums, find the contiguous subarray with the largest sum, and return its sum.",
+    "intuition": "Kadane's Algorithm processes the array dynamically in a single pass. At each element x, we determine whether to extend the previous subarray sum (curr_sum + x) or start a new subarray at x (x). If curr_sum becomes negative, carrying it forward would only hurt subsequent subarray sums, so resetting curr_sum to x is strictly optimal.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Divide and Conquer",
+        "description": "Recursively divide the array into halves, computing max subarray in left half, right half, and cross-boundary. Takes O(N log N) time and O(log N) space.",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(log N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Kadane's Algorithm)",
-        "description": "Apply the Kadane's Algorithm pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Kadane's Algorithm (Optimal Dynamic Programming)",
+        "description": "Maintain running maximum curr_sum = max(x, curr_sum + x) and overall max_sum. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Kadane's Algorithm strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize max_sum = nums[0] and curr_sum = nums[0].",
+      "Iterate through nums starting from index 1:",
+      "  a. curr_sum = max(x, curr_sum + x).",
+      "  b. max_sum = max(max_sum, curr_sum).",
+      "Return max_sum."
     ],
     "code": {
-      "python": "class Solution:\n    def maximumSubarray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Kadane's Algorithm Solution for Maximum Subarray.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Kadane's Algorithm invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def maximumSubarray(self, nums: list[int]) -> int:\n        max_sum = nums[0]\n        curr_sum = nums[0]\n        \n        for x in nums[1:]:\n            curr_sum = max(x, curr_sum + x)\n            max_sum = max(max_sum, curr_sum)\n            \n        return max_sum"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single linear scan through the array.",
+      "space": "O(1) — Only two scalar accumulator variables."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "All negative numbers (e.g. [-3, -2, -1, -4] returns -1, the largest single negative element).",
+      "Single element array (e.g. [1] returns 1).",
+      "All positive numbers (returns the sum of the whole array).",
+      "Alternating positive and negative numbers with large positive peaks."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Kadane's Algorithm eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Kadane's Algorithm)."
+    "interviewTips": "Kadane's Algorithm is a cornerstone DP interview question. If asked for the actual subarray indices rather than just the maximum sum, explain how keeping track of `start`, `end`, and `temp_start` pointers records the range."
   },
   "16": {
     "id": 16,
     "title": "Majority Element",
-    "difficulty": "Medium",
+    "difficulty": "Easy",
     "topic": "Arrays & Hashing",
     "pattern": "Boyer-Moore Voting",
-    "overview": "In 'Majority Element', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Boyer-Moore Voting paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Majority Element' leverages Boyer-Moore Voting. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array nums of size n, return the majority element that appears strictly more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.",
+    "intuition": "The Boyer-Moore Voting Algorithm operates on the principle of pair-wise elimination. If we cancel out each occurrence of an element with a different element, because the majority element appears more than half the time (> n / 2), it will survive the cancellations and remain as the candidate at the end.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Hash Map Frequency Counting",
+        "description": "Count frequencies of each number using a hash table. Returns element with count > n // 2. Takes O(N) time and O(N) space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Sorting",
+        "description": "Sort the array. The majority element is guaranteed to occupy index n // 2. Takes O(N log N) time and O(1) space.",
+        "timeComplexity": "O(N log N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Boyer-Moore Voting)",
-        "description": "Apply the Boyer-Moore Voting pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 3: Boyer-Moore Voting Algorithm (Optimal)",
+        "description": "Single-pass algorithm maintaining candidate and count. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Boyer-Moore Voting strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize candidate = None and count = 0.",
+      "Iterate through each element x in nums:",
+      "  a. If count == 0: set candidate = x and count = 1.",
+      "  b. Else if x == candidate: increment count += 1.",
+      "  c. Else: decrement count -= 1.",
+      "Return candidate."
     ],
     "code": {
-      "python": "class Solution:\n    def majorityElement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Boyer-Moore Voting Solution for Majority Element.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Boyer-Moore Voting invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def majorityElement(self, nums: list[int]) -> int:\n        candidate = None\n        count = 0\n        \n        for x in nums:\n            if count == 0:\n                candidate = x\n                count = 1\n            elif x == candidate:\n                count += 1\n            else:\n                count -= 1\n                \n        return candidate"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass through the array.",
+      "space": "O(1) — Only candidate and count variables are maintained."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array with 1 element (returns that element).",
+      "Array where all elements are identical (e.g. [5, 5, 5, 5]).",
+      "Array with negative numbers (e.g. [-1, -1, -1, 2]).",
+      "Majority element appearing just above threshold (e.g. 3 times out of 5)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Boyer-Moore Voting eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Boyer-Moore Voting)."
+    "interviewTips": "Always mention that if the problem does NOT guarantee the existence of a majority element, a second verification pass counting candidate occurrences is required to confirm that `count > len(nums) // 2`."
   },
   "17": {
     "id": 17,
@@ -736,85 +760,93 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Easy",
     "topic": "Arrays & Hashing",
     "pattern": "Two Pointer",
-    "overview": "In 'Move Zeroes', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Move Zeroes' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements. Must be done in-place with O(1) extra space.",
+    "intuition": "We use a two-pointer approach: a slow pointer (insert_pos) points to where the next non-zero element should go, and a fast pointer (i) scans the array. When nums[i] is non-zero, we swap nums[insert_pos] and nums[i] and advance insert_pos. This moves all non-zero values forward in relative order and pushes zeroes to the back in a single pass.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Two-Pass Overwrite",
+        "description": "First pass writes non-zero elements sequentially from index 0. Second pass fills remaining positions with zeroes. Takes O(N) time and O(1) space.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: One-Pass Two-Pointer Swap (Optimal)",
+        "description": "Swap non-zero elements into insert_pos on the fly. Minimizes writes when array is already ordered or contains many zeroes. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize insert_pos = 0.",
+      "Iterate through the array with index i from 0 to len(nums) - 1:",
+      "  a. If nums[i] != 0:",
+      "     i. Swap nums[insert_pos] and nums[i].",
+      "     ii. Increment insert_pos += 1."
     ],
     "code": {
-      "python": "class Solution:\n    def moveZeroes(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Move Zeroes.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def moveZeroes(self, nums: list[int]) -> None:\n        insert_pos = 0\n        for i in range(len(nums)):\n            if nums[i] != 0:\n                nums[insert_pos], nums[i] = nums[i], nums[insert_pos]\n                insert_pos += 1"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Single pass examining each index once.",
+      "space": "O(1) — In-place mutation with zero extra memory."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array with no zeroes [1, 2, 3] (insert_pos tracks i, swap is a no-op).",
+      "Array with only zeroes [0, 0, 0] (no swaps performed).",
+      "Leading zeroes [0, 0, 1, 2] (shifted to [1, 2, 0, 0]).",
+      "Single element array [0] or [5]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": "Explain why the one-pass swap is superior to two-pass overwrite: the number of operations in swap is directly proportional to the number of non-zero elements (optimal write complexity)."
   },
   "18": {
     "id": 18,
     "title": "Rotate Array",
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
-    "pattern": "Array Manipulation",
-    "overview": "In 'Rotate Array', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Array Manipulation paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Rotate Array' leverages Array Manipulation. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "pattern": "Array Reversal",
+    "overview": "Given an integer array nums, rotate the array to the right by k steps, where k is non-negative. Solve it in-place using O(1) extra space.",
+    "intuition": "When rotating an array of length N right by k steps (k = k % N), the last k elements move to the front, and the first N - k elements shift to the right. A three-step reversal achieves this cleanly in O(1) space:\n1. Reverse the entire array -> [N-k..N-1] elements move to the front (in reverse order).\n2. Reverse the first k elements -> restores their original relative order.\n3. Reverse the remaining N - k elements -> restores their original relative order.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Extra Buffer Array",
+        "description": "Create a new array and place elements at (i + k) % n. Takes O(N) time and O(N) space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Cyclic Replacements",
+        "description": "Place each element directly into its target index, tracking cycle counts with GCD. Takes O(N) time and O(1) space.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Array Manipulation)",
-        "description": "Apply the Array Manipulation pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 3: 3-Step Reversal Algorithm (Optimal)",
+        "description": "Reverse entire array, reverse [0..k-1], then reverse [k..n-1]. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Array Manipulation strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Normalize k = k % len(nums). If k == 0, return immediately.",
+      "Define helper function reverse(left, right) to swap elements inward.",
+      "Reverse the entire array: reverse(0, len(nums) - 1).",
+      "Reverse the first k elements: reverse(0, k - 1).",
+      "Reverse the remaining elements: reverse(k, len(nums) - 1)."
     ],
     "code": {
-      "python": "class Solution:\n    def rotateArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Array Manipulation Solution for Rotate Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Array Manipulation invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def rotateArray(self, nums: list[int], k: int) -> None:\n        n = len(nums)\n        k = k % n\n        if k == 0:\n            return\n            \n        def reverse(left: int, right: int):\n            while left < right:\n                nums[left], nums[right] = nums[right], nums[left]\n                left += 1\n                right -= 1\n                \n        reverse(0, n - 1)\n        reverse(0, k - 1)\n        reverse(k, n - 1)"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — The entire array is reversed once, and all elements are reversed a second time across the two subarrays (total 2N swaps = O(N)).",
+      "space": "O(1) — In-place rotation with no extra memory allocated."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "k = 0 or k is an exact multiple of N (array remains identical).",
+      "k > N (e.g. k = 10 on array of length 3 -> k % 3 = 1).",
+      "Single element array [42].",
+      "Two element array [1, 2] with k = 3."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Array Manipulation eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Array Manipulation)."
+    "interviewTips": "Trace a short example like `nums = [1, 2, 3, 4, 5, 6, 7], k = 3` step-by-step to show the interviewer how the reversals transform `[7,6,5,4,3,2,1]` into `[5,6,7,1,2,3,4]`."
   },
   "19": {
     "id": 19,
@@ -822,42 +854,50 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "Floyd's Cycle / Binary Search",
-    "overview": "In 'Find the Duplicate Number', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the Floyd's Cycle / Binary Search paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Find the Duplicate Number' leverages Floyd's Cycle / Binary Search. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an array of integers nums containing n + 1 integers where each integer is between 1 and n inclusive. There is only one repeated number in nums, find and return this repeated number without modifying the array nums and using only constant O(1) extra space.",
+    "intuition": "Because each value nums[i] is between 1 and n, we can interpret the array as a linked list where index i has a pointer to node nums[i]. Since there are n + 1 nodes and values are in [1, n], by the Pigeonhole Principle there must be a cycle. The duplicate number corresponds to a node with multiple incoming edges (the entrance of the cycle). We can find this entry point using Floyd's Tortoise and Hare Cycle Detection algorithm in O(N) time and O(1) space without modifying the array.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
+        "name": "Method 1: Binary Search on Value Range",
+        "description": "Binary search on range [1, n]. Count elements <= mid in nums. If count > mid, duplicate lies in [1, mid]. Takes O(N log N) time and O(1) space.",
+        "timeComplexity": "O(N log N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Floyd's Cycle / Binary Search)",
-        "description": "Apply the Floyd's Cycle / Binary Search pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Floyd's Tortoise and Hare Cycle Detection (Optimal)",
+        "description": "Use slow/fast pointers to detect cycle intersection, then find the cycle entrance. Takes O(N) time and O(1) space.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Floyd's Cycle / Binary Search strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Initialize slow = nums[0] and fast = nums[0].",
+      "Phase 1 (Find intersection inside the cycle):",
+      "  a. slow = nums[slow]",
+      "  b. fast = nums[nums[fast]]",
+      "  c. Repeat until slow == fast.",
+      "Phase 2 (Find entrance to the cycle):",
+      "  a. Reset slow = nums[0].",
+      "  b. While slow != fast:",
+      "     i. slow = nums[slow]",
+      "     ii. fast = nums[fast]",
+      "  c. The meeting point (slow) is the duplicate number.",
+      "Return slow."
     ],
     "code": {
-      "python": "class Solution:\n    def findTheDuplicateNumber(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Floyd's Cycle / Binary Search Solution for Find the Duplicate Number.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Floyd's Cycle / Binary Search invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def findTheDuplicateNumber(self, nums: list[int]) -> int:\n        slow = nums[0]\n        fast = nums[0]\n        \n        # Phase 1: Finding cycle intersection\n        while True:\n            slow = nums[slow]\n            fast = nums[nums[fast]]\n            if slow == fast:\n                break\n                \n        # Phase 2: Finding cycle entrance (duplicate value)\n        slow = nums[0]\n        while slow != fast:\n            slow = nums[slow]\n            fast = nums[fast]\n            \n        return slow"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(N) — Both phases traverse a path bounded by the number of elements in the array.",
+      "space": "O(1) — Constant auxiliary memory without modifying the input array."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Duplicate appears exactly twice [1, 3, 4, 2, 2].",
+      "Duplicate appears multiple times [3, 3, 3, 3, 3].",
+      "Minimum array length n + 1 = 2 (e.g. [1, 1]).",
+      "Duplicate value is at the very beginning or end of the value range."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Floyd's Cycle / Binary Search eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Floyd's Cycle / Binary Search)."
+    "interviewTips": "Be sure to explain why index 0 is guaranteed to be outside the cycle: all values in the array are in range [1, n], so no node can ever point to index 0. Therefore, index 0 serves as a reliable linked list head."
   },
   "20": {
     "id": 20,
@@ -865,42 +905,47 @@ export const DETAILED_SOLUTIONS = {
     "difficulty": "Medium",
     "topic": "Arrays & Hashing",
     "pattern": "In-place Matrix",
-    "overview": "In 'Set Matrix Zeroes', we are given standard constraints for the Arrays & Hashing category. The objective is to compute the optimal result using the In-place Matrix paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Set Matrix Zeroes' leverages In-place Matrix. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "overview": "Given an m x n integer matrix, if an element is 0, set its entire row and column to 0's in-place with O(1) auxiliary memory.",
+    "intuition": "If we zero out rows and columns immediately upon encountering a zero, we will erroneously treat newly zeroed cells as original zeroes and wipe out the entire matrix. Instead of allocating O(m + n) extra arrays, we use the matrix's own first row (matrix[0][:]) and first column (matrix[:][0]) as our marker arrays. Two boolean flags track whether the first row and first column originally contained zeroes.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N\u00b2)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Auxiliary Marker Sets / Arrays",
+        "description": "Store zero row and column indices in hash sets or boolean arrays. Takes O(M * N) time and O(M + N) space.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(M + N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (In-place Matrix)",
-        "description": "Apply the In-place Matrix pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
+        "name": "Method 2: In-Place Matrix Markers (Optimal)",
+        "description": "Use first row and column as marker arrays with 2 boolean flags for the first row/col. Takes O(M * N) time and O(1) space.",
+        "timeComplexity": "O(M * N)",
         "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the In-place Matrix strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "Check if first row contains zero: first_row_zero = any(matrix[0][c] == 0 for c in range(n)).",
+      "Check if first column contains zero: first_col_zero = any(matrix[r][0] == 0 for r in range(m)).",
+      "Use first row & col as markers by scanning inner matrix (r from 1..m-1, c from 1..n-1):",
+      "  If matrix[r][c] == 0: set matrix[r][0] = 0 and matrix[0][c] = 0.",
+      "Iterate through inner matrix again:",
+      "  If matrix[r][0] == 0 or matrix[0][c] == 0: set matrix[r][c] = 0.",
+      "If first_row_zero is True: set all elements in first row to 0.",
+      "If first_col_zero is True: set all elements in first column to 0."
     ],
     "code": {
-      "python": "class Solution:\n    def setMatrixZeroes(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal In-place Matrix Solution for Set Matrix Zeroes.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to In-place Matrix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def setMatrixZeroes(self, matrix: list[list[int]]) -> None:\n        m = len(matrix)\n        n = len(matrix[0])\n        \n        first_row_zero = any(matrix[0][c] == 0 for c in range(n))\n        first_col_zero = any(matrix[r][0] == 0 for r in range(m))\n        \n        # Use first row and column as markers\n        for r in range(1, m):\n            for c in range(1, n):\n                if matrix[r][c] == 0:\n                    matrix[r][0] = 0\n                    matrix[0][c] = 0\n                    \n        # Update inner cells using markers\n        for r in range(1, m):\n            for c in range(1, n):\n                if matrix[r][0] == 0 or matrix[0][c] == 0:\n                    matrix[r][c] = 0\n                    \n        # Zero first row if needed\n        if first_row_zero:\n            for c in range(n):\n                matrix[0][c] = 0\n                \n        # Zero first column if needed\n        if first_col_zero:\n            for r in range(m):\n                matrix[r][0] = 0"
     },
     "complexity": {
-      "time": "O(N) \u2014 Single pass linear traversal.",
-      "space": "O(1) \u2014 Constant auxiliary memory."
+      "time": "O(M * N) — Two passes over the matrix.",
+      "space": "O(1) — In-place state marking using existing matrix cells."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single element matrix [[0]] or [[5]].",
+      "1 x N single row matrix (e.g. [[1, 0, 3]]).",
+      "M x 1 single column matrix (e.g. [[1], [0], [3]]).",
+      "Matrix where matrix[0][0] is 0.",
+      "Matrix containing no zeroes."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how In-place Matrix eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (In-place Matrix)."
+    "interviewTips": "Emphasize why inner cells must be updated before the first row and column: modifying the first row/col prematurely would destroy the marker flags needed for the remaining cells."
   },
   "21": {
     "id": 21,

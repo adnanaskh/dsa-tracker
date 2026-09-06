@@ -360,325 +360,391 @@ export const PROBLEM_TEST_CASES = {
   },
   "12": {
     "methodName": "sortColors",
-    "starterCode": "class Solution:\n    def sortColors(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def sortColors(self, nums: list[int]) -> None:\n        # Do not return anything, modify nums in-place instead.\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "6\n2 0 2 1 1 0",
+        "expectedStdout": "0 0 1 1 2 2",
+        "input": [[2, 0, 2, 1, 1, 0]],
+        "expected": [0, 0, 1, 1, 2, 2]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "3\n2 0 1",
+        "expectedStdout": "0 1 2",
+        "input": [[2, 0, 1]],
+        "expected": [0, 1, 2]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "1\n0",
+        "expectedStdout": "0",
+        "input": [[0]],
+        "expected": [0]
+      },
+      {
+        "stdin": "2\n1 0",
+        "expectedStdout": "0 1",
+        "input": [[1, 0]],
+        "expected": [0, 1]
+      },
+      {
+        "stdin": "5\n2 2 2 2 2",
+        "expectedStdout": "2 2 2 2 2",
+        "input": [[2, 2, 2, 2, 2]],
+        "expected": [2, 2, 2, 2, 2]
+      },
+      {
+        "stdin": "6\n0 0 1 1 2 2",
+        "expectedStdout": "0 0 1 1 2 2",
+        "input": [[0, 0, 1, 1, 2, 2]],
+        "expected": [0, 0, 1, 1, 2, 2]
       }
     ]
   },
   "13": {
     "methodName": "subarraySumEqualsK",
-    "starterCode": "class Solution:\n    def subarraySumEqualsK(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def subarraySumEqualsK(self, nums: list[int], k: int) -> int:\n        # Write your code here\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "3 2\n1 1 1",
+        "expectedStdout": "2",
+        "input": [[1, 1, 1], 2],
+        "expected": 2
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
+        "stdin": "3 3\n1 2 3",
+        "expectedStdout": "2",
+        "input": [[1, 2, 3], 3],
         "expected": 2
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "4 0\n1 -1 0 1",
+        "expectedStdout": "3",
+        "input": [[1, -1, 0, 1], 0],
+        "expected": 3
+      },
+      {
+        "stdin": "1 1\n1",
+        "expectedStdout": "1",
+        "input": [[1], 1],
+        "expected": 1
+      },
+      {
+        "stdin": "3 -2\n-1 -1 1",
+        "expectedStdout": "1",
+        "input": [[-1, -1, 1], -2],
+        "expected": 1
+      },
+      {
+        "stdin": "5 5\n2 3 -5 5 5",
+        "expectedStdout": "4",
+        "input": [[2, 3, -5, 5, 5], 5],
+        "expected": 4
       }
     ]
   },
   "14": {
     "methodName": "findAllAnagramsInAString",
-    "starterCode": "class Solution:\n    def findAllAnagramsInAString(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def findAllAnagramsInAString(self, s: str, p: str) -> list[int]:\n        # Write your code here\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "cbaebabacd\nabc",
+        "expectedStdout": "0 6",
+        "input": ["cbaebabacd", "abc"],
+        "expected": [0, 6]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "abab\nab",
+        "expectedStdout": "0 1 2",
+        "input": ["abab", "ab"],
+        "expected": [0, 1, 2]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "baa\naa",
+        "expectedStdout": "1",
+        "input": ["baa", "aa"],
+        "expected": [1]
+      },
+      {
+        "stdin": "a\nab",
+        "expectedStdout": "",
+        "input": ["a", "ab"],
+        "expected": []
+      },
+      {
+        "stdin": "af\nbe",
+        "expectedStdout": "",
+        "input": ["af", "be"],
+        "expected": []
+      },
+      {
+        "stdin": "aaaaaaaaaa\naaaaa",
+        "expectedStdout": "0 1 2 3 4 5",
+        "input": ["aaaaaaaaaa", "aaaaa"],
+        "expected": [0, 1, 2, 3, 4, 5]
       }
     ]
   },
   "15": {
     "methodName": "maximumSubarray",
-    "starterCode": "class Solution:\n    def maximumSubarray(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def maximumSubarray(self, nums: list[int]) -> int:\n        # Write your code here\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
+        "stdin": "9\n-2 1 -3 4 -1 2 1 -5 4",
+        "expectedStdout": "6",
+        "input": [[-2, 1, -3, 4, -1, 2, 1, -5, 4]],
+        "expected": 6
+      },
+      {
+        "stdin": "1\n1",
+        "expectedStdout": "1",
+        "input": [[1]],
         "expected": 1
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "5\n5 4 -1 7 8",
+        "expectedStdout": "23",
+        "input": [[5, 4, -1, 7, 8]],
+        "expected": 23
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "4\n-3 -2 -1 -4",
+        "expectedStdout": "-1",
+        "input": [[-3, -2, -1, -4]],
+        "expected": -1
+      },
+      {
+        "stdin": "2\n-1 -2",
+        "expectedStdout": "-1",
+        "input": [[-1, -2]],
+        "expected": -1
+      },
+      {
+        "stdin": "8\n-2 -3 4 -1 -2 1 5 -3",
+        "expectedStdout": "7",
+        "input": [[-2, -3, 4, -1, -2, 1, 5, -3]],
+        "expected": 7
       }
     ]
   },
   "16": {
     "methodName": "majorityElement",
-    "starterCode": "class Solution:\n    def majorityElement(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def majorityElement(self, nums: list[int]) -> int:\n        # Write your code here\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "3\n3 2 3",
+        "expectedStdout": "3",
+        "input": [[3, 2, 3]],
+        "expected": 3
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
+        "stdin": "7\n2 2 1 1 1 2 2",
+        "expectedStdout": "2",
+        "input": [[2, 2, 1, 1, 1, 2, 2]],
         "expected": 2
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "1\n6",
+        "expectedStdout": "6",
+        "input": [[6]],
+        "expected": 6
+      },
+      {
+        "stdin": "5\n6 5 5 5 5",
+        "expectedStdout": "5",
+        "input": [[6, 5, 5, 5, 5]],
+        "expected": 5
+      },
+      {
+        "stdin": "4\n-1 -1 -1 2",
+        "expectedStdout": "-1",
+        "input": [[-1, -1, -1, 2]],
+        "expected": -1
       }
     ]
   },
   "17": {
     "methodName": "moveZeroes",
-    "starterCode": "class Solution:\n    def moveZeroes(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def moveZeroes(self, nums: list[int]) -> None:\n        # Do not return anything, modify nums in-place instead.\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 3
+        "stdin": "5\n0 1 0 3 12",
+        "expectedStdout": "1 3 12 0 0",
+        "input": [[0, 1, 0, 3, 12]],
+        "expected": [1, 3, 12, 0, 0]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 6
+        "stdin": "1\n0",
+        "expectedStdout": "0",
+        "input": [[0]],
+        "expected": [0]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "3\n1 2 3",
+        "expectedStdout": "1 2 3",
+        "input": [[1, 2, 3]],
+        "expected": [1, 2, 3]
+      },
+      {
+        "stdin": "4\n0 0 0 0",
+        "expectedStdout": "0 0 0 0",
+        "input": [[0, 0, 0, 0]],
+        "expected": [0, 0, 0, 0]
+      },
+      {
+        "stdin": "4\n0 0 1 2",
+        "expectedStdout": "1 2 0 0",
+        "input": [[0, 0, 1, 2]],
+        "expected": [1, 2, 0, 0]
+      },
+      {
+        "stdin": "2\n1 0",
+        "expectedStdout": "1 0",
+        "input": [[1, 0]],
+        "expected": [1, 0]
       }
     ]
   },
   "18": {
     "methodName": "rotateArray",
-    "starterCode": "class Solution:\n    def rotateArray(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def rotateArray(self, nums: list[int], k: int) -> None:\n        # Do not return anything, modify nums in-place instead.\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "7 3\n1 2 3 4 5 6 7",
+        "expectedStdout": "5 6 7 1 2 3 4",
+        "input": [[1, 2, 3, 4, 5, 6, 7], 3],
+        "expected": [5, 6, 7, 1, 2, 3, 4]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "4 2\n-1 -100 3 99",
+        "expectedStdout": "3 99 -1 -100",
+        "input": [[-1, -100, 3, 99], 2],
+        "expected": [3, 99, -1, -100]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "2 3\n1 2",
+        "expectedStdout": "2 1",
+        "input": [[1, 2], 3],
+        "expected": [2, 1]
+      },
+      {
+        "stdin": "5 0\n1 2 3 4 5",
+        "expectedStdout": "1 2 3 4 5",
+        "input": [[1, 2, 3, 4, 5], 0],
+        "expected": [1, 2, 3, 4, 5]
+      },
+      {
+        "stdin": "1 10\n42",
+        "expectedStdout": "42",
+        "input": [[42], 10],
+        "expected": [42]
+      },
+      {
+        "stdin": "3 6\n1 2 3",
+        "expectedStdout": "1 2 3",
+        "input": [[1, 2, 3], 6],
+        "expected": [1, 2, 3]
       }
     ]
   },
   "19": {
     "methodName": "findTheDuplicateNumber",
-    "starterCode": "class Solution:\n    def findTheDuplicateNumber(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def findTheDuplicateNumber(self, nums: list[int]) -> int:\n        # Write your code here\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "5\n1 3 4 2 2",
+        "expectedStdout": "2",
+        "input": [[1, 3, 4, 2, 2]],
+        "expected": 2
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "5\n3 1 3 4 2",
+        "expectedStdout": "3",
+        "input": [[3, 1, 3, 4, 2]],
+        "expected": 3
+      },
+      {
+        "stdin": "5\n3 3 3 3 3",
+        "expectedStdout": "3",
+        "input": [[3, 3, 3, 3, 3]],
+        "expected": 3
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "2\n1 1",
+        "expectedStdout": "1",
+        "input": [[1, 1]],
+        "expected": 1
+      },
+      {
+        "stdin": "4\n2 2 2 2",
+        "expectedStdout": "2",
+        "input": [[2, 2, 2, 2]],
+        "expected": 2
+      },
+      {
+        "stdin": "7\n1 4 6 6 6 2 3",
+        "expectedStdout": "6",
+        "input": [[1, 4, 6, 6, 6, 2, 3]],
+        "expected": 6
       }
     ]
   },
   "20": {
     "methodName": "setMatrixZeroes",
-    "starterCode": "class Solution:\n    def setMatrixZeroes(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "class Solution:\n    def setMatrixZeroes(self, matrix: list[list[int]]) -> None:\n        # Do not return anything, modify matrix in-place instead.\n        pass",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "3 3\n1 1 1\n1 0 1\n1 1 1",
+        "expectedStdout": "1 0 1\n0 0 0\n1 0 1",
+        "input": [[[1, 1, 1], [1, 0, 1], [1, 1, 1]]],
+        "expected": [[1, 0, 1], [0, 0, 0], [1, 0, 1]]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "3 4\n0 1 2 0\n3 4 5 2\n1 3 1 5",
+        "expectedStdout": "0 0 0 0\n0 4 5 0\n0 3 1 0",
+        "input": [[[0, 1, 2, 0], [3, 4, 5, 2], [1, 3, 1, 5]]],
+        "expected": [[0, 0, 0, 0], [0, 4, 5, 0], [0, 3, 1, 0]]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "1 1\n0",
+        "expectedStdout": "0",
+        "input": [[[0]]],
+        "expected": [[0]]
+      },
+      {
+        "stdin": "1 1\n5",
+        "expectedStdout": "5",
+        "input": [[[5]]],
+        "expected": [[5]]
+      },
+      {
+        "stdin": "2 3\n1 2 3\n4 0 6",
+        "expectedStdout": "1 0 3\n0 0 0",
+        "input": [[[1, 2, 3], [4, 0, 6]]],
+        "expected": [[1, 0, 3], [0, 0, 0]]
+      },
+      {
+        "stdin": "2 2\n1 0\n2 3",
+        "expectedStdout": "0 0\n2 0",
+        "input": [[[1, 0], [2, 3]]],
+        "expected": [[0, 0], [2, 0]]
       }
     ]
   },
