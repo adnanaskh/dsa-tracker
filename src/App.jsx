@@ -50,7 +50,9 @@ import {
   Crown,
   UserCheck,
   User,
-  Lock
+  Lock,
+  Play,
+  Code2
 } from 'lucide-react';
 
 function LinkedinIcon({ className = "w-4 h-4" }) {
@@ -2131,7 +2133,6 @@ function QuestionsTab({
               <th className="py-2.5 px-3 text-center">SOLVE</th>
               <th className="py-2.5 px-3 text-center">EDITORIAL</th>
               <th className="py-2.5 px-3 text-center">SUBMISSIONS</th>
-              <th className="py-2.5 px-3 text-center w-14">ACTION</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-slate-800/60">
@@ -2253,19 +2254,6 @@ function QuestionsTab({
                         Upload
                       </button>
                     )}
-                  </td>
-                  <td className="py-2.5 px-3 text-center whitespace-nowrap">
-                    <button
-                      onClick={() => {
-                        requireAuth('edit problem notes and time spent', () => {
-                          handleOpenEdit(q);
-                        });
-                      }}
-                      className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 transition-colors"
-                      title="Edit status and notes"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
                   </td>
                 </tr>
               );
