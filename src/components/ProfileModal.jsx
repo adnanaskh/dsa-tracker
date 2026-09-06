@@ -48,8 +48,6 @@ export default function ProfileModal({
     setNameInput(customDisplayName || currentUser?.displayName || '');
   }, [customDisplayName, currentUser, isOpen]);
 
-  if (!isOpen) return null;
-
   const handleSaveName = () => {
     if (!nameInput.trim()) return;
     onSaveDisplayName(nameInput.trim());
@@ -290,6 +288,8 @@ export default function ProfileModal({
   ], [userStats]);
 
   const unlockedCount = achievements.filter(a => a.unlocked).length;
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
