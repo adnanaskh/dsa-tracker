@@ -37,6 +37,7 @@ import {
   Calendar
 } from 'lucide-react';
 import ActivityHeatmap from './ActivityHeatmap';
+import { INITIAL_QUESTIONS } from '../data/questionsData';
 
 function LinkedinIcon({ className = "w-4 h-4" }) {
   return (
@@ -90,6 +91,64 @@ export default function ProfileModal({
   // Active profile info (supports both own profile and public user profile)
   const displayUser = useMemo(() => {
     if (profileData) {
+      const qProg = { ...(profileData.questionsProgress || {}) };
+      const rLogs = { ...(profileData.revisionLogs || {}) };
+
+      // Calculate solved count and difficulty counts from questionsProgress if present
+      let solvedCalculated = 0;
+      let easyCalculated = 0;
+      let medCalculated = 0;
+      let hardCalculated = 0;
+
+      Object.entries(qProg).forEach(([qId, item]) => {
+        if (item && item.status === '✅ Done') {
+          solvedCalculated++;
+          const qObj = INITIAL_QUESTIONS.find(q => String(q.id) === String(qId));
+          if (qObj) {
+            if (qObj.difficulty === 'Easy') easyCalculated++;
+            else if (qObj.difficulty === 'Medium') medCalculated++;
+            else if (qObj.difficulty === 'Hard') hardCalculated++;
+          }
+        }
+      });
+
+      const finalSolved = profileData.solvedCount ?? (solvedCalculated || profileData.solved || 0);
+      const finalEasy = profileData.easyCount ?? (easyCalculated || profileData.easy || 0);
+      const finalMed = profileData.medCount ?? (medCalculated || profileData.med || 0);
+      const finalHard = profileData.hardCount ?? (hardCalculated || profileData.hard || 0);
+      const finalStreak = profileData.streak ?? (profileData.streakCount || 0);
+      const finalMaxStreak = profileData.maxStreak ?? Math.max(finalStreak, profileData.streak || 0);
+
+      // If qProg is empty but user has solvedCount > 0, generate timestamps for the heatmap
+      if (Object.keys(qProg).length === 0 && finalSolved > 0) {
+        let easyDone = 0, medDone = 0, hardDone = 0;
+        const baseDate = profileData.lastActive ? new Date(profileData.lastActive) : new Date();
+
+        INITIAL_QUESTIONS.forEach((q, idx) => {
+          let shouldMark = false;
+          if (q.difficulty === 'Easy' && easyDone < finalEasy) {
+            shouldMark = true;
+            easyDone++;
+          } else if (q.difficulty === 'Medium' && medDone < finalMed) {
+            shouldMark = true;
+            medDone++;
+          } else if (q.difficulty === 'Hard' && hardDone < finalHard) {
+            shouldMark = true;
+            hardDone++;
+          }
+
+          if (shouldMark) {
+            const d = new Date(baseDate);
+            d.setDate(d.getDate() - (idx % 45));
+            qProg[q.id] = {
+              status: '✅ Done',
+              completedAt: d.toISOString(),
+              date: d.toISOString()
+            };
+          }
+        });
+      }
+
       return {
         uid: profileData.uid,
         displayName: profileData.displayName || 'Coder',
@@ -100,14 +159,14 @@ export default function ProfileModal({
         linkedin: profileData.linkedin || '',
         github: profileData.github || '',
         rank: profileData.rank || globalRank || '-',
-        solved: profileData.solvedCount ?? userStats.solved,
-        streak: profileData.streak ?? userStats.streak,
-        maxStreak: profileData.maxStreak ?? userStats.maxStreak,
-        easy: profileData.easyCount ?? userStats.easy,
-        med: profileData.medCount ?? userStats.med,
-        hard: profileData.hardCount ?? userStats.hard,
-        questionsProgress: profileData.questionsProgress || questionsProgress,
-        revisionLogs: profileData.revisionLogs || revisionLogs
+        solved: finalSolved,
+        streak: finalStreak,
+        maxStreak: finalMaxStreak,
+        easy: finalEasy,
+        med: finalMed,
+        hard: finalHard,
+        questionsProgress: qProg,
+        revisionLogs: rLogs
       };
     }
 
