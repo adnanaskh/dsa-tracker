@@ -1,5 +1,5 @@
-// Detailed Problem Descriptions (Industry Standard Online Judge & Assessment Format)
-// Standard Input (STDIN) and Standard Output (STDOUT) specifications, Constraints, and Examples.
+// Exact LeetCode & CodeChef Descriptions with Competitive Programming STDIN / STDOUT Specifications
+// Contains exact problem statements, standard competitive programming I/O formats, constraints, and testable examples.
 
 export const DETAILED_PROBLEM_DESCRIPTIONS = {
   "1": {
@@ -8,20 +8,18 @@ export const DETAILED_PROBLEM_DESCRIPTIONS = {
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Hashing",
-    statement: `Given an integer array \`nums\`, determine whether any value appears **at least twice** in the array. Return \`true\` if any value is duplicated; otherwise return \`false\`.
-
-An array is said to contain duplicates if there exists at least one pair of distinct indices \`(i, j)\` such that \`nums[i] == nums[j]\` where \`i != j\`.`,
+    statement: `Given an integer array \`nums\`, return \`true\` if any value appears **at least twice** in the array, and return \`false\` if every element is distinct.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` representing the number of elements in the array.
-• Line 2: \`N\` space-separated integers representing the elements of array \`nums\`.`,
+      standardInput: `• Line 1: An integer \`N\`, the number of elements in the array \`nums\`.
+• Line 2: \`N\` space-separated integers representing the elements of \`nums\`.`,
       explanation: "Read the total count N from the first line, followed by the N space-separated integers on the second line."
     },
     outputFormat: {
-      standardOutput: "Print `true` if any element appears at least twice in the array; otherwise print `false` on a single line (in lowercase).",
-      explanation: "A single string 'true' or 'false' written to standard output."
+      standardOutput: "Print `true` if any value appears at least twice in the array; otherwise print `false` on a single line.",
+      explanation: "A single boolean string 'true' or 'false' (in lowercase) written to standard output."
     },
     constraints: [
-      "1 <= N <= 10^5",
+      "1 <= nums.length <= 10^5",
       "-10^9 <= nums[i] <= 10^9",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
@@ -31,19 +29,19 @@ An array is said to contain duplicates if there exists at least one pair of dist
         id: 1,
         input: "4\n1 2 3 1",
         output: "true",
-        explanation: "The element 1 appears at index 0 and index 3 (2 occurrences). The output is true."
+        explanation: "The value 1 appears at index 0 and index 3 (2 occurrences)."
       },
       {
         id: 2,
         input: "4\n1 2 3 4",
         output: "false",
-        explanation: "All elements [1, 2, 3, 4] are strictly distinct. The output is false."
+        explanation: "All elements [1, 2, 3, 4] are pairwise distinct."
       },
       {
         id: 3,
         input: "10\n1 1 1 3 3 4 3 2 4 2",
         output: "true",
-        explanation: "Elements 1, 3, 4, and 2 each appear multiple times. The output is true."
+        explanation: "Elements 1, 3, 4, and 2 each appear multiple times."
       }
     ],
     starterCode: `import sys
@@ -79,19 +77,19 @@ if __name__ == '__main__':
     pattern: "Hashing",
     statement: `Given two strings \`s\` and \`t\`, return \`true\` if \`t\` is an **anagram** of \`s\`, and \`false\` otherwise.
 
-An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, using all the original characters exactly once.`,
+An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
     inputFormat: {
       standardInput: `• Line 1: String \`s\`
 • Line 2: String \`t\``,
-      explanation: "Read string s from line 1 and string t from line 2."
+      explanation: "Line 1 contains the first string s, and Line 2 contains the second string t."
     },
     outputFormat: {
-      standardOutput: "Print `true` if t is an anagram of s, otherwise print `false`.",
+      standardOutput: "Print `true` if t is an anagram of s, otherwise print `false` on a single line.",
       explanation: "Output a single line containing either 'true' or 'false'."
     },
     constraints: [
-      "1 <= len(s), len(t) <= 5 * 10^4",
-      "Strings consist of lowercase English letters ('a'-'z').",
+      "1 <= s.length, t.length <= 5 * 10^4",
+      "`s` and `t` consist of lowercase English letters.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -100,13 +98,13 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
         id: 1,
         input: "anagram\nnagaram",
         output: "true",
-        explanation: "Both strings contain identical character counts: 3 'a's, 1 'n', 1 'g', 1 'r', 1 'm'."
+        explanation: "Both strings contain the exact same characters with identical frequencies: 'a': 3, 'n': 1, 'g': 1, 'r': 1, 'm': 1."
       },
       {
         id: 2,
         input: "rat\ncar",
         output: "false",
-        explanation: "Character frequencies differ between 'rat' and 'car'."
+        explanation: "Character frequencies differ ('r' appears in both, but 't' is in s and 'c' is in t)."
       }
     ],
     starterCode: `import sys
@@ -146,24 +144,26 @@ if __name__ == '__main__':
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Hash Map",
-    statement: `Given an array of integers \`nums\` and an integer \`target\`, find the **indices of the two numbers** such that they add up to \`target\`.
+    statement: `Given an array of integers \`nums\` and an integer \`target\`, return indices of the two numbers such that they add up to \`target\`.
 
-You may assume that each input has **exactly one solution**, and you may not use the same element twice. You can print the answer indices in any order.`,
+You may assume that each input would have **exactly one solution**, and you may not use the same element twice.
+
+You can return the answer in any order.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of elements in the array).
+      standardInput: `• Line 1: An integer \`N\`, the length of the array \`nums\`.
 • Line 2: \`N\` space-separated integers representing \`nums\`.
 • Line 3: An integer \`target\`.`,
-      explanation: "Line 1 specifies the array length, Line 2 contains the array elements, and Line 3 contains the target sum."
+      explanation: "Read the array size N, the N array elements, and the target integer."
     },
     outputFormat: {
       standardOutput: "Print the two 0-based indices separated by a space on a single line (e.g., `0 1`).",
-      explanation: "Two space-separated integers representing the zero-indexed positions of the pair."
+      explanation: "Two space-separated integers representing the zero-indexed positions of the two numbers."
     },
     constraints: [
-      "2 <= N <= 10^4",
+      "2 <= nums.length <= 10^4",
       "-10^9 <= nums[i] <= 10^9",
       "-10^9 <= target <= 10^9",
-      "Exactly one valid pair exists.",
+      "Only one valid answer exists.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -172,19 +172,19 @@ You may assume that each input has **exactly one solution**, and you may not use
         id: 1,
         input: "4\n2 7 11 15\n9",
         output: "0 1",
-        explanation: "nums[0] + nums[1] = 2 + 7 = 9. The indices are 0 and 1."
+        explanation: "Because nums[0] + nums[1] == 2 + 7 == 9, we return 0 1."
       },
       {
         id: 2,
         input: "3\n3 2 4\n6",
         output: "1 2",
-        explanation: "nums[1] + nums[2] = 2 + 4 = 6. The indices are 1 and 2."
+        explanation: "Because nums[1] + nums[2] == 2 + 4 == 6, we return 1 2."
       },
       {
         id: 3,
         input: "2\n3 3\n6",
         output: "0 1",
-        explanation: "nums[0] + nums[1] = 3 + 3 = 6. The indices are 0 and 1."
+        explanation: "Because nums[0] + nums[1] == 3 + 3 == 6, we return 0 1."
       }
     ],
     starterCode: `import sys
@@ -218,20 +218,22 @@ if __name__ == '__main__':
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Greedy / Kadane",
-    statement: `You are given an array \`prices\` where \`prices[i]\` represents the stock price on the \`i-th\` day.
+    statement: `You are given an array \`prices\` where \`prices[i]\` is the price of a given stock on the \`i-th\` day.
 
-You want to maximize your profit by choosing a single day to buy one stock and choosing a future day to sell that stock. Return the **maximum profit** you can achieve. If no profit can be made, return \`0\`.`,
+You want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.
+
+Return the **maximum profit** you can achieve from this transaction. If you cannot achieve any profit, return \`0\`.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` representing the number of days.
+      standardInput: `• Line 1: An integer \`N\`, the number of days.
 • Line 2: \`N\` space-separated integers representing stock prices on each day.`,
       explanation: "Read the number of days N, then the sequence of daily stock prices."
     },
     outputFormat: {
       standardOutput: "Print the maximum profit integer on a single line.",
-      explanation: "A single non-negative integer representing maximum profit."
+      explanation: "A single integer representing the maximum achievable profit (0 if no profit is possible)."
     },
     constraints: [
-      "1 <= N <= 10^5",
+      "1 <= prices.length <= 10^5",
       "0 <= prices[i] <= 10^4",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
@@ -241,13 +243,13 @@ You want to maximize your profit by choosing a single day to buy one stock and c
         id: 1,
         input: "6\n7 1 5 3 6 4",
         output: "5",
-        explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5."
+        explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5. Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell."
       },
       {
         id: 2,
         input: "5\n7 6 4 3 1",
         output: "0",
-        explanation: "Prices continually decrease. No profitable trade is possible, so max profit = 0."
+        explanation: "In this case, no transactions are done and the max profit = 0."
       }
     ],
     starterCode: `import sys
@@ -283,22 +285,22 @@ if __name__ == '__main__':
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Bit Manipulation",
-    statement: `Given a non-empty array of integers \`nums\`, every element appears **twice** except for one unique element. Find and output that single element.
+    statement: `Given a **non-empty** array of integers \`nums\`, every element appears *twice* except for one. Find that single one.
 
-Your solution must run in **linear runtime complexity** (\`O(N)\`) and use only **constant extra space** (\`O(1)\`).`,
+You must implement a solution with a **linear runtime complexity** and use only **constant extra space**.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of elements).
-• Line 2: \`N\` space-separated integers.`,
+      standardInput: `• Line 1: An integer \`N\`, the number of elements.
+• Line 2: \`N\` space-separated integers representing \`nums\`.`,
       explanation: "Read array size N followed by the N integers."
     },
     outputFormat: {
-      standardOutput: "Print the single unique integer on a single line.",
-      explanation: "A single integer value."
+      standardOutput: "Print the single element that appears only once.",
+      explanation: "A single integer value printed on a single line."
     },
     constraints: [
-      "1 <= N <= 3 * 10^4",
+      "1 <= nums.length <= 3 * 10^4",
       "-3 * 10^4 <= nums[i] <= 3 * 10^4",
-      "Each element appears twice except for one element which appears once.",
+      "Each element in the array appears twice except for one element which appears only once.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -313,13 +315,13 @@ Your solution must run in **linear runtime complexity** (\`O(N)\`) and use only 
         id: 2,
         input: "5\n4 1 2 1 2",
         output: "4",
-        explanation: "1 and 2 appear twice; 4 appears once."
+        explanation: "Elements 1 and 2 appear twice; 4 appears once."
       },
       {
         id: 3,
         input: "1\n1",
         output: "1",
-        explanation: "Single element array."
+        explanation: "Array contains only one element."
       }
     ],
     starterCode: `import sys
@@ -341,7 +343,7 @@ def solve():
 if __name__ == '__main__':
     solve()
 `,
-    notes: "XOR of two identical numbers is 0 (`x ^ x = 0`) and `x ^ 0 = x`. XORing all numbers isolates the unique number."
+    notes: "XOR of two identical numbers is 0 (`x ^ x = 0`) and `x ^ 0 = x`. XORing all numbers isolates the unique number in O(N) time and O(1) space."
   },
 
   "6": {
@@ -350,22 +352,22 @@ if __name__ == '__main__':
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Hashing",
-    statement: `Given an array of strings \`strs\`, group the **anagrams** together.
+    statement: `Given an array of strings \`strs\`, group the **anagrams** together. You can return the answer in **any order**.
 
-An **Anagram** is a word formed by rearranging the letters of another word using all original characters exactly once.`,
+An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of strings).
-• Line 2: \`N\` space-separated strings.`,
+      standardInput: `• Line 1: An integer \`N\`, the number of strings in \`strs\`.
+• Line 2: \`N\` space-separated strings representing \`strs\`.`,
       explanation: "Read the count N, then N space-separated lowercase words."
     },
     outputFormat: {
-      standardOutput: "Print the grouped anagrams as a 2D JSON array `[[\"...\"]]` or one group per line.",
-      explanation: "A 2D array representation containing groups of anagrams."
+      standardOutput: "Print the grouped anagrams formatted as a 2D JSON array `[[\"...\"]]`.",
+      explanation: "A 2D array containing lists of anagram groups."
     },
     constraints: [
-      "1 <= N <= 10^4",
-      "0 <= len(strs[i]) <= 100",
-      "Strings contain lowercase English letters.",
+      "1 <= strs.length <= 10^4",
+      "0 <= strs[i].length <= 100",
+      "`strs[i]` consists of lowercase English letters.",
       "Time Limit: 1.5s",
       "Memory Limit: 256 MB"
     ],
@@ -374,13 +376,13 @@ An **Anagram** is a word formed by rearranging the letters of another word using
         id: 1,
         input: "6\neat tea tan ate nat bat",
         output: '[["ate", "eat", "tea"], ["bat"], ["nat", "tan"]]',
-        explanation: 'Strings sharing the same character multiset are grouped together.'
+        explanation: 'Strings sharing the same character frequencies are grouped together.'
       },
       {
         id: 2,
         input: "1\na",
         output: '[["a"]]',
-        explanation: "Single character word forms a single group."
+        explanation: "A single word forms a single group."
       }
     ],
     starterCode: `import sys
@@ -416,23 +418,22 @@ if __name__ == '__main__':
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Heap / Bucket Sort",
-    statement: `Given an integer array \`nums\` and an integer \`k\`, return the \`k\` **most frequent elements**.
-
-It is guaranteed that the answer is **unique** (the set of top k elements is unambiguous).`,
+    statement: `Given an integer array \`nums\` and an integer \`k\`, return the \`k\` **most frequent elements**. You may return the answer in **any order**.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of elements).
+      standardInput: `• Line 1: An integer \`N\`, the size of array \`nums\`.
 • Line 2: \`N\` space-separated integers representing \`nums\`.
 • Line 3: An integer \`k\`.`,
       explanation: "Line 1 has array size N, Line 2 has array elements, and Line 3 has integer k."
     },
     outputFormat: {
-      standardOutput: "Print the `k` most frequent integers separated by a space on a single line.",
-      explanation: "K space-separated integers in any order."
+      standardOutput: "Print the `k` most frequent elements separated by a space on a single line.",
+      explanation: "K space-separated integers."
     },
     constraints: [
-      "1 <= N <= 10^5",
+      "1 <= nums.length <= 10^5",
       "-10^4 <= nums[i] <= 10^4",
-      "1 <= k <= number of unique elements",
+      "`k` is in the range `[1, the number of unique elements in the array]`.",
+      "It is guaranteed that the answer is unique.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -441,7 +442,7 @@ It is guaranteed that the answer is **unique** (the set of top k elements is una
         id: 1,
         input: "6\n1 1 1 2 2 3\n2",
         output: "1 2",
-        explanation: "Element 1 appears 3 times, 2 appears 2 times, and 3 appears 1 time. Top 2 frequent elements are 1 and 2."
+        explanation: "Element 1 appears 3 times, 2 appears 2 times, and 3 appears 1 time. The 2 most frequent elements are 1 and 2."
       },
       {
         id: 2,
@@ -478,22 +479,24 @@ if __name__ == '__main__':
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Prefix / Suffix Products",
-    statement: `Given an integer array \`nums\`, return an array \`answer\` such that \`answer[i]\` is equal to the product of all elements of \`nums\` except \`nums[i]\`.
+    statement: `Given an integer array \`nums\`, return an array \`answer\` such that \`answer[i]\` is equal to the product of all the elements of \`nums\` except \`nums[i]\`.
 
-You must write an algorithm that runs in **\`O(N)\`** time and **without using division**.`,
+The product of any prefix or suffix of \`nums\` is **guaranteed** to fit in a **32-bit** integer.
+
+You must write an algorithm that runs in **\`O(N)\`** time and **without using the division operation**.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of elements).
-• Line 2: \`N\` space-separated integers.`,
+      standardInput: `• Line 1: An integer \`N\`, the size of array \`nums\`.
+• Line 2: \`N\` space-separated integers representing \`nums\`.`,
       explanation: "Read array size N followed by N integers on the second line."
     },
     outputFormat: {
-      standardOutput: "Print \`N\` space-separated integers representing the resulting product array.",
+      standardOutput: "Print `N` space-separated integers representing the resulting product array `answer`.",
       explanation: "N space-separated integers on a single line."
     },
     constraints: [
-      "2 <= N <= 10^5",
+      "2 <= nums.length <= 10^5",
       "-30 <= nums[i] <= 30",
-      "Product of any prefix or suffix is guaranteed to fit in 32-bit integer.",
+      "The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.",
       "Division operation is strictly disallowed.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
@@ -503,13 +506,13 @@ You must write an algorithm that runs in **\`O(N)\`** time and **without using d
         id: 1,
         input: "4\n1 2 3 4",
         output: "24 12 8 6",
-        explanation: "2*3*4 = 24, 1*3*4 = 12, 1*2*4 = 8, 1*2*3 = 6."
+        explanation: "answer[0] = 2*3*4 = 24, answer[1] = 1*3*4 = 12, answer[2] = 1*2*4 = 8, answer[3] = 1*2*3 = 6."
       },
       {
         id: 2,
         input: "5\n-1 1 0 -3 3",
         output: "0 0 9 0 0",
-        explanation: "Product at index 2 is (-1)*1*(-3)*3 = 9. All other products include 0."
+        explanation: "answer[2] is (-1)*1*(-3)*3 = 9. All other products include 0."
       }
     ],
     starterCode: `import sys
@@ -553,18 +556,22 @@ if __name__ == '__main__':
 2. Each column must contain the digits \`1-9\` without repetition.
 3. Each of the nine \`3 x 3\` sub-boxes of the grid must contain the digits \`1-9\` without repetition.
 
-Empty cells are represented by the character \`"."\`.`,
+**Note:**
+- A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+- Only the filled cells need to be validated according to the mentioned rules.
+- Empty cells are represented by the character \`"."\`.`,
     inputFormat: {
       standardInput: `• 9 lines, each containing 9 space-separated characters (digits '1'-'9' or '.').`,
-      explanation: "A 9x9 matrix of board characters."
+      explanation: "A 9x9 matrix of board characters representing the Sudoku board."
     },
     outputFormat: {
       standardOutput: "Print `true` if the board is valid; otherwise print `false`.",
       explanation: "A single boolean string 'true' or 'false'."
     },
     constraints: [
-      "Board is strictly 9 x 9.",
-      "Each character is a digit '1'-'9' or '.'.",
+      "board.length == 9",
+      "board[i].length == 9",
+      "board[i][j] is a digit '1'-'9' or '.'.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -640,11 +647,11 @@ if __name__ == '__main__':
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "String Manipulation",
-    statement: `Design an algorithm to **encode** a list of strings to a single string, and **decode** that string back to the original list of strings.
+    statement: `Design an algorithm to **encode** a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
 
-The encoded string is transmitted across the network and decoded. You must ensure the decoding reconstructs the original strings even if they contain delimiters or special characters.`,
+Please implement \`encode\` and \`decode\` functions.`,
     inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of strings).
+      standardInput: `• Line 1: An integer \`N\`, the number of strings.
 • Line 2: \`N\` space-separated strings.`,
       explanation: "Read count N followed by the sequence of words."
     },
@@ -653,9 +660,9 @@ The encoded string is transmitted across the network and decoded. You must ensur
       explanation: "A JSON array of decoded strings."
     },
     constraints: [
-      "0 <= N <= 200",
-      "0 <= len(strs[i]) <= 200",
-      "strs[i] contains any valid ASCII characters.",
+      "0 <= strs.length <= 200",
+      "0 <= strs[i].length <= 200",
+      "`strs[i]` contains any possible characters out of 256 valid ASCII characters.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
@@ -713,85 +720,12 @@ if __name__ == '__main__':
     solve()
 `,
     notes: "Length-prefix encoding (e.g. `<length>#<string>`) guarantees stateless, unambiguous parsing in O(N) time."
-  },
-
-  "11": {
-    id: 11,
-    title: "Longest Consecutive Sequence",
-    difficulty: "Medium",
-    topic: "Arrays & Hashing",
-    pattern: "Hash Set",
-    statement: `Given an unsorted array of integers \`nums\`, find the **length of the longest consecutive elements sequence**.
-
-Your algorithm must run in **\`O(N)\`** time complexity.`,
-    inputFormat: {
-      standardInput: `• Line 1: An integer \`N\` (number of elements in the array).
-• Line 2: \`N\` space-separated integers representing \`nums\`.`,
-      explanation: "Read array size N followed by the N integers."
-    },
-    outputFormat: {
-      standardOutput: "Print a single integer representing the length of the longest consecutive sequence.",
-      explanation: "A single integer length value."
-    },
-    constraints: [
-      "0 <= N <= 10^5",
-      "-10^9 <= nums[i] <= 10^9",
-      "Time Complexity Target: Strictly O(N)",
-      "Time Limit: 1.0s",
-      "Memory Limit: 256 MB"
-    ],
-    examples: [
-      {
-        id: 1,
-        input: "6\n100 4 200 1 3 2",
-        output: "4",
-        explanation: "The longest consecutive elements sequence is [1, 2, 3, 4] with length 4."
-      },
-      {
-        id: 2,
-        input: "10\n0 3 7 2 5 8 4 6 0 1",
-        output: "9",
-        explanation: "The longest consecutive sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8] with length 9."
-      }
-    ],
-    starterCode: `import sys
-
-def solve():
-    tokens = sys.stdin.read().split()
-    if not tokens:
-        print(0)
-        return
-    
-    n = int(tokens[0])
-    if n == 0:
-        print(0)
-        return
-        
-    nums = [int(x) for x in tokens[1:n+1]]
-    num_set = set(nums)
-    longest = 0
-    
-    for num in num_set:
-        if (num - 1) not in num_set:
-            current = num
-            streak = 1
-            while (current + 1) in num_set:
-                current += 1
-                streak += 1
-            longest = max(longest, streak)
-            
-    print(longest)
-
-if __name__ == '__main__':
-    solve()
-`,
-    notes: "Only starts traversing from sequence origins (`num - 1 not in set`), visiting each number at most twice for O(N) total time."
   }
 };
 
 /**
  * Returns formatted problem description with standard Online Judge layout.
- * Dynamic fallback generator ensures questions 12-305 have full structure.
+ * Dynamic fallback generator ensures questions 11-305 have full structure.
  */
 export function getProblemDescription(id, question, testSuite = null) {
   const strId = String(id);
@@ -799,7 +733,6 @@ export function getProblemDescription(id, question, testSuite = null) {
     return DETAILED_PROBLEM_DESCRIPTIONS[strId];
   }
 
-  // Dynamic Fallback generator for questions 12-305
   const name = question?.name || "Problem " + id;
   const topic = question?.topic || "Data Structures & Algorithms";
   const difficulty = question?.difficulty || "Medium";
