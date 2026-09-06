@@ -13,7 +13,7 @@ Includes **305 curated LeetCode problems** organized into a sequential **60-Day 
 - **60-Day Curated Curriculum**: Logically sequenced roadmap where **Strings** is placed directly in the foundation (Days 6–10) following **Arrays & Hashing**, leading into Two Pointers, Sliding Window, Trees, Graphs, and Dynamic Programming.
 - **Spaced Repetition System (SRS)**: Scientific review scheduling across expanding intervals (1d ➔ 3d ➔ 7d ➔ 14d ➔ 30d) with a dedicated **"Due for Review Today"** queue to build lasting pattern retention.
 - **Syntax-Highlighted Solution Vault**: Store your clean solutions in Java, Python, C++, JavaScript, Go, Rust, or C# with code syntax highlighting, line numbers, and one-click copy.
-- **GitHub-Style Contribution Heatmap**: Visual 20-week study activity grid with current streak and longest streak counters to maintain daily consistency.
+- **GitHub-Style Contribution Heatmap**: Visual full-year (Jan–Dec) study activity grid with multi-year history navigation (starting from 2026), current streak, best streak counters, and smooth horizontal scrolling.
 - **Global Command Palette (`Ctrl + K` / `Cmd + K`)**: Instant fuzzy search across problems, patterns, topics, days, and fast tab navigation shortcuts.
 - **Data Backup & Export**: One-click download of your entire progress as JSON (with restore capability) or CSV spreadsheet (compatible with Excel and Google Sheets).
 - **Random Problem Roulette**: Quick practice generator that picks an unsolved problem to simulate unpredictable interview questions.

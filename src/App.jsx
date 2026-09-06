@@ -326,21 +326,65 @@ export default function App() {
     });
 
     const today = new Date();
+    const formatLocal = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+    const todayStr = formatLocal(today);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const yesterdayStr = formatLocal(yesterday);
+
     let streak = 0;
-    const todayStr = today.toISOString().split('T')[0];
-    if (dateCounts[todayStr]) streak++;
-    for (let i = 1; i <= 365; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const s = d.toISOString().split('T')[0];
-      if (dateCounts[s]) streak++;
-      else break;
+    if (dateCounts[todayStr]) {
+      streak = 1;
+      let checkDate = new Date(today);
+      for (let i = 1; i <= 1000; i++) {
+        checkDate.setDate(today.getDate() - i);
+        const s = formatLocal(checkDate);
+        if (dateCounts[s]) streak++;
+        else break;
+      }
+    } else if (dateCounts[yesterdayStr]) {
+      streak = 1;
+      let checkDate = new Date(yesterday);
+      for (let i = 1; i <= 1000; i++) {
+        checkDate.setDate(yesterday.getDate() - i);
+        const s = formatLocal(checkDate);
+        if (dateCounts[s]) streak++;
+        else break;
+      }
     }
+
+    // Longest streak calculation
+    const sortedDates = Object.keys(dateCounts).sort();
+    let maxStreak = 0;
+    let tempStreak = 0;
+    let prevDate = null;
+
+    sortedDates.forEach(dStr => {
+      const parts = dStr.split('-').map(Number);
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      if (prevDate) {
+        const diffDays = Math.round((d.getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+          tempStreak++;
+        } else if (diffDays > 1) {
+          tempStreak = 1;
+        }
+      } else {
+        tempStreak = 1;
+      }
+      if (tempStreak > maxStreak) maxStreak = tempStreak;
+      prevDate = d;
+    });
 
     return {
       solved,
       streak,
-      maxStreak: Math.max(streak, 1),
+      maxStreak: Math.max(maxStreak, streak),
       easy,
       med,
       hard,
