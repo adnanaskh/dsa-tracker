@@ -41,12 +41,11 @@ import {
   Trash2,
   ArrowLeft
 } from 'lucide-react';
-import { runPythonTests } from '../utils/pyodideRunner';
+import { runCodeTests, SUPPORTED_LANGUAGES } from '../utils/codeRunner';
 import { getProblemTestSuite } from '../data/testCasesData';
 import { getProblemDescription } from '../data/problemDescriptionsData';
 import { getEditorialSolution } from '../data/solutionsData';
-
-const DEFAULT_CLEAN_PLACEHOLDER = `# Write your code here\n`;
+import { getStarterTemplate } from '../data/languageTemplates';
 
 export default function CodePlaygroundModal({
   isOpen,
@@ -75,7 +74,7 @@ export default function CodePlaygroundModal({
   // Left Pane Active Tab: 'description' | 'editorial' | 'submissions'
   const [leftTab, setLeftTab] = useState('description');
 
-  // Selected Language: 'python3' | 'python'
+  // Selected Language: 'python3' | 'java' | 'cpp' | 'javascript'
   const [selectedLanguage, setSelectedLanguage] = useState('python3');
 
   // Dynamic Workspace Layout State
@@ -87,7 +86,7 @@ export default function CodePlaygroundModal({
   const [isConsoleMinimized, setIsConsoleMinimized] = useState(false);
   const [isLeftCollapsed, setIsLeftCollapsed] = useState(false);
 
-  const [code, setCode] = useState(DEFAULT_CLEAN_PLACEHOLDER);
+  const [code, setCode] = useState('');
   const [activeConsoleTab, setActiveConsoleTab] = useState('testcases'); // 'testcases' | 'result'
   const [selectedCaseIdx, setSelectedCaseIdx] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -110,22 +109,35 @@ export default function CodePlaygroundModal({
   const isDraggingHorizontal = useRef(false);
   const isDraggingVertical = useRef(false);
 
+  // Helper to format language display name
+  const getLangName = (langId) => {
+    const found = SUPPORTED_LANGUAGES.find(l => l.id === langId);
+    return found ? found.name : (langId === 'cpp' ? 'C++' : langId === 'java' ? 'Java' : 'Python 3');
+  };
+
   // Initialize clean code and load latest saved version or submission history
   useEffect(() => {
     if (isOpen && question && testSuite) {
-      // 1. Check if user already has saved code in localStorage
-      const localSaved = localStorage.getItem(`dsa_user_code_${question.id}`);
-      let codeToUse = DEFAULT_CLEAN_PLACEHOLDER;
+      // 1. Check if user already has saved code for current language in localStorage
+      const langSaved = localStorage.getItem(`dsa_user_code_${question.id}_${selectedLanguage}`);
+      const legacySaved = localStorage.getItem(`dsa_user_code_${question.id}`);
+      
+      let codeToUse = '';
 
-      if (localSaved && localSaved.trim().length > 0) {
-        codeToUse = localSaved;
+      if (langSaved && langSaved.trim().length > 0) {
+        codeToUse = langSaved;
+      } else if (selectedLanguage === 'python3' && legacySaved && legacySaved.trim().length > 0) {
+        codeToUse = legacySaved;
       } else if (
+        selectedLanguage === 'python3' &&
         initialCode &&
         initialCode.trim().length > 0 &&
         !initialCode.includes('class Solution:\n    def ') &&
         !initialCode.includes('def solve():\n    pass')
       ) {
         codeToUse = initialCode;
+      } else {
+        codeToUse = getStarterTemplate(selectedLanguage, question, testSuite);
       }
 
       setCode(codeToUse);
@@ -166,13 +178,41 @@ export default function CodePlaygroundModal({
         setSubmissions([]);
       }
     }
-  }, [isOpen, question, testSuite, initialCode]);
+  }, [isOpen, question, testSuite]);
+
+  // Handle switching language in IDE
+  const handleLanguageChange = (newLang) => {
+    if (newLang === selectedLanguage) return;
+    
+    // 1. Save current code in localStorage
+    if (question && code) {
+      try {
+        localStorage.setItem(`dsa_user_code_${question.id}_${selectedLanguage}`, code);
+      } catch (e) {}
+    }
+
+    // 2. Load code for target language
+    const targetSaved = localStorage.getItem(`dsa_user_code_${question.id}_${newLang}`);
+    if (targetSaved && targetSaved.trim().length > 0) {
+      setCode(targetSaved);
+    } else {
+      const template = getStarterTemplate(newLang, question, testSuite);
+      setCode(template);
+    }
+
+    setSelectedLanguage(newLang);
+    setRunResult(null);
+    setSubmitResult(null);
+  };
 
   // Save code helper
   const handleSaveCode = useCallback((codeToSave = code, showToast = true) => {
     if (!question) return;
     try {
-      localStorage.setItem(`dsa_user_code_${question.id}`, codeToSave);
+      localStorage.setItem(`dsa_user_code_${question.id}_${selectedLanguage}`, codeToSave);
+      if (selectedLanguage === 'python3') {
+        localStorage.setItem(`dsa_user_code_${question.id}`, codeToSave);
+      }
     } catch (e) {
       console.error('Failed to save code to localStorage', e);
     }
@@ -181,12 +221,11 @@ export default function CodePlaygroundModal({
       setSaveToast(true);
       setTimeout(() => setSaveToast(false), 2000);
     }
-  }, [code, question, onSaveCode]);
+  }, [code, question, selectedLanguage, onSaveCode]);
 
   // Debounced auto-save on code change (1.5s after user stops typing)
   useEffect(() => {
-    if (!isOpen || !question) return;
-    if (code === DEFAULT_CLEAN_PLACEHOLDER) return;
+    if (!isOpen || !question || !code) return;
 
     const timer = setTimeout(() => {
       handleSaveCode(code, false);
@@ -302,9 +341,18 @@ export default function CodePlaygroundModal({
   const allCases = [...sampleCases, ...hiddenCases];
 
   const handleResetCode = () => {
-    if (window.confirm('Clear editor and start fresh? Any unsaved edits will be cleared.')) {
-      setCode(DEFAULT_CLEAN_PLACEHOLDER);
-      handleSaveCode(DEFAULT_CLEAN_PLACEHOLDER, true);
+    if (window.confirm(`Clear editor and start fresh for ${getLangName(selectedLanguage)}? Any unsaved edits will be cleared.`)) {
+      const freshTemplate = getStarterTemplate(selectedLanguage, question, testSuite);
+      setCode(freshTemplate);
+      handleSaveCode(freshTemplate, true);
+    }
+  };
+
+  const handleLoadStarterTemplate = () => {
+    if (window.confirm(`Load clean starter boilerplate for ${getLangName(selectedLanguage)}?`)) {
+      const freshTemplate = getStarterTemplate(selectedLanguage, question, testSuite);
+      setCode(freshTemplate);
+      handleSaveCode(freshTemplate, true);
     }
   };
 
@@ -330,13 +378,14 @@ export default function CodePlaygroundModal({
     if (isConsoleMinimized) setIsConsoleMinimized(false);
 
     try {
-      const result = await runPythonTests(code, testSuite.methodName, sampleCases);
+      const result = await runCodeTests(selectedLanguage, code, testSuite.methodName, sampleCases);
       setRunResult(result);
     } catch (err) {
       setRunResult({
         allPassed: false,
         results: [],
         totalTimeMs: 0,
+        compileError: null,
         error: err.message
       });
     } finally {
@@ -353,7 +402,7 @@ export default function CodePlaygroundModal({
     if (isConsoleMinimized) setIsConsoleMinimized(false);
 
     try {
-      const result = await runPythonTests(code, testSuite.methodName, allCases);
+      const result = await runCodeTests(selectedLanguage, code, testSuite.methodName, allCases);
       setSubmitResult(result);
 
       // Record new submission entry
@@ -363,12 +412,12 @@ export default function CodePlaygroundModal({
         timestamp: now.toISOString(),
         formattedDate: now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
         formattedTime: now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
-        status: result.allPassed ? 'Accepted' : (result.error ? 'Runtime Error' : 'Wrong Answer'),
+        status: result.allPassed ? 'Accepted' : (result.compileError ? 'Compile Error' : (result.error ? 'Runtime Error' : 'Wrong Answer')),
         allPassed: result.allPassed,
         passedCount: result.results ? result.results.filter(r => r.passed).length : 0,
         totalCount: result.results ? result.results.length : allCases.length,
         runtimeMs: result.totalTimeMs || 0,
-        language: selectedLanguage === 'python' ? 'Python' : 'Python 3',
+        language: getLangName(selectedLanguage),
         code: code
       };
 
@@ -395,7 +444,7 @@ export default function CodePlaygroundModal({
         passedCount: 0,
         totalCount: allCases.length,
         runtimeMs: 0,
-        language: selectedLanguage === 'python' ? 'Python' : 'Python 3',
+        language: getLangName(selectedLanguage),
         code: code,
         error: err.message
       };
@@ -411,6 +460,7 @@ export default function CodePlaygroundModal({
         allPassed: false,
         results: [],
         totalTimeMs: 0,
+        compileError: null,
         error: err.message
       });
     } finally {
@@ -887,6 +937,10 @@ export default function CodePlaygroundModal({
                                       <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
                                         ({sub.passedCount ?? (sub.allPassed ? allCases.length : 0)}/{sub.totalCount || allCases.length} passed)
                                       </span>
+
+                                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
+                                        {sub.language || 'Python 3'}
+                                      </span>
                                     </div>
 
                                     {/* Date & Time Timestamp */}
@@ -1019,12 +1073,25 @@ export default function CodePlaygroundModal({
                   {/* Language Selector */}
                   <select
                     value={selectedLanguage}
-                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
                     className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold rounded px-2 py-0.5 outline-none cursor-pointer hover:border-slate-600"
                   >
-                    <option value="python3">Python 3 (CPython 3.11)</option>
-                    <option value="python">Python</option>
+                    <option value="python3">🐍 Python 3 (Pyodide WASM)</option>
+                    <option value="java">☕ Java (OpenJDK 17)</option>
+                    <option value="cpp">⚙️ C++ (GCC C++17)</option>
+                    <option value="javascript">📜 JavaScript (Node.js)</option>
                   </select>
+
+                  {/* Starter Code / Boilerplate Reset */}
+                  <button
+                    type="button"
+                    onClick={handleLoadStarterTemplate}
+                    className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer text-[11px] font-bold flex items-center gap-1"
+                    title={`Load clean starter template for ${getLangName(selectedLanguage)}`}
+                  >
+                    <Sparkles className="w-3 h-3 text-amber-400" />
+                    <span className="hidden sm:inline">Starter Code</span>
+                  </button>
 
                   {/* Saved Status Indicator */}
                   {saveToast && (
@@ -1240,17 +1307,38 @@ export default function CodePlaygroundModal({
                         <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
                           <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
                           <p className="font-bold text-xs text-gray-800 dark:text-slate-200">
-                            {isSubmitting ? 'Evaluating All Test Cases...' : 'Executing in Python Sandbox (Pyodide Wasm)...'}
+                            {isSubmitting
+                              ? `Evaluating All Test Cases (${getLangName(selectedLanguage)})...`
+                              : selectedLanguage === 'java'
+                              ? 'Compiling & Executing Java (OpenJDK)...'
+                              : selectedLanguage === 'cpp'
+                              ? 'Compiling & Executing C++ (GCC C++17)...'
+                              : selectedLanguage === 'javascript'
+                              ? 'Executing in Node.js Runtime...'
+                              : 'Executing in Python Sandbox (Pyodide Wasm)...'}
                           </p>
                         </div>
                       )}
 
-                      {/* Syntax / Runtime Error */}
-                      {!isEvaluating && activeResult && activeResult.error && (
+                      {/* Compilation Error Card */}
+                      {!isEvaluating && activeResult && activeResult.compileError && (
+                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 text-xs space-y-1.5">
+                          <div className="font-bold flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
+                            <AlertTriangle className="w-4 h-4 shrink-0" />
+                            <span>Compilation Error ({getLangName(selectedLanguage)})</span>
+                          </div>
+                          <pre className="p-2.5 rounded-lg bg-slate-900 text-amber-300 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px] border border-amber-900/60">
+                            {activeResult.compileError}
+                          </pre>
+                        </div>
+                      )}
+
+                      {/* Runtime / Execution Error */}
+                      {!isEvaluating && activeResult && !activeResult.compileError && activeResult.error && (
                         <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200 text-xs space-y-1">
-                          <div className="font-bold flex items-center gap-1.5">
+                          <div className="font-bold flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
                             <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
-                            <span>Runtime / Syntax Error</span>
+                            <span>Runtime Error</span>
                           </div>
                           <pre className="p-2 rounded-lg bg-rose-100/70 dark:bg-rose-950 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px]">
                             {activeResult.error}
