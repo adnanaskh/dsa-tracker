@@ -998,26 +998,27 @@ export default function App() {
     }
   };
 
-  // Google Sign In
+  // Google Sign In & Fresh Cloud Data Fetch
   const handleGoogleSignIn = async () => {
     setAuthError(null);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      // Auto-sync guest records to cloud
-      if (result.user) {
-        const uid = result.user.uid;
-        // Push local questionsProgress if present
-        Object.entries(questionsProgress).forEach(async ([k, v]) => {
-          await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'questionsProgress', String(k)), v, { merge: true });
-        });
-        // Push solutions
-        Object.entries(solutions).forEach(async ([k, v]) => {
-          await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'solutions', String(k)), v, { merge: true });
-        });
-        // Push revision logs
-        Object.entries(revisionLogs).forEach(async ([k, v]) => {
-          await setDoc(doc(db, 'artifacts', appId, 'users', uid, 'revisionLogs', String(k)), v, { merge: true });
-        });
+      if (result && result.user) {
+        // Clear stale local guest cache before fetching fresh cloud data
+        try {
+          const keysToRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('dsa_') || key.startsWith('firebase:') || key.startsWith('artifact_'))) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach(k => localStorage.removeItem(k));
+          sessionStorage.clear();
+        } catch {}
+
+        // Reload site to establish fresh connection and load all fresh data from Firestore
+        window.location.reload();
       }
     } catch (err) {
       console.error("Sign-in error:", err);
@@ -1025,10 +1026,10 @@ export default function App() {
     }
   };
 
-  // Sign Out & Comprehensive Cache / Storage Purge
+  // Sign Out: First Sign Out, Then Clear All Cache & Storage, Then Reload Site
   const handleSignOut = async () => {
     try {
-      // 1. Sign out from Firebase Auth
+      // 1. First sign out from Firebase Auth
       await signOut(auth);
 
       // 2. Clear all in-memory user progress and customized profile state
@@ -1083,8 +1084,13 @@ export default function App() {
         }
       } catch {}
 
+      // 7. Reload site to start with a completely fresh and clean state
+      window.location.reload();
+
     } catch (err) {
       console.error("Sign-out error:", err);
+      // Reload anyway to guarantee clean UI state
+      window.location.reload();
     }
   };
 
