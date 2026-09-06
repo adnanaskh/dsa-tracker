@@ -193,22 +193,6 @@ export default function App() {
     } catch {}
   }, []);
 
-  // Open Code Playground & auto-mark In Progress if currently Todo or Not Started
-  const handleOpenPlayground = useCallback((q) => {
-    if (!q) return;
-    setActivePlaygroundQuestion(q);
-    const prog = questionsProgress[q.id] || {};
-    if (!prog.status || prog.status === '❌ Todo' || prog.status === 'Todo') {
-      const now = new Date().toISOString();
-      saveData('questionsProgress', q.id, {
-        ...prog,
-        status: '🟡 In Progress',
-        startedAt: prog.startedAt || now,
-        lastModified: now
-      });
-    }
-  }, [questionsProgress, saveData]);
-
   // Deep-Linking Handler for Editorial (?solution=two-sum) and Public Profiles (https://dsa.adnanahmad.tech/username or ?u=username)
   useEffect(() => {
     try {
@@ -977,6 +961,22 @@ export default function App() {
       }
     }
   }, [user]);
+
+  // Open Code Playground & auto-mark In Progress if currently Todo or Not Started
+  const handleOpenPlayground = useCallback((q) => {
+    if (!q) return;
+    setActivePlaygroundQuestion(q);
+    const prog = questionsProgress[q.id] || {};
+    if (!prog.status || prog.status === '❌ Todo' || prog.status === 'Todo') {
+      const now = new Date().toISOString();
+      saveData('questionsProgress', q.id, {
+        ...prog,
+        status: '🟡 In Progress',
+        startedAt: prog.startedAt || now,
+        lastModified: now
+      });
+    }
+  }, [questionsProgress, saveData]);
 
   // Restore imported backup
   const handleRestoreData = (backupData) => {
