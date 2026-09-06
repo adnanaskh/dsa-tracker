@@ -263,7 +263,27 @@ export default function EditorialModal({
             </div>
           </div>
 
-          {/* Section 3: Complete Python 3 Code Implementation */}
+          {/* Section 3: Step-by-Step Algorithm Walkthrough (GFG Style) */}
+          {editorial.algorithmSteps && editorial.algorithmSteps.length > 0 && (
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-800 space-y-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white flex items-center gap-1.5 mb-2">
+                <Layers className="w-4 h-4 text-indigo-500" />
+                Step-by-Step Algorithm Walkthrough
+              </h3>
+              <ol className="space-y-1.5 text-xs text-gray-700 dark:text-slate-300">
+                {editorial.algorithmSteps.map((step, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      {idx + 1}
+                    </span>
+                    <span className="leading-relaxed flex-1">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {/* Section 4: Complete Python 3 Code Implementation */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -310,7 +330,7 @@ export default function EditorialModal({
             </div>
           </div>
 
-          {/* Section 4: Complexity Analysis */}
+          {/* Section 5: Complexity Analysis */}
           <div className="space-y-3">
             <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-purple-500" />
@@ -339,7 +359,7 @@ export default function EditorialModal({
             </div>
           </div>
 
-          {/* Section 5: Edge Cases & Pitfalls */}
+          {/* Section 6: Edge Cases & Pitfalls */}
           {editorial.edgeCases && editorial.edgeCases.length > 0 && (
             <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40">
               <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300 flex items-center gap-1.5 mb-2">
@@ -354,12 +374,12 @@ export default function EditorialModal({
             </div>
           )}
 
-          {/* Section 6: FAANG Interview Tips */}
+          {/* Section 7: Technical Interview Tips */}
           {editorial.interviewTips && (
             <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40">
               <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5 mb-1.5">
                 <Flame className="w-4 h-4 text-emerald-600" />
-                FAANG Interview Pro Tip
+                Interview Insights & Trade-offs
               </h3>
               <p className="text-xs text-emerald-950 dark:text-emerald-200 leading-relaxed">
                 {editorial.interviewTips}
