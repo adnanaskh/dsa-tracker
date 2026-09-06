@@ -309,7 +309,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 281,
+    "id": 26,
     "day": 6,
     "topic": "Strings",
     "difficulty": "Easy",
@@ -318,7 +318,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 282,
+    "id": 27,
     "day": 6,
     "topic": "Strings",
     "difficulty": "Easy",
@@ -327,7 +327,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 283,
+    "id": 28,
     "day": 6,
     "topic": "Strings",
     "difficulty": "Easy",
@@ -336,7 +336,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hashing"
   },
   {
-    "id": 284,
+    "id": 29,
     "day": 6,
     "topic": "Strings",
     "difficulty": "Easy",
@@ -345,7 +345,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hash Map"
   },
   {
-    "id": 285,
+    "id": 30,
     "day": 6,
     "topic": "Strings",
     "difficulty": "Easy",
@@ -354,7 +354,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "String Traversal"
   },
   {
-    "id": 286,
+    "id": 31,
     "day": 7,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -363,7 +363,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 287,
+    "id": 32,
     "day": 7,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -372,7 +372,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 288,
+    "id": 33,
     "day": 7,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -381,7 +381,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window + Hash"
   },
   {
-    "id": 289,
+    "id": 34,
     "day": 7,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -390,7 +390,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 290,
+    "id": 35,
     "day": 7,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -399,7 +399,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Deque / Monotonic Queue"
   },
   {
-    "id": 291,
+    "id": 36,
     "day": 8,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -408,7 +408,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hashing"
   },
   {
-    "id": 292,
+    "id": 37,
     "day": 8,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -417,7 +417,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "String Design"
   },
   {
-    "id": 293,
+    "id": 38,
     "day": 8,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -426,7 +426,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Parsing"
   },
   {
-    "id": 294,
+    "id": 39,
     "day": 8,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -435,7 +435,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 295,
+    "id": 40,
     "day": 8,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -444,7 +444,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP / Recursion"
   },
   {
-    "id": 296,
+    "id": 41,
     "day": 9,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -453,7 +453,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Expand Around Center / DP"
   },
   {
-    "id": 297,
+    "id": 42,
     "day": 9,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -462,7 +462,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Expand Around Center"
   },
   {
-    "id": 298,
+    "id": 43,
     "day": 9,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -471,7 +471,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 299,
+    "id": 44,
     "day": 9,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -480,7 +480,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 300,
+    "id": 45,
     "day": 9,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -489,7 +489,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 301,
+    "id": 46,
     "day": 10,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -498,7 +498,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP / BFS"
   },
   {
-    "id": 302,
+    "id": 47,
     "day": 10,
     "topic": "Strings",
     "difficulty": "Medium",
@@ -507,7 +507,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 303,
+    "id": 48,
     "day": 10,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -516,7 +516,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 304,
+    "id": 49,
     "day": 10,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -525,7 +525,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "String + BFS"
   },
   {
-    "id": 305,
+    "id": 50,
     "day": 10,
     "topic": "Strings",
     "difficulty": "Hard",
@@ -534,7 +534,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack (String parsing variant)"
   },
   {
-    "id": 26,
+    "id": 51,
     "day": 11,
     "topic": "Two Pointers",
     "difficulty": "Easy",
@@ -543,7 +543,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 27,
+    "id": 52,
     "day": 11,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -552,7 +552,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 28,
+    "id": 53,
     "day": 11,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -561,7 +561,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 29,
+    "id": 54,
     "day": 11,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -570,7 +570,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 30,
+    "id": 55,
     "day": 11,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -579,7 +579,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 31,
+    "id": 56,
     "day": 12,
     "topic": "Two Pointers",
     "difficulty": "Easy",
@@ -588,7 +588,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 32,
+    "id": 57,
     "day": 12,
     "topic": "Two Pointers",
     "difficulty": "Easy",
@@ -597,7 +597,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 33,
+    "id": 58,
     "day": 12,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -606,7 +606,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 34,
+    "id": 59,
     "day": 12,
     "topic": "Two Pointers",
     "difficulty": "Hard",
@@ -615,7 +615,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 35,
+    "id": 60,
     "day": 12,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -624,7 +624,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 36,
+    "id": 61,
     "day": 13,
     "topic": "Two Pointers",
     "difficulty": "Easy",
@@ -633,7 +633,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer / Hash"
   },
   {
-    "id": 37,
+    "id": 62,
     "day": 13,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -642,7 +642,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer + Greedy"
   },
   {
-    "id": 38,
+    "id": 63,
     "day": 13,
     "topic": "Two Pointers",
     "difficulty": "Medium",
@@ -651,7 +651,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 39,
+    "id": 64,
     "day": 13,
     "topic": "Two Pointers",
     "difficulty": "Hard",
@@ -660,7 +660,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 40,
+    "id": 65,
     "day": 13,
     "topic": "Two Pointers",
     "difficulty": "Hard",
@@ -669,7 +669,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 41,
+    "id": 66,
     "day": 14,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -678,7 +678,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 42,
+    "id": 67,
     "day": 14,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -687,7 +687,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 43,
+    "id": 68,
     "day": 14,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -696,7 +696,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 44,
+    "id": 69,
     "day": 14,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -705,7 +705,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 45,
+    "id": 70,
     "day": 14,
     "topic": "Sliding Window",
     "difficulty": "Hard",
@@ -714,7 +714,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 46,
+    "id": 71,
     "day": 15,
     "topic": "Sliding Window",
     "difficulty": "Hard",
@@ -723,7 +723,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Deque / Monotonic Queue"
   },
   {
-    "id": 47,
+    "id": 72,
     "day": 15,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -732,7 +732,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 48,
+    "id": 73,
     "day": 15,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -741,7 +741,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 49,
+    "id": 74,
     "day": 15,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -750,7 +750,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 50,
+    "id": 75,
     "day": 15,
     "topic": "Sliding Window",
     "difficulty": "Hard",
@@ -759,7 +759,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 51,
+    "id": 76,
     "day": 16,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -768,7 +768,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 52,
+    "id": 77,
     "day": 16,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -777,7 +777,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 53,
+    "id": 78,
     "day": 16,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -786,7 +786,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window + Prefix"
   },
   {
-    "id": 54,
+    "id": 79,
     "day": 16,
     "topic": "Sliding Window",
     "difficulty": "Medium",
@@ -795,7 +795,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window"
   },
   {
-    "id": 55,
+    "id": 80,
     "day": 16,
     "topic": "Sliding Window",
     "difficulty": "Hard",
@@ -804,7 +804,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sliding Window + Greedy"
   },
   {
-    "id": 56,
+    "id": 81,
     "day": 17,
     "topic": "Stack",
     "difficulty": "Easy",
@@ -813,7 +813,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 57,
+    "id": 82,
     "day": 17,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -822,7 +822,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 58,
+    "id": 83,
     "day": 17,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -831,7 +831,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 59,
+    "id": 84,
     "day": 17,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -840,7 +840,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking / Stack"
   },
   {
-    "id": 60,
+    "id": 85,
     "day": 17,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -849,7 +849,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Monotonic Stack"
   },
   {
-    "id": 61,
+    "id": 86,
     "day": 18,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -858,7 +858,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Monotonic Stack"
   },
   {
-    "id": 62,
+    "id": 87,
     "day": 18,
     "topic": "Stack",
     "difficulty": "Hard",
@@ -867,7 +867,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Monotonic Stack"
   },
   {
-    "id": 63,
+    "id": 88,
     "day": 18,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -876,7 +876,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 64,
+    "id": 89,
     "day": 18,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -885,7 +885,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 65,
+    "id": 90,
     "day": 18,
     "topic": "Stack",
     "difficulty": "Hard",
@@ -894,7 +894,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack / DP"
   },
   {
-    "id": 66,
+    "id": 91,
     "day": 19,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -903,7 +903,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 67,
+    "id": 92,
     "day": 19,
     "topic": "Stack",
     "difficulty": "Hard",
@@ -912,7 +912,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 68,
+    "id": 93,
     "day": 19,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -921,7 +921,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Monotonic Stack"
   },
   {
-    "id": 69,
+    "id": 94,
     "day": 19,
     "topic": "Stack",
     "difficulty": "Medium",
@@ -930,7 +930,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Monotonic Stack"
   },
   {
-    "id": 70,
+    "id": 95,
     "day": 19,
     "topic": "Stack",
     "difficulty": "Hard",
@@ -939,7 +939,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy + Stack"
   },
   {
-    "id": 71,
+    "id": 96,
     "day": 20,
     "topic": "Binary Search",
     "difficulty": "Easy",
@@ -948,7 +948,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 72,
+    "id": 97,
     "day": 20,
     "topic": "Binary Search",
     "difficulty": "Easy",
@@ -957,7 +957,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 73,
+    "id": 98,
     "day": 20,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -966,7 +966,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 74,
+    "id": 99,
     "day": 20,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -975,7 +975,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search on Answer"
   },
   {
-    "id": 75,
+    "id": 100,
     "day": 20,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -984,7 +984,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 76,
+    "id": 101,
     "day": 21,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -993,7 +993,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 77,
+    "id": 102,
     "day": 21,
     "topic": "Binary Search",
     "difficulty": "Hard",
@@ -1002,7 +1002,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 78,
+    "id": 103,
     "day": 21,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -1011,7 +1011,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 79,
+    "id": 104,
     "day": 21,
     "topic": "Binary Search",
     "difficulty": "Hard",
@@ -1020,7 +1020,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 80,
+    "id": 105,
     "day": 21,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -1029,7 +1029,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search on Answer"
   },
   {
-    "id": 81,
+    "id": 106,
     "day": 22,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -1038,7 +1038,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 82,
+    "id": 107,
     "day": 22,
     "topic": "Binary Search",
     "difficulty": "Hard",
@@ -1047,7 +1047,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search + Greedy"
   },
   {
-    "id": 83,
+    "id": 108,
     "day": 22,
     "topic": "Binary Search",
     "difficulty": "Easy",
@@ -1056,7 +1056,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 84,
+    "id": 109,
     "day": 22,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -1065,7 +1065,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search / Merge Sort"
   },
   {
-    "id": 85,
+    "id": 110,
     "day": 22,
     "topic": "Binary Search",
     "difficulty": "Medium",
@@ -1074,7 +1074,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Binary Search"
   },
   {
-    "id": 86,
+    "id": 111,
     "day": 23,
     "topic": "Linked List",
     "difficulty": "Easy",
@@ -1083,7 +1083,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Iterative / Recursive"
   },
   {
-    "id": 87,
+    "id": 112,
     "day": 23,
     "topic": "Linked List",
     "difficulty": "Easy",
@@ -1092,7 +1092,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 88,
+    "id": 113,
     "day": 23,
     "topic": "Linked List",
     "difficulty": "Easy",
@@ -1101,7 +1101,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Floyd's Cycle"
   },
   {
-    "id": 89,
+    "id": 114,
     "day": 23,
     "topic": "Linked List",
     "difficulty": "Easy",
@@ -1110,7 +1110,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Slow-Fast Pointer"
   },
   {
-    "id": 90,
+    "id": 115,
     "day": 23,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1119,7 +1119,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Slow-Fast + Reverse"
   },
   {
-    "id": 91,
+    "id": 116,
     "day": 24,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1128,7 +1128,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 92,
+    "id": 117,
     "day": 24,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1137,7 +1137,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hash Map"
   },
   {
-    "id": 93,
+    "id": 118,
     "day": 24,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1146,7 +1146,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Linked List Math"
   },
   {
-    "id": 94,
+    "id": 119,
     "day": 24,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1155,7 +1155,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Floyd's Cycle"
   },
   {
-    "id": 95,
+    "id": 120,
     "day": 24,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1164,7 +1164,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hash Map + DLL"
   },
   {
-    "id": 96,
+    "id": 121,
     "day": 25,
     "topic": "Linked List",
     "difficulty": "Hard",
@@ -1173,7 +1173,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap / Divide & Conquer"
   },
   {
-    "id": 97,
+    "id": 122,
     "day": 25,
     "topic": "Linked List",
     "difficulty": "Hard",
@@ -1182,7 +1182,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Recursive"
   },
   {
-    "id": 98,
+    "id": 123,
     "day": 25,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1191,7 +1191,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Linked List"
   },
   {
-    "id": 99,
+    "id": 124,
     "day": 25,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1200,7 +1200,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Linked List"
   },
   {
-    "id": 100,
+    "id": 125,
     "day": 25,
     "topic": "Linked List",
     "difficulty": "Easy",
@@ -1209,7 +1209,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack / Two Pointer"
   },
   {
-    "id": 101,
+    "id": 126,
     "day": 26,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1218,7 +1218,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Merge Sort"
   },
   {
-    "id": 102,
+    "id": 127,
     "day": 26,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1227,7 +1227,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Floyd's Cycle"
   },
   {
-    "id": 103,
+    "id": 128,
     "day": 26,
     "topic": "Linked List",
     "difficulty": "Medium",
@@ -1236,7 +1236,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 104,
+    "id": 129,
     "day": 26,
     "topic": "Linked List",
     "difficulty": "Hard",
@@ -1245,7 +1245,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Linked List"
   },
   {
-    "id": 105,
+    "id": 130,
     "day": 26,
     "topic": "Linked List",
     "difficulty": "Hard",
@@ -1254,7 +1254,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Linked List + Hash Map"
   },
   {
-    "id": 106,
+    "id": 131,
     "day": 27,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1263,7 +1263,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS / DFS"
   },
   {
-    "id": 107,
+    "id": 132,
     "day": 27,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1272,7 +1272,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / BFS"
   },
   {
-    "id": 108,
+    "id": 133,
     "day": 27,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1281,7 +1281,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 109,
+    "id": 134,
     "day": 27,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1290,7 +1290,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 110,
+    "id": 135,
     "day": 27,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1299,7 +1299,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 111,
+    "id": 136,
     "day": 28,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1308,7 +1308,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 112,
+    "id": 137,
     "day": 28,
     "topic": "Trees",
     "difficulty": "Easy",
@@ -1317,7 +1317,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BST Property"
   },
   {
-    "id": 113,
+    "id": 138,
     "day": 28,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1326,7 +1326,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 114,
+    "id": 139,
     "day": 28,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1335,7 +1335,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 115,
+    "id": 140,
     "day": 28,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1344,7 +1344,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 116,
+    "id": 141,
     "day": 29,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1353,7 +1353,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 117,
+    "id": 142,
     "day": 29,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1362,7 +1362,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "In-order DFS"
   },
   {
-    "id": 118,
+    "id": 143,
     "day": 29,
     "topic": "Trees",
     "difficulty": "Hard",
@@ -1371,7 +1371,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Recursion"
   },
   {
-    "id": 119,
+    "id": 144,
     "day": 29,
     "topic": "Trees",
     "difficulty": "Hard",
@@ -1380,7 +1380,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 120,
+    "id": 145,
     "day": 29,
     "topic": "Trees",
     "difficulty": "Hard",
@@ -1389,7 +1389,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS / DFS"
   },
   {
-    "id": 121,
+    "id": 146,
     "day": 30,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1398,7 +1398,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS + Backtracking"
   },
   {
-    "id": 122,
+    "id": 147,
     "day": 30,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1407,7 +1407,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 123,
+    "id": 148,
     "day": 30,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1416,7 +1416,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Morris / Stack"
   },
   {
-    "id": 124,
+    "id": 149,
     "day": 30,
     "topic": "Trees",
     "difficulty": "Medium",
@@ -1425,7 +1425,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 125,
+    "id": 150,
     "day": 30,
     "topic": "Trees",
     "difficulty": "Hard",
@@ -1434,7 +1434,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy + DFS"
   },
   {
-    "id": 126,
+    "id": 151,
     "day": 31,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1443,7 +1443,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie"
   },
   {
-    "id": 127,
+    "id": 152,
     "day": 31,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1452,7 +1452,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie + DFS"
   },
   {
-    "id": 128,
+    "id": 153,
     "day": 31,
     "topic": "Tries",
     "difficulty": "Hard",
@@ -1461,7 +1461,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie + Backtracking"
   },
   {
-    "id": 129,
+    "id": 154,
     "day": 31,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1470,7 +1470,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie"
   },
   {
-    "id": 130,
+    "id": 155,
     "day": 32,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1479,7 +1479,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie"
   },
   {
-    "id": 131,
+    "id": 156,
     "day": 32,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1488,7 +1488,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie"
   },
   {
-    "id": 132,
+    "id": 157,
     "day": 32,
     "topic": "Tries",
     "difficulty": "Hard",
@@ -1497,7 +1497,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie + Bit"
   },
   {
-    "id": 133,
+    "id": 158,
     "day": 32,
     "topic": "Tries",
     "difficulty": "Medium",
@@ -1506,7 +1506,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie"
   },
   {
-    "id": 134,
+    "id": 159,
     "day": 33,
     "topic": "Heap / Priority Queue",
     "difficulty": "Easy",
@@ -1515,7 +1515,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Min Heap"
   },
   {
-    "id": 135,
+    "id": 160,
     "day": 33,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1524,7 +1524,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Max Heap"
   },
   {
-    "id": 136,
+    "id": 161,
     "day": 33,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1533,7 +1533,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Min Heap"
   },
   {
-    "id": 137,
+    "id": 162,
     "day": 33,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1542,7 +1542,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "QuickSelect / Heap"
   },
   {
-    "id": 138,
+    "id": 163,
     "day": 33,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1551,7 +1551,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap + Greedy"
   },
   {
-    "id": 139,
+    "id": 164,
     "day": 34,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1560,7 +1560,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap + Hash Map"
   },
   {
-    "id": 140,
+    "id": 165,
     "day": 34,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1569,7 +1569,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Heaps"
   },
   {
-    "id": 141,
+    "id": 166,
     "day": 34,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1578,7 +1578,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Heaps + Greedy"
   },
   {
-    "id": 142,
+    "id": 167,
     "day": 34,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1587,7 +1587,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap"
   },
   {
-    "id": 143,
+    "id": 168,
     "day": 34,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1596,7 +1596,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap"
   },
   {
-    "id": 144,
+    "id": 169,
     "day": 35,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1605,7 +1605,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap"
   },
   {
-    "id": 145,
+    "id": 170,
     "day": 35,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1614,7 +1614,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap + Greedy"
   },
   {
-    "id": 146,
+    "id": 171,
     "day": 35,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1623,7 +1623,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap"
   },
   {
-    "id": 147,
+    "id": 172,
     "day": 35,
     "topic": "Heap / Priority Queue",
     "difficulty": "Medium",
@@ -1632,7 +1632,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap / DP"
   },
   {
-    "id": 148,
+    "id": 173,
     "day": 35,
     "topic": "Heap / Priority Queue",
     "difficulty": "Hard",
@@ -1641,7 +1641,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap / Hash Map"
   },
   {
-    "id": 149,
+    "id": 174,
     "day": 36,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1650,7 +1650,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 150,
+    "id": 175,
     "day": 36,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1659,7 +1659,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 151,
+    "id": 176,
     "day": 36,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1668,7 +1668,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 152,
+    "id": 177,
     "day": 36,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1677,7 +1677,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 153,
+    "id": 178,
     "day": 36,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1686,7 +1686,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 154,
+    "id": 179,
     "day": 37,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1695,7 +1695,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking + DFS"
   },
   {
-    "id": 155,
+    "id": 180,
     "day": 37,
     "topic": "Backtracking",
     "difficulty": "Hard",
@@ -1704,7 +1704,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 156,
+    "id": 181,
     "day": 37,
     "topic": "Backtracking",
     "difficulty": "Hard",
@@ -1713,7 +1713,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking + DP"
   },
   {
-    "id": 157,
+    "id": 182,
     "day": 37,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1722,7 +1722,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 158,
+    "id": 183,
     "day": 37,
     "topic": "Backtracking",
     "difficulty": "Hard",
@@ -1731,7 +1731,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 159,
+    "id": 184,
     "day": 38,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1740,7 +1740,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 160,
+    "id": 185,
     "day": 38,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1749,7 +1749,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 161,
+    "id": 186,
     "day": 38,
     "topic": "Backtracking",
     "difficulty": "Hard",
@@ -1758,7 +1758,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 162,
+    "id": 187,
     "day": 38,
     "topic": "Backtracking",
     "difficulty": "Hard",
@@ -1767,7 +1767,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking / BFS"
   },
   {
-    "id": 163,
+    "id": 188,
     "day": 38,
     "topic": "Backtracking",
     "difficulty": "Medium",
@@ -1776,7 +1776,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Backtracking"
   },
   {
-    "id": 264,
+    "id": 189,
     "day": 39,
     "topic": "Intervals",
     "difficulty": "Easy",
@@ -1785,7 +1785,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sorting"
   },
   {
-    "id": 265,
+    "id": 190,
     "day": 39,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1794,7 +1794,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap / Sorting"
   },
   {
-    "id": 266,
+    "id": 191,
     "day": 39,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1803,7 +1803,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Sorting"
   },
   {
-    "id": 267,
+    "id": 192,
     "day": 39,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1812,7 +1812,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 268,
+    "id": 193,
     "day": 39,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1821,7 +1821,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 269,
+    "id": 194,
     "day": 40,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1830,7 +1830,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 270,
+    "id": 195,
     "day": 40,
     "topic": "Intervals",
     "difficulty": "Hard",
@@ -1839,7 +1839,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap / Sorting"
   },
   {
-    "id": 271,
+    "id": 196,
     "day": 40,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1848,7 +1848,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer"
   },
   {
-    "id": 272,
+    "id": 197,
     "day": 40,
     "topic": "Intervals",
     "difficulty": "Hard",
@@ -1857,7 +1857,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap + Sorting"
   },
   {
-    "id": 273,
+    "id": 198,
     "day": 40,
     "topic": "Intervals",
     "difficulty": "Medium",
@@ -1866,7 +1866,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Intervals / BST"
   },
   {
-    "id": 229,
+    "id": 199,
     "day": 41,
     "topic": "Greedy",
     "difficulty": "Easy",
@@ -1875,7 +1875,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Kadane's"
   },
   {
-    "id": 230,
+    "id": 200,
     "day": 41,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1884,7 +1884,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 231,
+    "id": 201,
     "day": 41,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1893,7 +1893,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 232,
+    "id": 202,
     "day": 41,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1902,7 +1902,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 233,
+    "id": 203,
     "day": 41,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1911,7 +1911,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 234,
+    "id": 204,
     "day": 42,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1920,7 +1920,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 235,
+    "id": 205,
     "day": 42,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1929,7 +1929,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 236,
+    "id": 206,
     "day": 42,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1938,7 +1938,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy / DP"
   },
   {
-    "id": 237,
+    "id": 207,
     "day": 42,
     "topic": "Greedy",
     "difficulty": "Hard",
@@ -1947,7 +1947,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 238,
+    "id": 208,
     "day": 42,
     "topic": "Greedy",
     "difficulty": "Hard",
@@ -1956,7 +1956,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy + Heap"
   },
   {
-    "id": 239,
+    "id": 209,
     "day": 43,
     "topic": "Greedy",
     "difficulty": "Hard",
@@ -1965,7 +1965,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy + Intervals"
   },
   {
-    "id": 240,
+    "id": 210,
     "day": 43,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1974,7 +1974,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 241,
+    "id": 211,
     "day": 43,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -1983,7 +1983,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 242,
+    "id": 212,
     "day": 43,
     "topic": "Greedy",
     "difficulty": "Hard",
@@ -1992,7 +1992,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy + Heap"
   },
   {
-    "id": 243,
+    "id": 213,
     "day": 43,
     "topic": "Greedy",
     "difficulty": "Medium",
@@ -2001,7 +2001,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy"
   },
   {
-    "id": 164,
+    "id": 214,
     "day": 44,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2010,7 +2010,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / BFS"
   },
   {
-    "id": 165,
+    "id": 215,
     "day": 44,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2019,7 +2019,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / BFS + Hash"
   },
   {
-    "id": 166,
+    "id": 216,
     "day": 44,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2028,7 +2028,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 167,
+    "id": 217,
     "day": 44,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2037,7 +2037,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / BFS"
   },
   {
-    "id": 168,
+    "id": 218,
     "day": 44,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2046,7 +2046,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / BFS"
   },
   {
-    "id": 169,
+    "id": 219,
     "day": 45,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2055,7 +2055,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 170,
+    "id": 220,
     "day": 45,
     "topic": "Graphs",
     "difficulty": "Hard",
@@ -2064,7 +2064,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 171,
+    "id": 221,
     "day": 45,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2073,7 +2073,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Topological Sort"
   },
   {
-    "id": 172,
+    "id": 222,
     "day": 45,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2082,7 +2082,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Topological Sort"
   },
   {
-    "id": 173,
+    "id": 223,
     "day": 45,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2091,7 +2091,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Union Find / DFS"
   },
   {
-    "id": 174,
+    "id": 224,
     "day": 46,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2100,7 +2100,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Union Find / DFS"
   },
   {
-    "id": 175,
+    "id": 225,
     "day": 46,
     "topic": "Graphs",
     "difficulty": "Hard",
@@ -2109,7 +2109,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS + Backtracking"
   },
   {
-    "id": 176,
+    "id": 226,
     "day": 46,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2118,7 +2118,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS / Topological Sort"
   },
   {
-    "id": 177,
+    "id": 227,
     "day": 46,
     "topic": "Graphs",
     "difficulty": "Hard",
@@ -2127,7 +2127,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Topological Sort"
   },
   {
-    "id": 178,
+    "id": 228,
     "day": 46,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2136,7 +2136,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Union Find"
   },
   {
-    "id": 179,
+    "id": 229,
     "day": 47,
     "topic": "Graphs",
     "difficulty": "Hard",
@@ -2145,7 +2145,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Union Find"
   },
   {
-    "id": 180,
+    "id": 230,
     "day": 47,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2154,7 +2154,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS"
   },
   {
-    "id": 181,
+    "id": 231,
     "day": 47,
     "topic": "Graphs",
     "difficulty": "Hard",
@@ -2163,7 +2163,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Tarjan's Algorithm"
   },
   {
-    "id": 182,
+    "id": 232,
     "day": 47,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2172,7 +2172,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS / DFS"
   },
   {
-    "id": 183,
+    "id": 233,
     "day": 47,
     "topic": "Graphs",
     "difficulty": "Medium",
@@ -2181,7 +2181,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Graph + BFS"
   },
   {
-    "id": 184,
+    "id": 234,
     "day": 48,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2190,7 +2190,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Dijkstra"
   },
   {
-    "id": 185,
+    "id": 235,
     "day": 48,
     "topic": "Advanced Graphs",
     "difficulty": "Medium",
@@ -2199,7 +2199,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Dijkstra / Binary Search"
   },
   {
-    "id": 186,
+    "id": 236,
     "day": 48,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2208,7 +2208,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bellman-Ford"
   },
   {
-    "id": 187,
+    "id": 237,
     "day": 48,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2217,7 +2217,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Hierholzer's Algorithm"
   },
   {
-    "id": 188,
+    "id": 238,
     "day": 48,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2226,7 +2226,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Prim's / Kruskal's"
   },
   {
-    "id": 189,
+    "id": 239,
     "day": 49,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2235,7 +2235,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Kruskal's"
   },
   {
-    "id": 190,
+    "id": 240,
     "day": 49,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2244,7 +2244,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Dijkstra / Binary Search"
   },
   {
-    "id": 191,
+    "id": 241,
     "day": 49,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2253,7 +2253,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DFS + Memoization"
   },
   {
-    "id": 192,
+    "id": 242,
     "day": 49,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2262,7 +2262,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP + Graph"
   },
   {
-    "id": 193,
+    "id": 243,
     "day": 49,
     "topic": "Advanced Graphs",
     "difficulty": "Hard",
@@ -2271,7 +2271,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS"
   },
   {
-    "id": 194,
+    "id": 244,
     "day": 50,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Easy",
@@ -2280,7 +2280,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 195,
+    "id": 245,
     "day": 50,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2289,7 +2289,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 196,
+    "id": 246,
     "day": 50,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2298,7 +2298,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 197,
+    "id": 247,
     "day": 50,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2307,7 +2307,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP (Circular)"
   },
   {
-    "id": 198,
+    "id": 248,
     "day": 50,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2316,7 +2316,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP / Expand Around Center"
   },
   {
-    "id": 199,
+    "id": 249,
     "day": 51,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2325,7 +2325,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 200,
+    "id": 250,
     "day": 51,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2334,7 +2334,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 201,
+    "id": 251,
     "day": 51,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2343,7 +2343,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP (Unbounded Knapsack)"
   },
   {
-    "id": 202,
+    "id": 252,
     "day": 51,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2352,7 +2352,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 203,
+    "id": 253,
     "day": 51,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2361,7 +2361,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 204,
+    "id": 254,
     "day": 52,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2370,7 +2370,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP / Binary Search"
   },
   {
-    "id": 205,
+    "id": 255,
     "day": 52,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2379,7 +2379,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "0/1 Knapsack DP"
   },
   {
-    "id": 206,
+    "id": 256,
     "day": 52,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2388,7 +2388,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Greedy / DP"
   },
   {
-    "id": 207,
+    "id": 257,
     "day": 52,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2397,7 +2397,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "BFS / DP"
   },
   {
-    "id": 208,
+    "id": 258,
     "day": 52,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2406,7 +2406,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 209,
+    "id": 259,
     "day": 53,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2415,7 +2415,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP + Bit"
   },
   {
-    "id": 210,
+    "id": 260,
     "day": 53,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2424,7 +2424,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 211,
+    "id": 261,
     "day": 53,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2433,7 +2433,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP / Greedy"
   },
   {
-    "id": 212,
+    "id": 262,
     "day": 53,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2442,7 +2442,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 213,
+    "id": 263,
     "day": 53,
     "topic": "1-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2451,7 +2451,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP"
   },
   {
-    "id": 214,
+    "id": 264,
     "day": 54,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2460,7 +2460,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 215,
+    "id": 265,
     "day": 54,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2469,7 +2469,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 216,
+    "id": 266,
     "day": 54,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2478,7 +2478,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP with States"
   },
   {
-    "id": 217,
+    "id": 267,
     "day": 54,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2487,7 +2487,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP (Knapsack)"
   },
   {
-    "id": 218,
+    "id": 268,
     "day": 54,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2496,7 +2496,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP / DFS"
   },
   {
-    "id": 219,
+    "id": 269,
     "day": 55,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2505,7 +2505,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 220,
+    "id": 270,
     "day": 55,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2514,7 +2514,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP + DFS"
   },
   {
-    "id": 221,
+    "id": 271,
     "day": 55,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2523,7 +2523,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 222,
+    "id": 272,
     "day": 55,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2532,7 +2532,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 223,
+    "id": 273,
     "day": 55,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2541,7 +2541,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Interval DP"
   },
   {
-    "id": 224,
+    "id": 274,
     "day": 56,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2550,7 +2550,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 225,
+    "id": 275,
     "day": 56,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2559,7 +2559,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 226,
+    "id": 276,
     "day": 56,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Medium",
@@ -2568,7 +2568,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 227,
+    "id": 277,
     "day": 56,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2577,7 +2577,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "2D DP"
   },
   {
-    "id": 228,
+    "id": 278,
     "day": 56,
     "topic": "2-D Dynamic Programming",
     "difficulty": "Hard",
@@ -2586,7 +2586,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack / DP"
   },
   {
-    "id": 244,
+    "id": 279,
     "day": 57,
     "topic": "Bit Manipulation",
     "difficulty": "Easy",
@@ -2595,7 +2595,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "XOR"
   },
   {
-    "id": 245,
+    "id": 280,
     "day": 57,
     "topic": "Bit Manipulation",
     "difficulty": "Easy",
@@ -2604,7 +2604,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit Counting"
   },
   {
-    "id": 246,
+    "id": 281,
     "day": 57,
     "topic": "Bit Manipulation",
     "difficulty": "Easy",
@@ -2613,7 +2613,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "DP + Bit"
   },
   {
-    "id": 247,
+    "id": 282,
     "day": 57,
     "topic": "Bit Manipulation",
     "difficulty": "Easy",
@@ -2622,7 +2622,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit Manipulation"
   },
   {
-    "id": 248,
+    "id": 283,
     "day": 57,
     "topic": "Bit Manipulation",
     "difficulty": "Easy",
@@ -2631,7 +2631,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "XOR / Math"
   },
   {
-    "id": 249,
+    "id": 284,
     "day": 58,
     "topic": "Bit Manipulation",
     "difficulty": "Medium",
@@ -2640,7 +2640,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit Manipulation"
   },
   {
-    "id": 250,
+    "id": 285,
     "day": 58,
     "topic": "Bit Manipulation",
     "difficulty": "Medium",
@@ -2649,7 +2649,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit / Math"
   },
   {
-    "id": 251,
+    "id": 286,
     "day": 58,
     "topic": "Bit Manipulation",
     "difficulty": "Hard",
@@ -2658,7 +2658,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit Manipulation"
   },
   {
-    "id": 252,
+    "id": 287,
     "day": 58,
     "topic": "Bit Manipulation",
     "difficulty": "Medium",
@@ -2667,7 +2667,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Bit Manipulation"
   },
   {
-    "id": 253,
+    "id": 288,
     "day": 58,
     "topic": "Bit Manipulation",
     "difficulty": "Hard",
@@ -2676,7 +2676,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Trie / Bit"
   },
   {
-    "id": 254,
+    "id": 289,
     "day": 59,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2685,7 +2685,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Matrix"
   },
   {
-    "id": 255,
+    "id": 290,
     "day": 59,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2694,7 +2694,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Matrix Traversal"
   },
   {
-    "id": 256,
+    "id": 291,
     "day": 59,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2703,7 +2703,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "In-place Matrix"
   },
   {
-    "id": 257,
+    "id": 292,
     "day": 59,
     "topic": "Math & Geometry",
     "difficulty": "Easy",
@@ -2712,7 +2712,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Fast-Slow Pointer / Math"
   },
   {
-    "id": 258,
+    "id": 293,
     "day": 59,
     "topic": "Math & Geometry",
     "difficulty": "Easy",
@@ -2721,7 +2721,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Math"
   },
   {
-    "id": 259,
+    "id": 294,
     "day": 60,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2730,7 +2730,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Fast Exponentiation"
   },
   {
-    "id": 260,
+    "id": 295,
     "day": 60,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2739,7 +2739,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "String Math"
   },
   {
-    "id": 261,
+    "id": 296,
     "day": 60,
     "topic": "Math & Geometry",
     "difficulty": "Hard",
@@ -2748,7 +2748,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Stack"
   },
   {
-    "id": 262,
+    "id": 297,
     "day": 60,
     "topic": "Math & Geometry",
     "difficulty": "Medium",
@@ -2757,7 +2757,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Math + Hash"
   },
   {
-    "id": 263,
+    "id": 298,
     "day": 60,
     "topic": "Math & Geometry",
     "difficulty": "Easy",
@@ -2766,7 +2766,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Math"
   },
   {
-    "id": 274,
+    "id": 299,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Medium",
@@ -2775,7 +2775,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Merge Sort / Quick Sort"
   },
   {
-    "id": 275,
+    "id": 300,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Medium",
@@ -2784,7 +2784,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "QuickSelect"
   },
   {
-    "id": 276,
+    "id": 301,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Easy",
@@ -2793,7 +2793,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Two Pointer Merge"
   },
   {
-    "id": 277,
+    "id": 302,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Medium",
@@ -2802,7 +2802,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Heap Sort"
   },
   {
-    "id": 278,
+    "id": 303,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Hard",
@@ -2811,7 +2811,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Merge Sort / BIT"
   },
   {
-    "id": 279,
+    "id": 304,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Hard",
@@ -2820,7 +2820,7 @@ export const INITIAL_QUESTIONS = [
     "pattern": "Merge Sort"
   },
   {
-    "id": 280,
+    "id": 305,
     "day": 60,
     "topic": "Sorting Algorithms",
     "difficulty": "Hard",
