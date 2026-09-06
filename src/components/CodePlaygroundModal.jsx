@@ -55,7 +55,9 @@ export default function CodePlaygroundModal({
   initialCode = null,
   isDone = false,
   onSaveCode = () => {},
+  onRunCode = () => {},
   onSubmitSuccess = () => {},
+  onSubmitAttempt = () => {},
   onOpenEditorial = () => {}
 }) {
   const testSuite = useMemo(() => {
@@ -158,6 +160,18 @@ export default function CodePlaygroundModal({
       setTimeout(() => setSaveToast(false), 2000);
     }
   }, [code, question, onSaveCode]);
+
+  // Debounced auto-save on code change (1.5s after user stops typing)
+  useEffect(() => {
+    if (!isOpen || !question) return;
+    if (code === DEFAULT_CLEAN_PLACEHOLDER) return;
+
+    const timer = setTimeout(() => {
+      handleSaveCode(code, false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [code, isOpen, question, handleSaveCode]);
 
   // Sync line numbers scrolling with code textarea
   const handleScroll = () => {
@@ -287,6 +301,7 @@ export default function CodePlaygroundModal({
   // Run Sample Test Cases
   const handleRunCode = async () => {
     handleSaveCode(code, false); // Auto-save latest code
+    onRunCode?.(question, code);
     setIsRunning(true);
     setActiveConsoleTab('result');
     setSubmitResult(null);
@@ -343,6 +358,8 @@ export default function CodePlaygroundModal({
 
       if (result.allPassed) {
         onSubmitSuccess(question, code);
+      } else {
+        onSubmitAttempt?.(question, code, false);
       }
     } catch (err) {
       const now = new Date();
@@ -365,6 +382,8 @@ export default function CodePlaygroundModal({
       try {
         localStorage.setItem(`dsa_submissions_${question.id}`, JSON.stringify(updatedSubs));
       } catch (e) {}
+
+      onSubmitAttempt?.(question, code, false);
 
       setSubmitResult({
         allPassed: false,
