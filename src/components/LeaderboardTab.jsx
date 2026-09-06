@@ -102,10 +102,10 @@ export default function LeaderboardTab({
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <Trophy className="w-5 h-5 text-amber-500" />
-            Global DSA Leaderboard
+            Global Leaderboard
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Live rankings of real engineers preparing for FAANG & Tier-1 tech interviews
+            Global rankings based on total problems solved and consistency
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default function LeaderboardTab({
           <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200">
             <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
             <span>
-              <strong>You're currently browsing in Guest Mode.</strong> Sign in with Google to record your progress and appear on the live community leaderboard!
+              Sign in with Google to record your submissions and appear on the global leaderboard.
             </span>
           </div>
           <button
@@ -205,7 +205,7 @@ export default function LeaderboardTab({
               className={`order-1 ${combinedUsers.length >= 3 ? 'md:order-2 md:-translate-y-2' : ''} p-6 rounded-2xl border-2 border-amber-400/80 bg-gradient-to-b from-amber-500/15 to-white dark:from-amber-500/20 dark:to-slate-900 flex flex-col items-center text-center relative shadow-md cursor-pointer hover:shadow-lg transition-all group`}
             >
               <div className="absolute -top-3.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-xs font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
-                <Crown className="w-4 h-4 fill-slate-950" /> 1st Place Champion
+                <Crown className="w-4 h-4 fill-slate-950" /> Rank 1
               </div>
 
               <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/80 border-3 border-amber-400 flex items-center justify-center font-extrabold text-2xl text-amber-600 dark:text-amber-300 mt-2 mb-3 shadow-md overflow-hidden group-hover:scale-105 transition-transform">
@@ -277,9 +277,9 @@ export default function LeaderboardTab({
       ) : combinedUsers.length === 0 ? (
         <div className="p-8 rounded-2xl border border-dashed border-gray-300 dark:border-slate-800 text-center bg-white/40 dark:bg-slate-900/40">
           <Trophy className="w-12 h-12 text-amber-500/60 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-800 dark:text-slate-200">No Live Leaderboard Entries Yet</h3>
+          <h3 className="text-base font-bold text-gray-800 dark:text-slate-200">No Leaderboard Entries</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto">
-            All rankings are 100% real. Solve your first problem while signed in to claim the #1 Champion rank!
+            Solve problems while signed in to claim your rank on the leaderboard.
           </p>
         </div>
       ) : null}
@@ -315,7 +315,7 @@ export default function LeaderboardTab({
                 : 'text-gray-600 dark:text-gray-300 hover:text-gray-900'
             }`}
           >
-            Hard Conquered
+            Hard Solved
           </button>
         </div>
 
@@ -324,7 +324,7 @@ export default function LeaderboardTab({
           <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search coder..."
+            placeholder="Search username..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="pl-8 pr-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 text-xs focus:outline-none"
@@ -338,11 +338,11 @@ export default function LeaderboardTab({
           <thead>
             <tr className="bg-gray-100 dark:bg-slate-800/90 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-slate-800">
               <th className="py-3 px-4 text-center w-14">RANK</th>
-              <th className="py-3 px-4">CODER</th>
-              <th className="py-3 px-4 text-center">SOLVED / 305</th>
+              <th className="py-3 px-4">USER</th>
+              <th className="py-3 px-4 text-center">PROBLEMS SOLVED</th>
               <th className="py-3 px-4 text-center">STREAK</th>
-              <th className="py-3 px-4 text-center">DIFFICULTY STATS</th>
-              <th className="py-3 px-4 text-right">STATUS</th>
+              <th className="py-3 px-4 text-center">DIFFICULTY BREAKDOWN</th>
+              <th className="py-3 px-4 text-right">PROFILE</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-slate-800/60">

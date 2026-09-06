@@ -1197,13 +1197,13 @@ export default function App() {
       <nav className="bg-[#243347] dark:bg-slate-900 border-b border-gray-300 dark:border-slate-800 px-4 sm:px-6 pt-2">
         <div className="max-w-7xl mx-auto flex flex-wrap gap-1">
           {[
-            { id: 'questions', icon: ListTodo, label: 'Questions Tracker', badge: user ? `${Object.values(questionsProgress).filter(q => q.status === '✅ Done').length}/305` : '305 Problems', locked: false },
+            { id: 'questions', icon: ListTodo, label: 'Problems', badge: user ? `${Object.values(questionsProgress).filter(q => q.status === '✅ Done').length}/305` : '305 Problems', locked: false },
             { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', locked: !user },
             { id: 'leaderboard', icon: Trophy, label: 'Leaderboard', badge: user ? `#${estimatedRank}` : null, badgeColor: 'bg-amber-400 text-slate-950 font-black', locked: !user },
-            { id: 'planner', icon: Calendar, label: '60-Day Planner', locked: !user },
-            { id: 'revision', icon: RotateCcw, label: 'Spaced Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-rose-500 text-white', locked: !user },
-            { id: 'patterns', icon: BookOpen, label: 'Patterns Guide', locked: !user },
-            { id: 'weekly', icon: BarChart3, label: 'Weekly Reviews', locked: !user },
+            { id: 'planner', icon: Calendar, label: 'Study Plan', locked: !user },
+            { id: 'revision', icon: RotateCcw, label: 'Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-rose-500 text-white', locked: !user },
+            { id: 'patterns', icon: BookOpen, label: 'Patterns', locked: !user },
+            { id: 'weekly', icon: BarChart3, label: 'Analytics', locked: !user },
           ].map(tab => {
             const isActive = activeTab === tab.id;
             return (
@@ -2026,7 +2026,7 @@ function QuestionsTab({
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
             <ListTodo className="w-5 h-5 text-blue-600 dark:text-emerald-400" />
-            Questions Tracker
+            Problemset
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             Showing {filteredQuestions.length} of 305 curated problems
@@ -2084,13 +2084,13 @@ function QuestionsTab({
               <th className="py-2.5 px-3 text-center w-12">#</th>
               <th className="py-2.5 px-3 text-center w-16">DAY</th>
               <th className="py-2.5 px-3">TOPIC</th>
-              <th className="py-2.5 px-3">QUESTION NAME</th>
+              <th className="py-2.5 px-3">TITLE</th>
               <th className="py-2.5 px-3 text-center">DIFFICULTY</th>
               <th className="py-2.5 px-3">PATTERN</th>
               <th className="py-2.5 px-3 text-center">STATUS</th>
               <th className="py-2.5 px-3 text-center">REVISIT</th>
               <th className="py-2.5 px-3 text-center">EDITORIAL</th>
-              <th className="py-2.5 px-3 text-center">MY CODE</th>
+              <th className="py-2.5 px-3 text-center">SUBMISSIONS</th>
               <th className="py-2.5 px-3 text-center w-14">ACTION</th>
             </tr>
           </thead>

@@ -722,61 +722,89 @@ export default function ProfileModal({
           </form>
         )}
 
-        {/* Modal Navigation Tabs (Overview, Activity Heatmap, Achievements) */}
-        <div className="flex border-b border-gray-200 dark:border-slate-800 px-6 bg-gray-50/50 dark:bg-slate-900 text-xs font-bold gap-4">
-          <button
-            type="button"
-            onClick={() => setActiveTab('overview')}
-            className={`py-3 border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'overview'
-                ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
-                : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
-            }`}
-          >
-            Overview & Stats
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('heatmap')}
-            className={`py-3 border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'heatmap'
-                ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
-                : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
-            }`}
-          >
-            Activity Heatmap
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('achievements')}
-            className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'achievements'
-                ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
-                : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
-            }`}
-          >
-            <span>Achievements</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[10px]">
-              {unlockedCount}/24
-            </span>
-          </button>
-        </div>
+        {/* Modal Navigation Tabs & Content (or Sign-in Prompt if viewing another user while not logged in) */}
+        {!currentUser && profileData && !isOwner ? (
+          <div className="p-8 sm:p-12 text-center flex flex-col items-center justify-center bg-white dark:bg-slate-900 my-auto flex-1">
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm mb-4">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Sign in to view @{displayUser.username}'s profile
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-slate-400 max-w-md mx-auto mb-6 leading-relaxed">
+              Sign in with your Google account to view detailed problem statistics, submission history, activity heatmaps, and achievements.
+            </p>
+            <button
+              type="button"
+              onClick={onGoogleSignIn}
+              className="flex items-center gap-2.5 px-6 py-2.5 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              </svg>
+              <span>Sign In with Google</span>
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Modal Navigation Tabs (Overview, Activity Heatmap, Achievements) */}
+            <div className="flex border-b border-gray-200 dark:border-slate-800 px-6 bg-gray-50/50 dark:bg-slate-900 text-xs font-bold gap-4">
+              <button
+                type="button"
+                onClick={() => setActiveTab('overview')}
+                className={`py-3 border-b-2 transition-colors cursor-pointer ${
+                  activeTab === 'overview'
+                    ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
+                }`}
+              >
+                Overview & Stats
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('heatmap')}
+                className={`py-3 border-b-2 transition-colors cursor-pointer ${
+                  activeTab === 'heatmap'
+                    ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
+                }`}
+              >
+                Activity Heatmap
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('achievements')}
+                className={`py-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === 'achievements'
+                    ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
+                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
+                }`}
+              >
+                <span>Achievements</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[10px]">
+                  {unlockedCount}/24
+                </span>
+              </button>
+            </div>
 
-        {/* Profile Content Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
-          
-          {/* TAB 1: OVERVIEW & STATS */}
-          {activeTab === 'overview' && (
-            <div className="space-y-6 animate-in fade-in">
-              {/* Stat Summary Cards */}
-              <div className="grid grid-cols-3 gap-3 text-center">
-                <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40">
-                  <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Global Rank</div>
-                  <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400 mt-0.5">
-                    {displayUser.rank === '-' || !displayUser.rank ? '-' : `#${displayUser.rank}`}
-                  </div>
-                  <div className="text-[10px] text-gray-400">Leaderboard</div>
-                </div>
+            {/* Profile Content Body */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
+              
+              {/* TAB 1: OVERVIEW & STATS */}
+              {activeTab === 'overview' && (
+                <div className="space-y-6 animate-in fade-in">
+                  {/* Stat Summary Cards */}
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40">
+                      <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Global Rank</div>
+                      <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400 mt-0.5">
+                        {displayUser.rank === '-' || !displayUser.rank ? '-' : `#${displayUser.rank}`}
+                      </div>
+                      <div className="text-[10px] text-gray-400">Leaderboard</div>
+                    </div>
 
                 <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40">
                   <div className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Current Streak</div>
@@ -1018,30 +1046,32 @@ export default function ProfileModal({
             </div>
           )}
 
-          {/* Sign In CTA if viewing as guest */}
-          {!currentUser && isOwner && (
-            <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-transparent border border-blue-200 dark:border-blue-900 flex flex-wrap items-center justify-between gap-3 text-xs">
-              <div>
-                <div className="font-bold text-blue-900 dark:text-blue-200">
-                  Ready to claim your spot on the Global Leaderboard?
+              {/* Sign In CTA if viewing as guest */}
+              {!currentUser && isOwner && (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-transparent border border-blue-200 dark:border-blue-900 flex flex-wrap items-center justify-between gap-3 text-xs">
+                  <div>
+                    <div className="font-bold text-blue-900 dark:text-blue-200">
+                      Sync Progress & Join Leaderboard
+                    </div>
+                    <div className="text-gray-500 dark:text-gray-400">
+                      Sign in with Google to sync your progress to the cloud, secure your public username, and appear on the leaderboard.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onGoogleSignIn();
+                    }}
+                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer"
+                  >
+                    Sign In with Google
+                  </button>
                 </div>
-                <div className="text-gray-500 dark:text-gray-400">
-                  Sign in with Google to sync your progress, claim a permanent username, and share your profile with recruiters.
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onGoogleSignIn();
-                }}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer"
-              >
-                Sign In with Google
-              </button>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
 
         {/* Modal Footer Controls */}
         <div className="px-5 sm:px-6 py-3.5 bg-gray-50 dark:bg-slate-800/80 border-t border-gray-200 dark:border-slate-800 flex justify-between items-center text-xs">
