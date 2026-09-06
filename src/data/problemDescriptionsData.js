@@ -1,5 +1,5 @@
-// Detailed Problem Descriptions (LeetCode, TCS Digital/NQT, CodeChef Format)
-// Contains in-depth problem statements, Input/Output format specifications, Constraints, and Examples with Explanations.
+// Detailed Problem Descriptions (Industry Standard Online Judge & Assessment Format)
+// Standard Input (STDIN) and Standard Output (STDOUT) specifications, Constraints, and Examples.
 
 export const DETAILED_PROBLEM_DESCRIPTIONS = {
   "1": {
@@ -8,22 +8,20 @@ export const DETAILED_PROBLEM_DESCRIPTIONS = {
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Hashing",
-    statement: `Given an integer array \`nums\`, return \`true\` if any value appears **at least twice** in the array, and return \`false\` if every element is distinct.
+    statement: `Given an integer array \`nums\`, determine whether any value appears **at least twice** in the array. Return \`true\` if any value is duplicated; otherwise return \`false\`.
 
-An array contains a duplicate if there exists at least one pair of indices \`(i, j)\` such that \`i != j\` and \`nums[i] == nums[j]\`.`,
+An array is said to contain duplicates if there exists at least one pair of distinct indices \`(i, j)\` such that \`nums[i] == nums[j]\` where \`i != j\`.`,
     inputFormat: {
-      functionSignature: "def containsDuplicate(self, nums: list[int]) -> bool:",
-      description: "A list of integers `nums` passed as a parameter to the solution method.",
       standardInput: `• Line 1: An integer \`N\` representing the number of elements in the array.
-• Line 2: \`N\` space-separated integers representing the array elements.`
+• Line 2: \`N\` space-separated integers representing the elements of array \`nums\`.`,
+      explanation: "Read the total count N from the first line, followed by the N space-separated integers on the second line."
     },
     outputFormat: {
-      returnType: "bool (True / False)",
-      description: "Return `True` if any value appears at least twice in the array; otherwise return `False`.",
-      standardOutput: "Print `true` or `false` on a single line (case-sensitive as per platform standard)."
+      standardOutput: "Print `true` if any element appears at least twice in the array; otherwise print `false` on a single line (in lowercase).",
+      explanation: "A single string 'true' or 'false' written to standard output."
     },
     constraints: [
-      "1 <= nums.length <= 10^5",
+      "1 <= N <= 10^5",
       "-10^9 <= nums[i] <= 10^9",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
@@ -31,25 +29,46 @@ An array contains a duplicate if there exists at least one pair of indices \`(i,
     examples: [
       {
         id: 1,
-        input: "nums = [1, 2, 3, 1]",
+        input: "4\n1 2 3 1",
         output: "true",
-        explanation: "The value 1 appears at index 0 and index 3. Since it appears twice, the function returns true."
+        explanation: "The element 1 appears at index 0 and index 3 (2 occurrences). The output is true."
       },
       {
         id: 2,
-        input: "nums = [1, 2, 3, 4]",
+        input: "4\n1 2 3 4",
         output: "false",
-        explanation: "All elements [1, 2, 3, 4] are pairwise distinct. No duplicates exist, so the function returns false."
+        explanation: "All elements [1, 2, 3, 4] are strictly distinct. The output is false."
       },
       {
         id: 3,
-        input: "nums = [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]",
+        input: "10\n1 1 1 3 3 4 3 2 4 2",
         output: "true",
-        explanation: "Multiple elements (1, 3, 4, 2) appear more than once. The output is true."
+        explanation: "Elements 1, 3, 4, and 2 each appear multiple times. The output is true."
       }
     ],
-    companyTags: ["TCS Digital", "TCS NQT", "Amazon", "Apple", "Microsoft", "Adobe", "CodeChef Starters"],
-    notes: "A hash set allows O(1) average lookup and insertion time. Sorting takes O(N log N) time but O(1) extra space."
+    starterCode: `import sys
+
+def solve():
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+    
+    n = int(input_data[0])
+    nums = [int(x) for x in input_data[1:n+1]]
+    
+    seen = set()
+    for num in nums:
+        if num in seen:
+            print("true")
+            return
+        seen.add(num)
+    
+    print("false")
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Utilizing a Hash Set provides an O(N) linear time solution with O(N) auxiliary space."
   },
 
   "2": {
@@ -60,40 +79,65 @@ An array contains a duplicate if there exists at least one pair of indices \`(i,
     pattern: "Hashing",
     statement: `Given two strings \`s\` and \`t\`, return \`true\` if \`t\` is an **anagram** of \`s\`, and \`false\` otherwise.
 
-An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
+An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, using all the original characters exactly once.`,
     inputFormat: {
-      functionSignature: "def isAnagram(self, s: str, t: str) -> bool:",
-      description: "Two strings `s` and `t` consisting of lowercase English letters.",
       standardInput: `• Line 1: String \`s\`
-• Line 2: String \`t\``
+• Line 2: String \`t\``,
+      explanation: "Read string s from line 1 and string t from line 2."
     },
     outputFormat: {
-      returnType: "bool (True / False)",
-      description: "Return `True` if `t` is an anagram of `s`, otherwise `False`.",
-      standardOutput: "Print `true` or `false` on a single line."
+      standardOutput: "Print `true` if t is an anagram of s, otherwise print `false`.",
+      explanation: "Output a single line containing either 'true' or 'false'."
     },
     constraints: [
-      "1 <= s.length, t.length <= 5 * 10^4",
-      "`s` and `t` consist of lowercase English letters.",
+      "1 <= len(s), len(t) <= 5 * 10^4",
+      "Strings consist of lowercase English letters ('a'-'z').",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: 's = "anagram", t = "nagaram"',
+        input: "anagram\nagaram",
         output: "true",
-        explanation: 'Both strings contain the characters: \'a\': 3, \'n\': 1, \'g\': 1, \'r\': 1, \'m\': 1. Since letter counts match, t is an anagram of s.'
+        explanation: "Both strings contain identical character counts: 3 'a's, 1 'n', 1 'g', 1 'r', 1 'm'."
       },
       {
         id: 2,
-        input: 's = "rat", t = "car"',
+        input: "rat\ncar",
         output: "false",
-        explanation: 'String s contains \'t\' (count 1) and t contains \'c\' (count 1). The character counts differ, so t is not an anagram.'
+        explanation: "Character frequencies differ between 'rat' and 'car'."
       }
     ],
-    companyTags: ["TCS NQT", "Infosys", "Amazon", "Bloomberg", "Google", "Goldman Sachs"],
-    notes: "Follow-up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?"
+    starterCode: `import sys
+
+def solve():
+    lines = sys.stdin.read().split()
+    if len(lines) < 2:
+        return
+    
+    s = lines[0]
+    t = lines[1]
+    
+    if len(s) != len(t):
+        print("false")
+        return
+    
+    counts = {}
+    for ch in s:
+        counts[ch] = counts.get(ch, 0) + 1
+    for ch in t:
+        if ch not in counts or counts[ch] == 0:
+            print("false")
+            return
+        counts[ch] -= 1
+        
+    print("true")
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "A frequency hash map or array of size 26 checks anagram validity in O(N) time and O(1) space."
   },
 
   "3": {
@@ -102,53 +146,70 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Hash Map",
-    statement: `Given an array of integers \`nums\` and an integer \`target\`, return **indices of the two numbers** such that they add up to \`target\`.
+    statement: `Given an array of integers \`nums\` and an integer \`target\`, find the **indices of the two numbers** such that they add up to \`target\`.
 
-You may assume that each input would have **exactly one solution**, and you may not use the same element twice.
-
-You can return the answer in any order.`,
+You may assume that each input has **exactly one solution**, and you may not use the same element twice. You can print the answer indices in any order.`,
     inputFormat: {
-      functionSignature: "def twoSum(self, nums: list[int], target: int) -> list[int]:",
-      description: "A list of integers `nums` and an integer `target`.",
-      standardInput: `• Line 1: An integer \`N\` (size of array).
-• Line 2: \`N\` space-separated integers representing the array \`nums\`.
-• Line 3: An integer \`target\`.`
+      standardInput: `• Line 1: An integer \`N\` (number of elements in the array).
+• Line 2: \`N\` space-separated integers representing \`nums\`.
+• Line 3: An integer \`target\`.`,
+      explanation: "Line 1 specifies the array length, Line 2 contains the array elements, and Line 3 contains the target sum."
     },
     outputFormat: {
-      returnType: "list[int] (Indices [i, j])",
-      description: "A list of two integer indices `[index1, index2]` such that `nums[index1] + nums[index2] == target`.",
-      standardOutput: "Print two space-separated indices on a single line."
+      standardOutput: "Print the two 0-based indices separated by a space on a single line (e.g., `0 1`).",
+      explanation: "Two space-separated integers representing the zero-indexed positions of the pair."
     },
     constraints: [
-      "2 <= nums.length <= 10^4",
+      "2 <= N <= 10^4",
       "-10^9 <= nums[i] <= 10^9",
       "-10^9 <= target <= 10^9",
-      "Only one valid answer exists.",
+      "Exactly one valid pair exists.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: "nums = [2, 7, 11, 15], target = 9",
-        output: "[0, 1]",
-        explanation: "Because nums[0] + nums[1] == 2 + 7 == 9, we return [0, 1]."
+        input: "4\n2 7 11 15\n9",
+        output: "0 1",
+        explanation: "nums[0] + nums[1] = 2 + 7 = 9. The indices are 0 and 1."
       },
       {
         id: 2,
-        input: "nums = [3, 2, 4], target = 6",
-        output: "[1, 2]",
-        explanation: "Because nums[1] + nums[2] == 2 + 4 == 6, we return [1, 2]."
+        input: "3\n3 2 4\n6",
+        output: "1 2",
+        explanation: "nums[1] + nums[2] = 2 + 4 = 6. The indices are 1 and 2."
       },
       {
         id: 3,
-        input: "nums = [3, 3], target = 6",
-        output: "[0, 1]",
-        explanation: "Because nums[0] + nums[1] == 3 + 3 == 6, we return [0, 1]."
+        input: "2\n3 3\n6",
+        output: "0 1",
+        explanation: "nums[0] + nums[1] = 3 + 3 = 6. The indices are 0 and 1."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Google", "Microsoft", "Meta", "Apple", "CodeChef"],
-    notes: "Optimal solution uses a one-pass Hash Map to store complement `target - num` achieving O(N) time and O(N) space."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    nums = [int(x) for x in tokens[1:n+1]]
+    target = int(tokens[n+1])
+    
+    seen = {}
+    for i, num in enumerate(nums):
+        diff = target - num
+        if diff in seen:
+            print(f"{seen[diff]} {i}")
+            return
+        seen[num] = i
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "One-pass hash map records each visited element and its index, achieving O(N) time."
   },
 
   "4": {
@@ -157,24 +218,20 @@ You can return the answer in any order.`,
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Greedy / Kadane",
-    statement: `You are given an array \`prices\` where \`prices[i]\` is the price of a given stock on the \`i-th\` day.
+    statement: `You are given an array \`prices\` where \`prices[i]\` represents the stock price on the \`i-th\` day.
 
-You want to maximize your profit by choosing a **single day** to buy one stock and choosing a **different day in the future** to sell that stock.
-
-Return the **maximum profit** you can achieve from this transaction. If you cannot achieve any profit, return \`0\`.`,
+You want to maximize your profit by choosing a single day to buy one stock and choosing a future day to sell that stock. Return the **maximum profit** you can achieve. If no profit can be made, return \`0\`.`,
     inputFormat: {
-      functionSignature: "def maxProfit(self, prices: list[int]) -> int:",
-      description: "A list of integers `prices` representing stock prices on consecutive days.",
-      standardInput: `• Line 1: An integer \`N\` (number of days).
-• Line 2: \`N\` space-separated integers representing stock prices on each day.`
+      standardInput: `• Line 1: An integer \`N\` representing the number of days.
+• Line 2: \`N\` space-separated integers representing stock prices on each day.`,
+      explanation: "Read the number of days N, then the sequence of daily stock prices."
     },
     outputFormat: {
-      returnType: "int (Maximum Profit)",
-      description: "An integer representing the maximum achievable profit (or 0 if no profit can be made).",
-      standardOutput: "Print the maximum profit integer on a single line."
+      standardOutput: "Print the maximum profit integer on a single line.",
+      explanation: "A single non-negative integer representing maximum profit."
     },
     constraints: [
-      "1 <= prices.length <= 10^5",
+      "1 <= N <= 10^5",
       "0 <= prices[i] <= 10^4",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
@@ -182,19 +239,42 @@ Return the **maximum profit** you can achieve from this transaction. If you cann
     examples: [
       {
         id: 1,
-        input: "prices = [7, 1, 5, 3, 6, 4]",
+        input: "6\n7 1 5 3 6 4",
         output: "5",
-        explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5. Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell."
+        explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5."
       },
       {
         id: 2,
-        input: "prices = [7, 6, 4, 3, 1]",
+        input: "5\n7 6 4 3 1",
         output: "0",
-        explanation: "In this case, prices continually decrease each day. No profitable transaction is possible, so maximum profit = 0."
+        explanation: "Prices continually decrease. No profitable trade is possible, so max profit = 0."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Microsoft", "Meta", "Goldman Sachs", "Infosys DSE"],
-    notes: "Track minimum price seen so far (`min_price`) and compute potential profit at each step (`price - min_price`). Runs in O(N) time and O(1) auxiliary space."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    prices = [int(x) for x in tokens[1:n+1]]
+    
+    min_price = float('inf')
+    max_profit = 0
+    
+    for p in prices:
+        if p < min_price:
+            min_price = p
+        elif p - min_price > max_profit:
+            max_profit = p - min_price
+            
+    print(max_profit)
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Maintains running minimum price and updates maximum difference in a single O(N) pass."
   },
 
   "5": {
@@ -203,49 +283,65 @@ Return the **maximum profit** you can achieve from this transaction. If you cann
     difficulty: "Easy",
     topic: "Arrays & Hashing",
     pattern: "Bit Manipulation",
-    statement: `Given a **non-empty** array of integers \`nums\`, every element appears *twice* except for one. Find that single one.
+    statement: `Given a non-empty array of integers \`nums\`, every element appears **twice** except for one unique element. Find and output that single element.
 
-You must implement a solution with a **linear runtime complexity** (\`O(N)\`) and use only **constant extra space** (\`O(1)\`).`,
+Your solution must run in **linear runtime complexity** (\`O(N)\`) and use only **constant extra space** (\`O(1)\`).`,
     inputFormat: {
-      functionSignature: "def singleNumber(self, nums: list[int]) -> int:",
-      description: "A list of integers `nums` where every element appears twice except for exactly one unique element.",
-      standardInput: `• Line 1: An integer \`N\` (size of array).
-• Line 2: \`N\` space-separated integers.`
+      standardInput: `• Line 1: An integer \`N\` (number of elements).
+• Line 2: \`N\` space-separated integers.`,
+      explanation: "Read array size N followed by the N integers."
     },
     outputFormat: {
-      returnType: "int (The unique single element)",
-      description: "Return the integer that appears only once in the array.",
-      standardOutput: "Print the unique integer on a single line."
+      standardOutput: "Print the single unique integer on a single line.",
+      explanation: "A single integer value."
     },
     constraints: [
-      "1 <= nums.length <= 3 * 10^4",
+      "1 <= N <= 3 * 10^4",
       "-3 * 10^4 <= nums[i] <= 3 * 10^4",
-      "Each element in the array appears twice except for one element which appears only once.",
+      "Each element appears twice except for one element which appears once.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: "nums = [2, 2, 1]",
+        input: "3\n2 2 1",
         output: "1",
-        explanation: "The element 2 appears twice, while 1 appears only once. The answer is 1."
+        explanation: "The element 2 appears twice; 1 appears once."
       },
       {
         id: 2,
-        input: "nums = [4, 1, 2, 1, 2]",
+        input: "5\n4 1 2 1 2",
         output: "4",
-        explanation: "Elements 1 and 2 appear twice. 4 appears only once. The answer is 4."
+        explanation: "1 and 2 appear twice; 4 appears once."
       },
       {
         id: 3,
-        input: "nums = [1]",
+        input: "1\n1",
         output: "1",
-        explanation: "Array contains only one element, which is the single number."
+        explanation: "Single element array."
       }
     ],
-    companyTags: ["TCS NQT", "Amazon", "Google", "Microsoft", "Qualcomm", "Cisco"],
-    notes: "Use the XOR bitwise operator: `a ^ a = 0` and `a ^ 0 = a`. XORing all numbers cancels out duplicate pairs, leaving only the unique single number."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    nums = [int(x) for x in tokens[1:n+1]]
+    
+    res = 0
+    for x in nums:
+        res ^= x
+        
+    print(res)
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "XOR of two identical numbers is 0 (`x ^ x = 0`) and `x ^ 0 = x`. XORing all numbers isolates the unique number."
   },
 
   "6": {
@@ -254,49 +350,62 @@ You must implement a solution with a **linear runtime complexity** (\`O(N)\`) an
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Hashing",
-    statement: `Given an array of strings \`strs\`, group the **anagrams** together. You can return the answer in **any order**.
+    statement: `Given an array of strings \`strs\`, group the **anagrams** together.
 
-An **Anagram** is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
+An **Anagram** is a word formed by rearranging the letters of another word using all original characters exactly once.`,
     inputFormat: {
-      functionSignature: "def groupAnagrams(self, strs: list[str]) -> list[list[str]]:",
-      description: "A list of strings `strs` containing lowercase English words.",
       standardInput: `• Line 1: An integer \`N\` (number of strings).
-• Line 2: \`N\` space-separated strings.`
+• Line 2: \`N\` space-separated strings.`,
+      explanation: "Read the count N, then N space-separated lowercase words."
     },
     outputFormat: {
-      returnType: "list[list[str]] (Grouped Anagrams)",
-      description: "Return a 2D list where each inner list contains words that are anagrams of each other.",
-      standardOutput: "Print each group of anagrams on a new line or formatted as nested brackets."
+      standardOutput: "Print the grouped anagrams as nested JSON list format or one group per line.",
+      explanation: "A 2D array representation containing groups of anagrams."
     },
     constraints: [
-      "1 <= strs.length <= 10^4",
-      "0 <= strs[i].length <= 100",
-      "`strs[i]` consists of lowercase English letters.",
+      "1 <= N <= 10^4",
+      "0 <= len(strs[i]) <= 100",
+      "Strings contain lowercase English letters.",
       "Time Limit: 1.5s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: 'strs = ["eat", "tea", "tan", "ate", "nat", "bat"]',
-        output: '[["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]',
-        explanation: 'The strings are grouped by their canonical sorted key: "abt" -> ["bat"], "ant" -> ["tan", "nat"], "aet" -> ["eat", "tea", "ate"].'
+        input: "6\neat tea tan ate nat bat",
+        output: '[["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]',
+        explanation: 'Strings sharing the same character multiset are grouped together.'
       },
       {
         id: 2,
-        input: 'strs = [""]',
-        output: '[[""]]',
-        explanation: "An empty string is grouped with itself."
-      },
-      {
-        id: 3,
-        input: 'strs = ["a"]',
+        input: "1\na",
         output: '[["a"]]',
-        explanation: "A single character string is grouped with itself."
+        explanation: "Single character word forms a single group."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Microsoft", "Uber", "Apple", "Affirm"],
-    notes: "Use either a sorted tuple of characters `tuple(sorted(s))` or a 26-element character count tuple as the hash map key for O(N * K) time."
+    starterCode: `import sys
+import json
+from collections import defaultdict
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    strs = tokens[1:n+1]
+    
+    groups = defaultdict(list)
+    for s in strs:
+        key = "".join(sorted(s))
+        groups[key].append(s)
+        
+    print(json.dumps(list(groups.values())))
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Map sorted word strings to their original words in a Hash Map in O(N * K log K) time."
   },
 
   "7": {
@@ -305,46 +414,60 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Heap / Bucket Sort",
-    statement: `Given an integer array \`nums\` and an integer \`k\`, return the \`k\` **most frequent elements**. You may return the answer in **any order**.
+    statement: `Given an integer array \`nums\` and an integer \`k\`, return the \`k\` **most frequent elements**.
 
-It is guaranteed that the answer is **unique** (i.e. the set of the top k frequent elements is unique).`,
+It is guaranteed that the answer is **unique** (the set of top k elements is unambiguous).`,
     inputFormat: {
-      functionSignature: "def topKFrequent(self, nums: list[int], k: int) -> list[int]:",
-      description: "A list of integers `nums` and an integer `k` (where 1 <= k <= number of unique elements).",
-      standardInput: `• Line 1: An integer \`N\` (array size).
-• Line 2: \`N\` space-separated integers.
-• Line 3: An integer \`k\`.`
+      standardInput: `• Line 1: An integer \`N\` (number of elements).
+• Line 2: \`N\` space-separated integers representing \`nums\`.
+• Line 3: An integer \`k\`.`,
+      explanation: "Line 1 has array size N, Line 2 has array elements, and Line 3 has integer k."
     },
     outputFormat: {
-      returnType: "list[int] (Top K Elements)",
-      description: "A list containing the `k` most frequent elements in `nums`.",
-      standardOutput: "Print `k` space-separated integers representing the top frequent elements."
+      standardOutput: "Print the `k` most frequent integers separated by a space on a single line.",
+      explanation: "K space-separated integers in any order."
     },
     constraints: [
-      "1 <= nums.length <= 10^5",
+      "1 <= N <= 10^5",
       "-10^4 <= nums[i] <= 10^4",
-      "`k` is in the range `[1, the number of unique elements in the array]`.",
-      "It is guaranteed that the answer is unique.",
-      "Time Complexity Target: Better than O(N log N)",
+      "1 <= k <= number of unique elements",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: "nums = [1, 1, 1, 2, 2, 3], k = 2",
-        output: "[1, 2]",
-        explanation: "Element 1 has frequency 3, element 2 has frequency 2, and element 3 has frequency 1. The 2 most frequent elements are [1, 2]."
+        input: "6\n1 1 1 2 2 3\n2",
+        output: "1 2",
+        explanation: "Element 1 appears 3 times, 2 appears 2 times, and 3 appears 1 time. Top 2 frequent elements are 1 and 2."
       },
       {
         id: 2,
-        input: "nums = [1], k = 1",
-        output: "[1]",
-        explanation: "1 is the only element, so it is the most frequent element."
+        input: "1\n1\n1",
+        output: "1",
+        explanation: "1 is the only element in the array."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Facebook / Meta", "Google", "Yelp", "ByteDance"],
-    notes: "Can be solved in O(N) linear time using Bucket Sort where bucket index corresponds to frequency count."
+    starterCode: `import sys
+from collections import Counter
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    nums = [int(x) for x in tokens[1:n+1]]
+    k = int(tokens[n+1])
+    
+    counts = Counter(nums)
+    most_common = [str(x[0]) for x in counts.most_common(k)]
+    print(" ".join(most_common))
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Can be solved in O(N) using Bucket Sort or O(N log K) using a Min-Heap."
   },
 
   "8": {
@@ -353,46 +476,67 @@ It is guaranteed that the answer is **unique** (i.e. the set of the top k freque
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Prefix / Suffix Products",
-    statement: `Given an integer array \`nums\`, return an array \`answer\` such that \`answer[i]\` is equal to the product of all the elements of \`nums\` except \`nums[i]\`.
+    statement: `Given an integer array \`nums\`, return an array \`answer\` such that \`answer[i]\` is equal to the product of all elements of \`nums\` except \`nums[i]\`.
 
-The product of any prefix or suffix of \`nums\` is **guaranteed** to fit in a **32-bit** integer.
-
-You must write an algorithm that runs in **\`O(N)\`** time and **without using the division operation**.`,
+You must write an algorithm that runs in **\`O(N)\`** time and **without using division**.`,
     inputFormat: {
-      functionSignature: "def productExceptSelf(self, nums: list[int]) -> list[int]:",
-      description: "A list of integers `nums` of length `N`.",
-      standardInput: `• Line 1: An integer \`N\` (size of array).
-• Line 2: \`N\` space-separated integers.`
+      standardInput: `• Line 1: An integer \`N\` (number of elements).
+• Line 2: \`N\` space-separated integers.`,
+      explanation: "Read array size N followed by N integers on the second line."
     },
     outputFormat: {
-      returnType: "list[int] (Product Array)",
-      description: "An array `answer` of length `N` where `answer[i]` is the product of all elements except `nums[i]`.",
-      standardOutput: "Print `N` space-separated integers representing the output array."
+      standardOutput: "Print \`N\` space-separated integers representing the resulting product array.",
+      explanation: "N space-separated integers on a single line."
     },
     constraints: [
-      "2 <= nums.length <= 10^5",
+      "2 <= N <= 10^5",
       "-30 <= nums[i] <= 30",
-      "The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.",
-      "Do NOT use division. Algorithm must run in O(N) time.",
+      "Product of any prefix or suffix is guaranteed to fit in 32-bit integer.",
+      "Division operation is strictly disallowed.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: "nums = [1, 2, 3, 4]",
-        output: "[24, 12, 8, 6]",
-        explanation: "answer[0] = 2*3*4 = 24, answer[1] = 1*3*4 = 12, answer[2] = 1*2*4 = 8, answer[3] = 1*2*3 = 6."
+        input: "4\n1 2 3 4",
+        output: "24 12 8 6",
+        explanation: "2*3*4 = 24, 1*3*4 = 12, 1*2*4 = 8, 1*2*3 = 6."
       },
       {
         id: 2,
-        input: "nums = [-1, 1, 0, -3, 3]",
-        output: "[0, 0, 9, 0, 0]",
-        explanation: "answer[2] is (-1)*1*(-3)*3 = 9. All other positions include 0 in their product calculation and result in 0."
+        input: "5\n-1 1 0 -3 3",
+        output: "0 0 9 0 0",
+        explanation: "Product at index 2 is (-1)*1*(-3)*3 = 9. All other products include 0."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Apple", "Microsoft", "Meta", "Asana", "Bloomberg"],
-    notes: "Compute prefix products in a forward pass, then multiply by suffix products during a backward pass in O(1) auxiliary space (excluding output array)."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        return
+    
+    n = int(tokens[0])
+    nums = [int(x) for x in tokens[1:n+1]]
+    
+    res = [1] * n
+    prefix = 1
+    for i in range(n):
+        res[i] = prefix
+        prefix *= nums[i]
+        
+    postfix = 1
+    for i in range(n - 1, -1, -1):
+        res[i] *= postfix
+        postfix *= nums[i]
+        
+    print(" ".join(str(x) for x in res))
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Multiply prefix products during the forward pass and suffix products during the backward pass in O(1) auxiliary space."
   },
 
   "9": {
@@ -407,63 +551,71 @@ You must write an algorithm that runs in **\`O(N)\`** time and **without using t
 2. Each column must contain the digits \`1-9\` without repetition.
 3. Each of the nine \`3 x 3\` sub-boxes of the grid must contain the digits \`1-9\` without repetition.
 
-**Note:**
-- A Sudoku board (partially filled) could be valid but is not necessarily solvable.
-- Only the filled cells need to be validated according to the mentioned rules.
-- Empty cells are represented by the character \`"."\`.`,
+Empty cells are represented by the character \`"."\`.`,
     inputFormat: {
-      functionSignature: "def isValidSudoku(self, board: list[list[str]]) -> bool:",
-      description: "A 9x9 2D matrix of strings representing the Sudoku board.",
-      standardInput: `• 9 lines, each containing 9 space-separated characters (digits '1'-'9' or '.').`
+      standardInput: `• 9 lines, each containing 9 space-separated characters (digits '1'-'9' or '.').`,
+      explanation: "A 9x9 matrix of board characters."
     },
     outputFormat: {
-      returnType: "bool (True / False)",
-      description: "Return `True` if the board configuration is valid, otherwise `False`.",
-      standardOutput: "Print `true` or `false` on a single line."
+      standardOutput: "Print `true` if the board is valid; otherwise print `false`.",
+      explanation: "A single boolean string 'true' or 'false'."
     },
     constraints: [
-      "board.length == 9",
-      "board[i].length == 9",
-      "board[i][j] is a digit '1'-'9' or '.'.",
+      "Board is strictly 9 x 9.",
+      "Each character is a digit '1'-'9' or '.'.",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: `board = [
-  ["5","3",".",".","7",".",".",".","."],
-  ["6",".",".","1","9","5",".",".","."],
-  [".","9","8",".",".",".",".","6","."],
-  ["8",".",".",".","6",".",".",".","3"],
-  ["4",".",".","8",".","3",".",".","1"],
-  ["7",".",".",".","2",".",".",".","6"],
-  [".","6",".",".",".",".","2","8","."],
-  [".",".",".","4","1","9",".",".","5"],
-  [".",".",".",".","8",".",".","7","9"]
-]`,
+        input: `5 3 . . 7 . . . .
+6 . . 1 9 5 . . .
+. 9 8 . . . . 6 .
+8 . . . 6 . . . 3
+4 . . 8 . 3 . . 1
+7 . . . 2 . . . 6
+. 6 . . . . 2 8 .
+. . . 4 1 9 . . 5
+. . . . 8 . . 7 9`,
         output: "true",
-        explanation: "All rows, columns, and 3x3 sub-boxes contain unique digits 1-9 without conflict."
-      },
-      {
-        id: 2,
-        input: `board = [
-  ["8","3",".",".","7",".",".",".","."],
-  ["6",".",".","1","9","5",".",".","."],
-  [".","9","8",".",".",".",".","6","."],
-  ["8",".",".",".","6",".",".",".","3"],
-  ["4",".",".","8",".","3",".",".","1"],
-  ["7",".",".",".","2",".",".",".","6"],
-  [".","6",".",".",".",".","2","8","."],
-  [".",".",".","4","1","9",".",".","5"],
-  [".",".",".",".","8",".",".","7","9"]
-]`,
-        output: "false",
-        explanation: "The top-left 3x3 sub-box contains two '8's (at row 0 col 0 and row 2 col 2), and row 0 & row 3 have '8' in col 0. Thus the board is invalid."
+        explanation: "All rows, columns, and 3x3 subgrids contain no duplicates among filled digits."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Uber", "Apple", "Microsoft", "Oracle"],
-    notes: "Use three arrays of hash sets: `rows[9]`, `cols[9]`, and `boxes[3][3]` to validate uniqueness in O(81) = O(1) time."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if len(tokens) < 81:
+        return
+    
+    board = [tokens[i*9:(i+1)*9] for i in range(9)]
+    
+    rows = [set() for _ in range(9)]
+    cols = [set() for _ in range(9)]
+    boxes = [set() for _ in range(9)]
+    
+    for r in range(9):
+        for c in range(9):
+            val = board[r][c]
+            if val == '.':
+                continue
+                
+            box_idx = (r // 3) * 3 + (c // 3)
+            if val in rows[r] or val in cols[c] or val in boxes[box_idx]:
+                print("false")
+                return
+                
+            rows[r].add(val)
+            cols[c].add(val)
+            boxes[box_idx].add(val)
+            
+    print("true")
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Evaluates board validity in O(81) = O(1) constant time."
   },
 
   "10": {
@@ -472,50 +624,78 @@ You must write an algorithm that runs in **\`O(N)\`** time and **without using t
     difficulty: "Medium",
     topic: "Arrays & Hashing",
     pattern: "Hash Set",
-    statement: `Given an unsorted array of integers \`nums\`, return the **length of the longest consecutive elements sequence**.
+    statement: `Given an unsorted array of integers \`nums\`, find the **length of the longest consecutive elements sequence**.
 
-You must write an algorithm that runs in **\`O(N)\`** time complexity.`,
+Your algorithm must run in **\`O(N)\`** time complexity.`,
     inputFormat: {
-      functionSignature: "def longestConsecutive(self, nums: list[int]) -> int:",
-      description: "An unsorted list of integers `nums`.",
-      standardInput: `• Line 1: An integer \`N\` (number of elements).
-• Line 2: \`N\` space-separated integers.`
+      standardInput: `• Line 1: An integer \`N\` (number of elements in the array).
+• Line 2: \`N\` space-separated integers representing \`nums\`.`,
+      explanation: "Read array size N followed by the N integers."
     },
     outputFormat: {
-      returnType: "int (Length of longest consecutive sequence)",
-      description: "An integer representing the length of the longest consecutive values sequence.",
-      standardOutput: "Print the integer length on a single line."
+      standardOutput: "Print a single integer representing the length of the longest consecutive sequence.",
+      explanation: "A single integer length value."
     },
     constraints: [
-      "0 <= nums.length <= 10^5",
+      "0 <= N <= 10^5",
       "-10^9 <= nums[i] <= 10^9",
-      "Algorithm must run in strictly O(N) time.",
+      "Time Complexity Target: Strictly O(N)",
       "Time Limit: 1.0s",
       "Memory Limit: 256 MB"
     ],
     examples: [
       {
         id: 1,
-        input: "nums = [100, 4, 200, 1, 3, 2]",
+        input: "6\n100 4 200 1 3 2",
         output: "4",
-        explanation: "The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4."
+        explanation: "The longest consecutive elements sequence is [1, 2, 3, 4] with length 4."
       },
       {
         id: 2,
-        input: "nums = [0, 3, 7, 2, 5, 8, 4, 6, 0, 1]",
+        input: "10\n0 3 7 2 5 8 4 6 0 1",
         output: "9",
-        explanation: "The consecutive elements sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8]. The length is 9."
+        explanation: "The longest consecutive sequence is [0, 1, 2, 3, 4, 5, 6, 7, 8] with length 9."
       }
     ],
-    companyTags: ["TCS Digital", "Amazon", "Google", "Microsoft", "Spotify", "Meta"],
-    notes: "Insert all numbers into a Hash Set. Only start counting a sequence when `num - 1` is NOT in the set (identifying the beginning of a sequence). Each number is visited at most twice, guaranteeing O(N) time."
+    starterCode: `import sys
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        print(0)
+        return
+    
+    n = int(tokens[0])
+    if n == 0:
+        print(0)
+        return
+        
+    nums = [int(x) for x in tokens[1:n+1]]
+    num_set = set(nums)
+    longest = 0
+    
+    for num in num_set:
+        # Check if it's the start of a sequence
+        if (num - 1) not in num_set:
+            current = num
+            streak = 1
+            while (current + 1) in num_set:
+                current += 1
+                streak += 1
+            longest = max(longest, streak)
+            
+    print(longest)
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Only starts traversing from sequence origins (`num - 1 not in set`), visiting each number at most twice for O(N) total time."
   }
 };
 
 /**
- * Returns formatted problem description with standard TCS/LeetCode layout.
- * If specific handcrafted metadata is not yet defined, it dynamically constructs
- * a complete, structured description from the problem and test cases data.
+ * Returns formatted problem description with standard Online Judge layout.
+ * Dynamic fallback generator ensures questions 11-305 have full structure.
  */
 export function getProblemDescription(id, question, testSuite = null) {
   const strId = String(id);
@@ -532,12 +712,29 @@ export function getProblemDescription(id, question, testSuite = null) {
 
   const sampleCases = testSuite?.sampleCases || [];
 
-  const dynamicExamples = sampleCases.slice(0, 3).map((cs, idx) => ({
-    id: idx + 1,
-    input: Array.isArray(cs.input) ? cs.input.map(x => JSON.stringify(x)).join(", ") : JSON.stringify(cs.input),
-    output: JSON.stringify(cs.expected),
-    explanation: `For the provided input parameters, the optimal solution computes and returns ${JSON.stringify(cs.expected)}.`
-  }));
+  const dynamicExamples = sampleCases.slice(0, 3).map((cs, idx) => {
+    let inputStr = '';
+    if (cs.stdin) {
+      inputStr = cs.stdin;
+    } else if (Array.isArray(cs.input)) {
+      if (cs.input.length === 1 && Array.isArray(cs.input[0])) {
+        inputStr = `${cs.input[0].length}\n${cs.input[0].join(' ')}`;
+      } else {
+        inputStr = cs.input.map(x => Array.isArray(x) ? `${x.length}\n${x.join(' ')}` : String(x)).join('\n');
+      }
+    } else {
+      inputStr = String(cs.input);
+    }
+
+    const outputStr = cs.expectedStdout || (cs.expected === true ? 'true' : cs.expected === false ? 'false' : Array.isArray(cs.expected) ? cs.expected.join(' ') : String(cs.expected));
+
+    return {
+      id: idx + 1,
+      input: inputStr,
+      output: outputStr,
+      explanation: `For the provided input data, the algorithm computes and outputs ${outputStr}.`
+    };
+  });
 
   return {
     id: Number(id),
@@ -545,18 +742,16 @@ export function getProblemDescription(id, question, testSuite = null) {
     difficulty: difficulty,
     topic: topic,
     pattern: pattern,
-    statement: `Given the requirements for **${name}**, write an optimal algorithm utilizing the **${pattern}** pattern in **${topic}**.
+    statement: `Given the requirements for **${name}**, write a complete program utilizing the **${pattern}** technique in **${topic}**.
 
-Your solution must satisfy all constraints, process edge cases correctly, and achieve optimal time and space complexity.`,
+Your program must read input from standard input (\`stdin\`), execute the optimal algorithm, and print the required result to standard output (\`stdout\`).`,
     inputFormat: {
-      functionSignature: `def ${methodName}(self, ...) -> ...:`,
-      description: `Input parameters are passed to the \`${methodName}\` method in the Solution class.`,
-      standardInput: `• Line 1: Number of elements / test input size \`N\`.\n• Line 2: Formatted problem input data.`
+      standardInput: `• Line 1: Test case size / array length \`N\`.\n• Line 2: Space-separated data elements.`,
+      explanation: "Read standard input data according to problem constraints."
     },
     outputFormat: {
-      returnType: "Target Return Value",
-      description: `Return the computed optimal result from the \`${methodName}\` method.`,
-      standardOutput: `Print the formatted output to stdout.`
+      standardOutput: "Print the required output to standard output (`stdout`).",
+      explanation: "Format output exactly as specified by the problem requirements."
     },
     constraints: [
       "1 <= N <= 10^5",
@@ -568,12 +763,26 @@ Your solution must satisfy all constraints, process edge cases correctly, and ac
     examples: dynamicExamples.length > 0 ? dynamicExamples : [
       {
         id: 1,
-        input: "Example Input",
-        output: "Example Output",
-        explanation: "Detailed step-by-step example execution."
+        input: "Sample Input",
+        output: "Sample Output",
+        explanation: "Step-by-step example execution."
       }
     ],
-    companyTags: ["TCS NQT", "TCS Digital", "Amazon", "Infosys", "CodeChef"],
+    starterCode: `import sys
+
+def solve():
+    # Read from standard input (stdin)
+    input_data = sys.stdin.read().split()
+    if not input_data:
+        return
+        
+    # Write your logic here
+    # Print result to standard output (stdout)
+    pass
+
+if __name__ == '__main__':
+    solve()
+`,
     notes: `Analyze the problem with the ${pattern} technique to optimize execution time.`
   };
 }

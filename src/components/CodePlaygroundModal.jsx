@@ -56,6 +56,9 @@ export default function CodePlaygroundModal({
   // Left Pane Active Tab: 'description' | 'editorial' | 'submissions'
   const [leftTab, setLeftTab] = useState('description');
 
+  // Selected Language: 'python3' | 'python'
+  const [selectedLanguage, setSelectedLanguage] = useState('python3');
+
   const [code, setCode] = useState('');
   const [activeConsoleTab, setActiveConsoleTab] = useState('testcases'); // 'testcases' | 'result'
   const [selectedCaseIdx, setSelectedCaseIdx] = useState(0);
@@ -70,14 +73,15 @@ export default function CodePlaygroundModal({
   // Initialize starter code when question opens
   useEffect(() => {
     if (isOpen && question && testSuite) {
-      setCode(initialCode || testSuite.starterCode || '');
+      const defaultCode = problemDesc?.starterCode || testSuite.starterCode || `import sys\n\ndef solve():\n    pass\n\nif __name__ == '__main__':\n    solve()\n`;
+      setCode(initialCode || defaultCode);
       setRunResult(null);
       setSubmitResult(null);
       setActiveConsoleTab('testcases');
       setSelectedCaseIdx(0);
       setLeftTab('description');
     }
-  }, [isOpen, question, testSuite, initialCode]);
+  }, [isOpen, question, testSuite, problemDesc, initialCode]);
 
   // Keyboard shortcut: Ctrl + Enter to Run Code
   useEffect(() => {
@@ -103,7 +107,8 @@ export default function CodePlaygroundModal({
 
   const handleResetCode = () => {
     if (window.confirm('Reset code to default template? Any unsaved edits will be lost.')) {
-      setCode(testSuite.starterCode || '');
+      const defaultCode = problemDesc?.starterCode || testSuite.starterCode || `import sys\n\ndef solve():\n    pass\n\nif __name__ == '__main__':\n    solve()\n`;
+      setCode(defaultCode);
     }
   };
 
@@ -315,35 +320,24 @@ export default function CodePlaygroundModal({
                     </div>
                   </div>
 
-                  {/* Input & Output Format Specifications (TCS / CodeChef / Competitive Programming Style) */}
+                  {/* Standard Input & Output Format Specifications */}
                   <div className="grid grid-cols-1 gap-3.5">
                     
                     {/* Input Format Card */}
                     <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 space-y-2">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wide">
                         <Cpu className="w-3.5 h-3.5 text-blue-500" />
-                        <span>Input Format</span>
+                        <span>Input Format (Standard Input - STDIN)</span>
                       </div>
-                      
-                      {problemDesc.inputFormat?.functionSignature && (
-                        <div className="font-mono text-xs p-2 rounded bg-white dark:bg-slate-950 border border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-300">
-                          <code>{problemDesc.inputFormat.functionSignature}</code>
-                        </div>
-                      )}
 
-                      <p className="text-xs text-gray-700 dark:text-slate-300">
-                        {problemDesc.inputFormat?.description}
-                      </p>
+                      <pre className="whitespace-pre-line font-sans text-xs text-gray-800 dark:text-slate-200 leading-relaxed">
+                        {problemDesc.inputFormat?.standardInput}
+                      </pre>
 
-                      {problemDesc.inputFormat?.standardInput && (
-                        <div className="pt-2 border-t border-blue-200/60 dark:border-blue-900/50 text-[11px] text-gray-600 dark:text-slate-400 font-sans">
-                          <span className="font-bold block mb-0.5 text-gray-800 dark:text-slate-200">
-                            Standard Input (TCS / CodeChef / STDIN Format):
-                          </span>
-                          <pre className="whitespace-pre-line font-sans leading-relaxed">
-                            {problemDesc.inputFormat.standardInput}
-                          </pre>
-                        </div>
+                      {problemDesc.inputFormat?.explanation && (
+                        <p className="text-[11px] text-gray-600 dark:text-slate-400 pt-1 border-t border-blue-200/50 dark:border-blue-900/50">
+                          {problemDesc.inputFormat.explanation}
+                        </p>
                       )}
                     </div>
 
@@ -351,24 +345,17 @@ export default function CodePlaygroundModal({
                     <div className="p-3.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 space-y-2">
                       <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-wide">
                         <CheckSquare className="w-3.5 h-3.5 text-emerald-500" />
-                        <span>Output Format</span>
+                        <span>Output Format (Standard Output - STDOUT)</span>
                       </div>
 
-                      <div className="font-mono text-xs p-2 rounded bg-white dark:bg-slate-950 border border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">
-                        Return: <code>{problemDesc.outputFormat?.returnType}</code>
-                      </div>
-
-                      <p className="text-xs text-gray-700 dark:text-slate-300">
-                        {problemDesc.outputFormat?.description}
+                      <p className="text-xs text-gray-800 dark:text-slate-200 leading-relaxed font-sans">
+                        {problemDesc.outputFormat?.standardOutput}
                       </p>
 
-                      {problemDesc.outputFormat?.standardOutput && (
-                        <div className="pt-2 border-t border-emerald-200/60 dark:border-emerald-900/50 text-[11px] text-gray-600 dark:text-slate-400 font-sans">
-                          <span className="font-bold block mb-0.5 text-gray-800 dark:text-slate-200">
-                            Standard Output (STDOUT):
-                          </span>
-                          <p>{problemDesc.outputFormat.standardOutput}</p>
-                        </div>
+                      {problemDesc.outputFormat?.explanation && (
+                        <p className="text-[11px] text-gray-600 dark:text-slate-400 pt-1 border-t border-emerald-200/50 dark:border-emerald-900/50">
+                          {problemDesc.outputFormat.explanation}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -382,12 +369,12 @@ export default function CodePlaygroundModal({
                     {problemDesc.examples?.map((ex, idx) => (
                       <div
                         key={idx}
-                        className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-950/60 overflow-hidden space-y-2 p-3.5 text-xs"
+                        className="rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-950/60 overflow-hidden space-y-2.5 p-3.5 text-xs"
                       >
                         <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-slate-800 font-bold text-gray-900 dark:text-white">
                           <span>Example {ex.id || idx + 1}:</span>
                           <button
-                            onClick={() => handleCopyExample(`Input: ${ex.input}\nOutput: ${ex.output}`, idx)}
+                            onClick={() => handleCopyExample(`Input:\n${ex.input}\n\nOutput:\n${ex.output}`, idx)}
                             className="text-[11px] font-normal text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1 cursor-pointer"
                           >
                             {copiedExampleIdx === idx ? (
@@ -404,14 +391,22 @@ export default function CodePlaygroundModal({
                           </button>
                         </div>
 
-                        <div className="font-mono space-y-1.5">
+                        <div className="font-mono space-y-2">
                           <div>
-                            <span className="font-sans font-bold text-gray-600 dark:text-gray-400">Input: </span>
-                            <span className="text-gray-900 dark:text-slate-200 font-semibold">{ex.input}</span>
+                            <span className="font-sans font-bold text-gray-600 dark:text-gray-400 block mb-0.5">
+                              Input:
+                            </span>
+                            <pre className="p-2 rounded bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-200 whitespace-pre-wrap">
+                              {ex.input}
+                            </pre>
                           </div>
                           <div>
-                            <span className="font-sans font-bold text-gray-600 dark:text-gray-400">Output: </span>
-                            <span className="text-emerald-600 dark:text-emerald-400 font-bold">{ex.output}</span>
+                            <span className="font-sans font-bold text-gray-600 dark:text-gray-400 block mb-0.5">
+                              Output:
+                            </span>
+                            <pre className="p-2 rounded bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-emerald-600 dark:text-emerald-400 font-bold whitespace-pre-wrap">
+                              {ex.output}
+                            </pre>
                           </div>
                         </div>
 
@@ -440,32 +435,12 @@ export default function CodePlaygroundModal({
                     </ul>
                   </div>
 
-                  {/* Company Tags */}
-                  {problemDesc.companyTags && problemDesc.companyTags.length > 0 && (
-                    <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-slate-800">
-                      <h4 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <Tag className="w-3.5 h-3.5 text-purple-500" />
-                        Target Company & Exam Relevance
-                      </h4>
-                      <div className="flex flex-wrap gap-1.5">
-                        {problemDesc.companyTags.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Notes / Interview Insights */}
+                  {/* Notes */}
                   {problemDesc.notes && (
                     <div className="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 text-xs space-y-1">
                       <div className="font-bold flex items-center gap-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Platform & Interview Insights</span>
+                        <span>Algorithm Insights</span>
                       </div>
                       <p className="leading-relaxed opacity-90">{problemDesc.notes}</p>
                     </div>
@@ -568,19 +543,29 @@ export default function CodePlaygroundModal({
             </div>
           </div>
 
-          {/* RIGHT PANE: PYTHON 3 WORKSPACE & TEST CONSOLE (6 Cols) */}
+          {/* RIGHT PANE: PYTHON WORKSPACE & TEST CONSOLE (6 Cols) */}
           <div className="lg:col-span-6 flex flex-col bg-slate-950 min-h-0 overflow-hidden">
             
-            {/* Python 3 Code Editor Area (Top 55-60%) */}
+            {/* Python Code Editor Area (Top 55-60%) */}
             <div className="flex-1 flex flex-col border-b border-gray-800 min-h-0 overflow-hidden">
               {/* Editor Language Bar */}
               <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800 text-xs text-slate-300 shrink-0">
                 <div className="flex items-center gap-2">
                   <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="font-bold text-slate-200">Python 3 (Pyodide Wasm)</span>
+                  
+                  {/* Language Selector (Python 3 / Python) */}
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold rounded px-2 py-0.5 outline-none cursor-pointer hover:border-slate-600"
+                  >
+                    <option value="python3">Python 3 (CPython 3.11)</option>
+                    <option value="python">Python</option>
+                  </select>
                 </div>
-                <span className="text-[11px] text-slate-400 font-mono">
-                  Target: <code className="text-emerald-400">{testSuite.methodName}()</code>
+                
+                <span className="text-[11px] text-slate-400 font-mono hidden sm:inline">
+                  STDIN &rarr; STDOUT Mode
                 </span>
               </div>
 
@@ -592,7 +577,7 @@ export default function CodePlaygroundModal({
                   onChange={(e) => setCode(e.target.value)}
                   spellCheck="false"
                   className="w-full h-full p-4 font-mono text-xs sm:text-sm text-slate-100 bg-slate-950 resize-none outline-none leading-relaxed selection:bg-blue-600/40"
-                  placeholder="# Write your complete Python solution here..."
+                  placeholder="# Write your complete Python solution (import sys ... print) here..."
                   style={{ tabSize: 4 }}
                 />
               </div>
@@ -666,19 +651,25 @@ export default function CodePlaygroundModal({
                       <div className="space-y-2.5 font-mono text-xs">
                         <div>
                           <span className="font-sans font-bold text-gray-600 dark:text-slate-400 block mb-0.5">
-                            Input:
+                            Standard Input (STDIN):
                           </span>
-                          <div className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-100 overflow-x-auto">
-                            {JSON.stringify(sampleCases[selectedCaseIdx].input)}
+                          <div className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-100 overflow-x-auto whitespace-pre-wrap">
+                            {sampleCases[selectedCaseIdx].stdin || (
+                              Array.isArray(sampleCases[selectedCaseIdx].input)
+                                ? sampleCases[selectedCaseIdx].input.map(x => Array.isArray(x) ? `${x.length}\n${x.join(' ')}` : String(x)).join('\n')
+                                : JSON.stringify(sampleCases[selectedCaseIdx].input)
+                            )}
                           </div>
                         </div>
 
                         <div>
                           <span className="font-sans font-bold text-gray-600 dark:text-slate-400 block mb-0.5">
-                            Expected Output:
+                            Expected Output (STDOUT):
                           </span>
-                          <div className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto">
-                            {JSON.stringify(sampleCases[selectedCaseIdx].expected)}
+                          <div className="p-2.5 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap">
+                            {sampleCases[selectedCaseIdx].expectedStdout || (
+                              sampleCases[selectedCaseIdx].expected === true ? 'true' : sampleCases[selectedCaseIdx].expected === false ? 'false' : String(sampleCases[selectedCaseIdx].expected)
+                            )}
                           </div>
                         </div>
                       </div>
@@ -694,7 +685,7 @@ export default function CodePlaygroundModal({
                       <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
                         <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
                         <p className="font-bold text-xs text-gray-800 dark:text-slate-200">
-                          {isSubmitting ? 'Evaluating All Test Cases (Sample + Hidden)...' : 'Executing in Pyodide WebAssembly Sandbox...'}
+                          {isSubmitting ? 'Evaluating All Test Cases (Sample + Hidden)...' : 'Executing in Python Sandbox (Pyodide Wasm)...'}
                         </p>
                       </div>
                     )}
@@ -770,41 +761,32 @@ export default function CodePlaygroundModal({
                           <div className="p-3 rounded-xl bg-gray-100/80 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 space-y-2 font-mono text-xs">
                             <div>
                               <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
-                                Input:
+                                STDIN Input:
                               </span>
-                              <div className="text-gray-900 dark:text-slate-100 overflow-x-auto">
-                                {JSON.stringify(activeResult.results[selectedCaseIdx].input)}
+                              <div className="text-gray-900 dark:text-slate-100 overflow-x-auto whitespace-pre-wrap">
+                                {activeResult.results[selectedCaseIdx].stdin || JSON.stringify(activeResult.results[selectedCaseIdx].input)}
                               </div>
                             </div>
 
                             <div>
                               <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
-                                Output:
+                                Your Output (STDOUT):
                               </span>
-                              <div className={activeResult.results[selectedCaseIdx].passed ? 'text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto' : 'text-rose-600 dark:text-rose-400 font-bold overflow-x-auto'}>
-                                {JSON.stringify(activeResult.results[selectedCaseIdx].actual)}
+                              <div className={activeResult.results[selectedCaseIdx].passed ? 'text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap' : 'text-rose-600 dark:text-rose-400 font-bold overflow-x-auto whitespace-pre-wrap'}>
+                                {activeResult.results[selectedCaseIdx].stdout || JSON.stringify(activeResult.results[selectedCaseIdx].actual)}
                               </div>
                             </div>
 
                             <div>
                               <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
-                                Expected:
+                                Expected Output:
                               </span>
-                              <div className="text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto">
-                                {JSON.stringify(activeResult.results[selectedCaseIdx].expected)}
+                              <div className="text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap">
+                                {activeResult.results[selectedCaseIdx].expectedStdout || (
+                                  activeResult.results[selectedCaseIdx].expected === true ? 'true' : activeResult.results[selectedCaseIdx].expected === false ? 'false' : String(activeResult.results[selectedCaseIdx].expected)
+                                )}
                               </div>
                             </div>
-
-                            {activeResult.results[selectedCaseIdx].stdout && (
-                              <div className="pt-2 border-t border-gray-200 dark:border-slate-800">
-                                <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
-                                  Stdout:
-                                </span>
-                                <pre className="text-slate-300 whitespace-pre-wrap text-[11px]">
-                                  {activeResult.results[selectedCaseIdx].stdout}
-                                </pre>
-                              </div>
-                            )}
                           </div>
                         )}
                       </div>
@@ -829,7 +811,7 @@ export default function CodePlaygroundModal({
         <div className="px-4 py-3 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <span className="text-gray-500 dark:text-gray-400 hidden sm:inline">
-              💡 Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + Enter</kbd> to Run, or Submit to validate against the full test suite.
+              💡 Complete code from <code className="text-purple-600 dark:text-purple-400 font-mono font-bold">import</code> to standard <code className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">print()</code> output. Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + Enter</kbd> to Run.
             </span>
           </div>
 

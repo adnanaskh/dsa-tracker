@@ -18,7 +18,7 @@ export async function loadPyodideEngine() {
         script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
         script.async = true;
         script.onload = resolve;
-        script.onerror = () => reject(new Error('Failed to load Pyodide WebAssembly script. Please check your internet connection.'));
+        script.onerror = () => reject(new Error('Failed to load Pyodide WebAssembly script. Please check your network connection.'));
         document.head.appendChild(script);
       });
     }
@@ -35,10 +35,46 @@ export async function loadPyodideEngine() {
 }
 
 /**
+ * Converts structured input (array/object/string) to standard STDIN text
+ */
+export function formatStdinFromInput(input) {
+  if (input === null || input === undefined) return '';
+  if (typeof input === 'string') return input;
+
+  if (Array.isArray(input)) {
+    // If input is an array of arguments (e.g. [[1,2,3,1]] or [nums, target])
+    const lines = [];
+    for (const arg of input) {
+      if (Array.isArray(arg)) {
+        if (arg.length > 0 && Array.isArray(arg[0])) {
+          // 2D Array / Matrix (e.g. Sudoku or Grid)
+          for (const row of arg) {
+            lines.push(row.join(' '));
+          }
+        } else {
+          // 1D Array: Line 1 = length N, Line 2 = space separated elements
+          lines.push(String(arg.length));
+          lines.push(arg.join(' '));
+        }
+      } else if (typeof arg === 'object' && arg !== null) {
+        lines.push(JSON.stringify(arg));
+      } else {
+        lines.push(String(arg));
+      }
+    }
+    return lines.join('\n');
+  }
+
+  return String(input);
+}
+
+/**
  * Runs Python code against a set of test cases inside Pyodide sandbox
- * @param {string} userCode - The user's Python 3 code
- * @param {string} methodName - The method name in class Solution
- * @param {Array} testCases - Array of { input: any[], expected: any }
+ * Supports full STDIN -> STDOUT execution model and class Solution method invocation.
+ *
+ * @param {string} userCode - Complete Python 3 script (with imports, stdin reading, stdout printing)
+ * @param {string} methodName - Method name fallback
+ * @param {Array} testCases - Array of test cases ({ input, expected, stdin, expectedStdout })
  * @returns {Promise<{ allPassed: boolean, results: Array, totalTimeMs: number, error: string|null }>}
  */
 export async function runPythonTests(userCode, methodName, testCases) {
@@ -46,11 +82,23 @@ export async function runPythonTests(userCode, methodName, testCases) {
   try {
     const pyodide = await loadPyodideEngine();
 
-    // Reset standard output capture
-    pyodide.runPython(`
+    const results = [];
+    let allPassed = true;
+
+    for (let i = 0; i < testCases.length; i++) {
+      const tc = testCases[i];
+      const caseStartTime = performance.now();
+
+      // Determine standard input string
+      const stdinContent = tc.stdin !== undefined ? tc.stdin : formatStdinFromInput(tc.input);
+      const expectedStdout = tc.expectedStdout !== undefined 
+        ? String(tc.expectedStdout).trim() 
+        : formatExpectedStdout(tc.expected);
+
+      // Reset and inject STDIN and STDOUT wrappers
+      pyodide.runPython(`
 import sys
 import io
-import json
 
 class StdoutCatcher:
     def __init__(self):
@@ -64,26 +112,27 @@ class StdoutCatcher:
 
 sys_stdout_catcher = StdoutCatcher()
 sys.stdout = sys_stdout_catcher
+sys.stdin = io.StringIO(${JSON.stringify(stdinContent)})
 `);
 
-    // Execute user code definition in Pyodide namespace
-    pyodide.runPython(userCode);
+      let stdout = '';
+      let actualOutput = null;
+      let isPassed = false;
+      let caseError = null;
 
-    const results = [];
-    let allPassed = true;
+      try {
+        // Execute user code
+        pyodide.runPython(userCode);
+        stdout = pyodide.runPython(`sys_stdout_catcher.get_value()`).trim();
 
-    for (let i = 0; i < testCases.length; i++) {
-      const tc = testCases[i];
-      const caseStartTime = performance.now();
-
-      // Clear stdout before each testcase
-      pyodide.runPython(`sys_stdout_catcher.output = []`);
-
-      // Prepare input arguments
-      const inputJson = JSON.stringify(tc.input);
-
-      // Wrapper script to invoke Solution().methodName(*args)
-      const executionScript = `
+        if (stdout.length > 0) {
+          // Output was printed via print() (Standard Competitive Programming STDOUT)
+          actualOutput = stdout;
+          isPassed = compareStdoutResults(stdout, expectedStdout, tc.expected);
+        } else if (methodName && userCode.includes('class Solution')) {
+          // Fallback: If user wrote class Solution and didn't print to stdout, invoke method
+          const inputJson = JSON.stringify(tc.input);
+          const executionScript = `
 import json
 args = json.loads('''${inputJson}''')
 sol = Solution()
@@ -93,50 +142,41 @@ if isinstance(args, list):
 else:
     res = func(args)
 
-# Normalize set/tuple to list for JSON serialization
 def normalize_output(o):
     if isinstance(o, (set, tuple)):
         return list(o)
     return o
 
-res = normalize_output(res)
-json.dumps(res)
+json.dumps(normalize_output(res))
 `;
-
-      try {
-        const resultJson = pyodide.runPython(executionScript);
-        const actual = JSON.parse(resultJson);
-        const caseEndTime = performance.now();
-        const stdout = pyodide.runPython(`sys_stdout_catcher.get_value()`);
-
-        // Check deep equality
-        const isPassed = compareResults(actual, tc.expected);
-        if (!isPassed) allPassed = false;
-
-        results.push({
-          caseIndex: i + 1,
-          input: tc.input,
-          expected: tc.expected,
-          actual: actual,
-          passed: isPassed,
-          runtimeMs: Math.round(caseEndTime - caseStartTime),
-          stdout: stdout.trim(),
-          error: null
-        });
+          const resultJson = pyodide.runPython(executionScript);
+          const methodResult = JSON.parse(resultJson);
+          actualOutput = methodResult;
+          isPassed = compareResults(methodResult, tc.expected);
+        } else {
+          actualOutput = '';
+          isPassed = compareStdoutResults('', expectedStdout, tc.expected);
+        }
       } catch (err) {
-        allPassed = false;
-        const stdout = pyodide.runPython(`sys_stdout_catcher.get_value()`).catch(() => '');
-        results.push({
-          caseIndex: i + 1,
-          input: tc.input,
-          expected: tc.expected,
-          actual: null,
-          passed: false,
-          runtimeMs: 0,
-          stdout: typeof stdout === 'string' ? stdout.trim() : '',
-          error: cleanPythonError(err.message)
-        });
+        caseError = cleanPythonError(err.message);
+        isPassed = false;
       }
+
+      const caseEndTime = performance.now();
+      if (!isPassed) allPassed = false;
+
+      results.push({
+        caseIndex: i + 1,
+        input: tc.input,
+        stdin: stdinContent,
+        expected: tc.expected,
+        expectedStdout: expectedStdout,
+        actual: actualOutput,
+        passed: isPassed,
+        runtimeMs: Math.round(caseEndTime - caseStartTime),
+        stdout: stdout,
+        error: caseError
+      });
     }
 
     const totalTimeMs = Math.round(performance.now() - startTime);
@@ -159,11 +199,72 @@ json.dumps(res)
 }
 
 /**
- * Deep comparison of actual vs expected outputs (handles unordered arrays if applicable)
+ * Formats expected output to canonical STDOUT string
+ */
+function formatExpectedStdout(expected) {
+  if (expected === true) return 'true';
+  if (expected === false) return 'false';
+  if (expected === null || expected === undefined) return '';
+  if (Array.isArray(expected)) {
+    // If array of arrays (e.g. Group Anagrams)
+    if (expected.length > 0 && Array.isArray(expected[0])) {
+      return JSON.stringify(expected);
+    }
+    return expected.join(' ');
+  }
+  return String(expected);
+}
+
+/**
+ * Compares STDOUT against expected output with fuzzy standard tolerances
+ */
+function compareStdoutResults(actualStdout, expectedStdout, rawExpected) {
+  if (!actualStdout && !expectedStdout) return true;
+  const actualTrim = String(actualStdout).trim();
+  const expectTrim = String(expectedStdout).trim();
+
+  // Exact match
+  if (actualTrim === expectTrim) return true;
+
+  // Case insensitive match (e.g. "True" vs "true")
+  if (actualTrim.toLowerCase() === expectTrim.toLowerCase()) return true;
+
+  // Compare as JSON / Arrays / Integers
+  try {
+    const parsedActual = JSON.parse(actualTrim);
+    if (compareResults(parsedActual, rawExpected)) return true;
+  } catch {}
+
+  // Compare space-separated tokens
+  const actualTokens = actualTrim.split(/\s+/).filter(Boolean);
+  const expectTokens = expectTrim.split(/\s+/).filter(Boolean);
+
+  if (actualTokens.length === expectTokens.length && actualTokens.length > 0) {
+    let allTokensMatch = true;
+    for (let i = 0; i < actualTokens.length; i++) {
+      if (actualTokens[i].toLowerCase() !== expectTokens[i].toLowerCase()) {
+        allTokensMatch = false;
+        break;
+      }
+    }
+    if (allTokensMatch) return true;
+  }
+
+  // Fallback direct compare
+  return compareResults(actualStdout, rawExpected);
+}
+
+/**
+ * Deep comparison of structured outputs
  */
 function compareResults(actual, expected) {
   if (actual === expected) return true;
   if (actual === null || expected === null) return actual === expected;
+
+  // Boolean loose compare
+  if (typeof actual === 'boolean' || typeof expected === 'boolean') {
+    return String(actual).toLowerCase() === String(expected).toLowerCase();
+  }
 
   // Float tolerance comparison
   if (typeof actual === 'number' && typeof expected === 'number') {
