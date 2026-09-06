@@ -44,6 +44,10 @@ export default function ProfileModal({
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [achievementFilter, setAchievementFilter] = useState('all');
 
+  React.useEffect(() => {
+    setNameInput(customDisplayName || currentUser?.displayName || '');
+  }, [customDisplayName, currentUser, isOpen]);
+
   if (!isOpen) return null;
 
   const handleSaveName = () => {

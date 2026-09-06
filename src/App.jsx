@@ -752,28 +752,28 @@ export default function App() {
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
             </button>
 
-            {/* User Profile & Rank Pill - Only displayed when authenticated */}
-            {user && (
-              <button
-                onClick={() => setIsProfileModalOpen(true)}
-                className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
-                title="View Profile & Global Rank"
-              >
-                <div className="w-5 h-5 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-400 font-bold flex items-center justify-center text-[10px] overflow-hidden">
-                  {user?.photoURL ? (
-                    <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    (customDisplayName || user?.displayName || 'U')[0].toUpperCase()
-                  )}
-                </div>
-                <span className="hidden sm:inline font-bold text-xs max-w-[85px] truncate">
-                  {customDisplayName || user?.displayName?.split(' ')[0] || user?.email?.split('@')[0] || 'Profile'}
-                </span>
-                <span className="px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 font-black text-[10px]">
-                  #{estimatedRank}
-                </span>
-              </button>
-            )}
+            {/* User Profile & Achievements Pill - Always accessible */}
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
+              title="View Profile, Achievements & Stats"
+            >
+              <div className="w-5 h-5 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-400 font-bold flex items-center justify-center text-[10px] overflow-hidden">
+                {user?.photoURL ? (
+                  <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
+                ) : user ? (
+                  (customDisplayName || user?.displayName || 'U')[0].toUpperCase()
+                ) : (
+                  <User className="w-3 h-3 text-blue-400" />
+                )}
+              </div>
+              <span className="hidden sm:inline font-bold text-xs max-w-[85px] truncate">
+                {customDisplayName || user?.displayName?.split(' ')[0] || (user ? 'Profile' : 'Profile')}
+              </span>
+              <span className="px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 font-black text-[10px]">
+                {user ? `#${estimatedRank}` : `${userStats.solved} Solved`}
+              </span>
+            </button>
 
             {/* Auth Block */}
             {user ? (
@@ -912,7 +912,7 @@ export default function App() {
               currentUser={user}
               userStats={userStats}
               customDisplayName={customDisplayName}
-              onOpenProfile={() => requireAuth('view user profile and rank', () => setIsProfileModalOpen(true))}
+              onOpenProfile={() => setIsProfileModalOpen(true)}
               onGoogleSignIn={handleGoogleSignIn}
             />
           )}
