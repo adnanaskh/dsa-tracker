@@ -48,11 +48,11 @@ export default function EditorialModal({
     const metaDesc = document.querySelector('meta[name="description"]');
     const originalDesc = metaDesc ? metaDesc.getAttribute('content') : '';
 
-    // Set page title for search query: "{Problem Name} Solution & Editorial"
-    document.title = `${question.name} Solution & Editorial (Java, Python, C++, JS) | DSA Tracker`;
+    // Set page title for search query: "{Problem Name} Solution & Editorial (Python 3)"
+    document.title = `${question.name} Solution & Editorial (Python 3) | DSA Tracker`;
 
     if (metaDesc) {
-      metaDesc.setAttribute('content', `${editorial.overview} Complete working solutions in Python, Java, C++, and JavaScript with Time Complexity ${editorial.complexity.time} and Space Complexity ${editorial.complexity.space}.`);
+      metaDesc.setAttribute('content', `${editorial.overview} Complete working solution in Python 3 with Time Complexity ${editorial.complexity.time} and Space Complexity ${editorial.complexity.space}.`);
     }
 
     // Inject Dynamic JSON-LD TechArticle / QAPage Schema for Googlebot
@@ -71,10 +71,10 @@ export default function EditorialModal({
         "@type": "WebPage",
         "@id": shareableUrl
       },
-      "headline": `${question.name} - Complete Solution & Editorial (Python, Java, C++, JS)`,
+      "headline": `${question.name} - Complete Python Solution & Editorial`,
       "description": editorial.overview,
       "articleSection": question.topic,
-      "keywords": `${question.name} solution, ${question.name} leetcode, ${question.name} editorial, ${question.topic}, ${question.pattern}, dsa problems`,
+      "keywords": `${question.name} python solution, ${question.name} leetcode python, ${question.name} editorial, ${question.topic}, ${question.pattern}, dsa problems`,
       "author": {
         "@type": "Person",
         "name": "Adnan Ahmad",
@@ -263,64 +263,48 @@ export default function EditorialModal({
             </div>
           </div>
 
-          {/* Section 3: Complete Code Implementation (Multi-Language) */}
+          {/* Section 3: Complete Python 3 Code Implementation */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
                 <Code2 className="w-4 h-4 text-emerald-500" />
-                Complete Working Code
+                <span>Python 3 Optimal Solution</span>
               </h3>
 
-              {/* Language Switcher Tabs */}
-              <div className="flex items-center gap-1 p-1 rounded-lg bg-gray-100 dark:bg-slate-800">
-                {[
-                  { id: 'python', label: 'Python 3' },
-                  { id: 'java', label: 'Java' },
-                  { id: 'cpp', label: 'C++' },
-                  { id: 'javascript', label: 'JavaScript' }
-                ].map(lang => (
-                  <button
-                    key={lang.id}
-                    onClick={() => setSelectedLanguage(lang.id)}
-                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
-                      selectedLanguage === lang.id
-                        ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-emerald-400 shadow-xs'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800">
+                  Python 3 (LeetCode Signature)
+                </span>
               </div>
             </div>
 
             {/* Code Block */}
-            <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-slate-800 bg-slate-950 text-slate-100 font-mono text-xs">
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400">
+            <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-slate-800 bg-slate-950 text-slate-100 font-mono text-xs shadow-md">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400">
                 <div className="flex items-center gap-2">
                   <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="uppercase font-bold tracking-wider">{selectedLanguage}</span>
-                  <span>• Optimal Solution</span>
+                  <span className="font-bold text-slate-200">Solution.py</span>
+                  <span className="text-slate-500">• Complete Working Code</span>
                 </div>
                 <button
                   onClick={handleCopyCode}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 font-sans text-xs font-semibold transition-colors cursor-pointer border border-slate-700"
                 >
                   {copiedCode ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Copied!</span>
+                      <span className="text-emerald-400 font-bold">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy Code</span>
+                      <Copy className="w-3.5 h-3.5 text-slate-400" />
+                      <span>Copy Python Code</span>
                     </>
                   )}
                 </button>
               </div>
 
-              <pre className="p-4 overflow-x-auto leading-relaxed text-slate-200 max-h-[380px]">
+              <pre className="p-4 overflow-x-auto leading-relaxed text-slate-200 max-h-[420px]">
                 <code>{currentCode}</code>
               </pre>
             </div>
