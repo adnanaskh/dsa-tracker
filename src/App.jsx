@@ -1025,10 +1025,64 @@ export default function App() {
     }
   };
 
-  // Sign Out
+  // Sign Out & Comprehensive Cache / Storage Purge
   const handleSignOut = async () => {
     try {
+      // 1. Sign out from Firebase Auth
       await signOut(auth);
+
+      // 2. Clear all in-memory user progress and customized profile state
+      setQuestionsProgress({});
+      setPlannerProgress({});
+      setRevisionLogs({});
+      setWeeklyReviews({});
+      setSolutions({});
+      setCustomDisplayName('');
+      setCustomUsername('');
+      setCustomBio('');
+      setCustomLinkedin('');
+      setCustomGithub('');
+      setViewingPublicProfile(null);
+      setIsProfileModalOpen(false);
+
+      // 3. Clear all localStorage keys (all dsa_ user data, saved code, submissions, and caches)
+      try {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('dsa_') || key.startsWith('firebase:') || key.startsWith('artifact_') || key.includes('user_code') || key.includes('submission'))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+      } catch (e) {
+        console.error('Error clearing localStorage:', e);
+      }
+
+      // 4. Clear sessionStorage
+      try {
+        sessionStorage.clear();
+      } catch (e) {
+        console.error('Error clearing sessionStorage:', e);
+      }
+
+      // 5. Clear CacheStorage (Service Worker / browser HTTP cache)
+      try {
+        if ('caches' in window) {
+          const cacheKeys = await caches.keys();
+          await Promise.all(cacheKeys.map(k => caches.delete(k)));
+        }
+      } catch (e) {
+        console.error('Error clearing caches:', e);
+      }
+
+      // 6. Reset URL query parameters if present
+      try {
+        if (window.location.search) {
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+      } catch {}
+
     } catch (err) {
       console.error("Sign-out error:", err);
     }
