@@ -555,16 +555,6 @@ export default function ProfileModal({
                       <span>GitHub</span>
                     </a>
                   )}
-
-                  {currentUser ? (
-                    <span className="flex items-center gap-1 text-emerald-400 font-semibold text-[11px]">
-                      <Cloud className="w-3 h-3" /> Cloud Synced
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-amber-400 font-semibold text-[11px]">
-                      <CloudOff className="w-3 h-3" /> Guest
-                    </span>
-                  )}
                 </div>
               </div>
             </div>
@@ -621,19 +611,6 @@ export default function ProfileModal({
               )}
             </button>
           </div>
-
-          {/* Public Profile View-Only Mode Indicator (When viewing another user's profile) */}
-          {!isOwner && (
-            <div className="mt-3 py-1.5 px-3 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-between text-[11px] text-blue-200">
-              <span className="font-semibold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Public Profile (View-Only Mode)
-              </span>
-              <span className="text-[10px] text-slate-300">
-                Only @{displayUser.username} can edit or delete this profile
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Edit Profile Form Overlay (Owner Only) */}
