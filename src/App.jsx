@@ -1589,6 +1589,18 @@ export default function App() {
               userEmail: user?.email || 'guest'
             });
           }}
+          onSaveCode={(q, codeToSave) => {
+            const now = new Date().toISOString();
+            saveData('solutions', `q_${q.id}`, {
+              questionId: q.id,
+              questionName: q.name,
+              code: codeToSave,
+              language: 'python',
+              uploadedAt: now,
+              userId: user?.uid || 'guest',
+              userEmail: user?.email || 'guest'
+            });
+          }}
           onOpenEditorial={(q) => {
             setActivePlaygroundQuestion(null);
             openEditorialSolution(q);

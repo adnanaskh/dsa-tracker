@@ -11,6 +11,7 @@ import {
   Code2,
   Terminal,
   Clock,
+  Calendar,
   Sparkles,
   ExternalLink,
   ChevronRight,
@@ -34,12 +35,18 @@ import {
   ChevronUp,
   ChevronDown,
   Type,
-  WrapText
+  WrapText,
+  Save,
+  ArrowUpRight,
+  Trash2,
+  ArrowLeft
 } from 'lucide-react';
 import { runPythonTests } from '../utils/pyodideRunner';
 import { getProblemTestSuite } from '../data/testCasesData';
 import { getProblemDescription } from '../data/problemDescriptionsData';
 import { getEditorialSolution } from '../data/solutionsData';
+
+const DEFAULT_CLEAN_PLACEHOLDER = `# Write your code here\n`;
 
 export default function CodePlaygroundModal({
   isOpen,
@@ -47,6 +54,7 @@ export default function CodePlaygroundModal({
   question,
   initialCode = null,
   isDone = false,
+  onSaveCode = () => {},
   onSubmitSuccess = () => {},
   onOpenEditorial = () => {}
 }) {
@@ -77,7 +85,7 @@ export default function CodePlaygroundModal({
   const [isConsoleMinimized, setIsConsoleMinimized] = useState(false);
   const [isLeftCollapsed, setIsLeftCollapsed] = useState(false);
 
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(DEFAULT_CLEAN_PLACEHOLDER);
   const [activeConsoleTab, setActiveConsoleTab] = useState('testcases'); // 'testcases' | 'result'
   const [selectedCaseIdx, setSelectedCaseIdx] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -86,6 +94,10 @@ export default function CodePlaygroundModal({
   const [submitResult, setSubmitResult] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedExampleIdx, setCopiedExampleIdx] = useState(null);
+  const [saveToast, setSaveToast] = useState(false);
+  const [submissions, setSubmissions] = useState([]);
+  const [expandedSubmissionId, setExpandedSubmissionId] = useState(null);
+  const [copiedSubmissionId, setCopiedSubmissionId] = useState(null);
 
   const containerRef = useRef(null);
   const rightPaneRef = useRef(null);
@@ -96,18 +108,56 @@ export default function CodePlaygroundModal({
   const isDraggingHorizontal = useRef(false);
   const isDraggingVertical = useRef(false);
 
-  // Initialize starter code when question opens
+  // Initialize clean code and load latest saved version or submission history
   useEffect(() => {
     if (isOpen && question && testSuite) {
-      const defaultCode = problemDesc?.starterCode || testSuite.starterCode || `import sys\n\ndef solve():\n    pass\n\nif __name__ == '__main__':\n    solve()\n`;
-      setCode(initialCode || defaultCode);
+      // 1. Check if user already has saved code in localStorage
+      const localSaved = localStorage.getItem(`dsa_user_code_${question.id}`);
+      let codeToUse = DEFAULT_CLEAN_PLACEHOLDER;
+
+      if (localSaved && localSaved.trim().length > 0) {
+        codeToUse = localSaved;
+      } else if (
+        initialCode &&
+        initialCode.trim().length > 0 &&
+        !initialCode.includes('class Solution:\n    def ') &&
+        !initialCode.includes('def solve():\n    pass')
+      ) {
+        codeToUse = initialCode;
+      }
+
+      setCode(codeToUse);
       setRunResult(null);
       setSubmitResult(null);
       setActiveConsoleTab('testcases');
       setSelectedCaseIdx(0);
       setLeftTab('description');
+      setExpandedSubmissionId(null);
+
+      // Load previous submissions from localStorage
+      try {
+        const rawSubs = localStorage.getItem(`dsa_submissions_${question.id}`);
+        setSubmissions(rawSubs ? JSON.parse(rawSubs) : []);
+      } catch (e) {
+        setSubmissions([]);
+      }
     }
-  }, [isOpen, question, testSuite, problemDesc, initialCode]);
+  }, [isOpen, question, testSuite, initialCode]);
+
+  // Save code helper
+  const handleSaveCode = useCallback((codeToSave = code, showToast = true) => {
+    if (!question) return;
+    try {
+      localStorage.setItem(`dsa_user_code_${question.id}`, codeToSave);
+    } catch (e) {
+      console.error('Failed to save code to localStorage', e);
+    }
+    onSaveCode(question, codeToSave);
+    if (showToast) {
+      setSaveToast(true);
+      setTimeout(() => setSaveToast(false), 2000);
+    }
+  }, [code, question, onSaveCode]);
 
   // Sync line numbers scrolling with code textarea
   const handleScroll = () => {
@@ -132,7 +182,7 @@ export default function CodePlaygroundModal({
     }
   };
 
-  // Keyboard shortcut: Ctrl + Enter to Run Code
+  // Keyboard shortcut: Ctrl + Enter to Run Code, Ctrl + S to Save Code
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -140,13 +190,16 @@ export default function CodePlaygroundModal({
         if (!isRunning && !isSubmitting) {
           handleRunCode();
         }
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+        e.preventDefault();
+        handleSaveCode(code, true);
       }
     };
     if (isOpen) {
       window.addEventListener('keydown', handleKeyDown);
     }
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, code, testSuite, isRunning, isSubmitting]);
+  }, [isOpen, code, testSuite, isRunning, isSubmitting, handleSaveCode]);
 
   // Horizontal Resizer (Left Width Adjustment)
   const startHorizontalDrag = useCallback((e) => {
@@ -213,9 +266,9 @@ export default function CodePlaygroundModal({
   const allCases = [...sampleCases, ...hiddenCases];
 
   const handleResetCode = () => {
-    if (window.confirm('Reset code to default template? Any unsaved edits will be lost.')) {
-      const defaultCode = problemDesc?.starterCode || testSuite.starterCode || `import sys\n\ndef solve():\n    pass\n\nif __name__ == '__main__':\n    solve()\n`;
-      setCode(defaultCode);
+    if (window.confirm('Clear editor and start fresh? Any unsaved edits will be cleared.')) {
+      setCode(DEFAULT_CLEAN_PLACEHOLDER);
+      handleSaveCode(DEFAULT_CLEAN_PLACEHOLDER, true);
     }
   };
 
@@ -233,6 +286,7 @@ export default function CodePlaygroundModal({
 
   // Run Sample Test Cases
   const handleRunCode = async () => {
+    handleSaveCode(code, false); // Auto-save latest code
     setIsRunning(true);
     setActiveConsoleTab('result');
     setSubmitResult(null);
@@ -255,6 +309,7 @@ export default function CodePlaygroundModal({
 
   // Submit Code against All Test Cases
   const handleSubmitCode = async () => {
+    handleSaveCode(code, false); // Auto-save latest code
     setIsSubmitting(true);
     setActiveConsoleTab('result');
     setRunResult(null);
@@ -264,10 +319,53 @@ export default function CodePlaygroundModal({
       const result = await runPythonTests(code, testSuite.methodName, allCases);
       setSubmitResult(result);
 
+      // Record new submission entry
+      const now = new Date();
+      const newSubmission = {
+        id: 'sub_' + Date.now(),
+        timestamp: now.toISOString(),
+        formattedDate: now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+        formattedTime: now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+        status: result.allPassed ? 'Accepted' : (result.error ? 'Runtime Error' : 'Wrong Answer'),
+        allPassed: result.allPassed,
+        passedCount: result.results ? result.results.filter(r => r.passed).length : 0,
+        totalCount: result.results ? result.results.length : allCases.length,
+        runtimeMs: result.totalTimeMs || 0,
+        language: selectedLanguage === 'python' ? 'Python' : 'Python 3',
+        code: code
+      };
+
+      const updatedSubs = [newSubmission, ...submissions].slice(0, 50);
+      setSubmissions(updatedSubs);
+      try {
+        localStorage.setItem(`dsa_submissions_${question.id}`, JSON.stringify(updatedSubs));
+      } catch (e) {}
+
       if (result.allPassed) {
         onSubmitSuccess(question, code);
       }
     } catch (err) {
+      const now = new Date();
+      const newSubmission = {
+        id: 'sub_' + Date.now(),
+        timestamp: now.toISOString(),
+        formattedDate: now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+        formattedTime: now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }),
+        status: 'Runtime Error',
+        allPassed: false,
+        passedCount: 0,
+        totalCount: allCases.length,
+        runtimeMs: 0,
+        language: selectedLanguage === 'python' ? 'Python' : 'Python 3',
+        code: code,
+        error: err.message
+      };
+      const updatedSubs = [newSubmission, ...submissions].slice(0, 50);
+      setSubmissions(updatedSubs);
+      try {
+        localStorage.setItem(`dsa_submissions_${question.id}`, JSON.stringify(updatedSubs));
+      } catch (e) {}
+
       setSubmitResult({
         allPassed: false,
         results: [],
@@ -276,6 +374,24 @@ export default function CodePlaygroundModal({
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Restore past submission code into the editor
+  const handleLoadSubmissionCode = (subCode) => {
+    setCode(subCode);
+    handleSaveCode(subCode, true);
+    setSaveToast(true);
+    setTimeout(() => setSaveToast(false), 2000);
+  };
+
+  // Clear submission history
+  const handleClearSubmissions = () => {
+    if (window.confirm('Clear all submission records for this problem?')) {
+      setSubmissions([]);
+      try {
+        localStorage.removeItem(`dsa_submissions_${question.id}`);
+      } catch (e) {}
     }
   };
 
@@ -432,6 +548,11 @@ export default function CodePlaygroundModal({
                   >
                     <History className="w-3.5 h-3.5" />
                     <span>Submissions</span>
+                    {submissions.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold ml-0.5">
+                        {submissions.length}
+                      </span>
+                    )}
                   </button>
                 </div>
 
@@ -446,7 +567,7 @@ export default function CodePlaygroundModal({
               {/* Left Content Scrollable Area */}
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 text-sm text-gray-800 dark:text-slate-200">
                 
-                {/* TAB: DESCRIPTION */}
+                {/* TAB 1: DESCRIPTION */}
                 {leftTab === 'description' && problemDesc && (
                   <div className="space-y-5 animate-in fade-in">
                     
@@ -588,7 +709,7 @@ export default function CodePlaygroundModal({
                   </div>
                 )}
 
-                {/* TAB: EDITORIAL */}
+                {/* TAB 2: EDITORIAL */}
                 {leftTab === 'editorial' && (
                   <div className="space-y-4 animate-in fade-in text-xs sm:text-sm">
                     {editorial ? (
@@ -655,25 +776,173 @@ export default function CodePlaygroundModal({
                   </div>
                 )}
 
-                {/* TAB: SUBMISSIONS */}
+                {/* TAB 3: SUBMISSIONS HISTORY & TIMESTAMPS */}
                 {leftTab === 'submissions' && (
-                  <div className="space-y-3 animate-in fade-in text-xs">
-                    <div className="p-4 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-950 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-gray-700 dark:text-gray-300">Current Status:</span>
-                        <span className={`px-2.5 py-0.5 rounded-full font-bold ${
-                          isDone
-                            ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800'
-                            : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-400'
-                        }`}>
-                          {isDone ? '✅ Solved' : '⏳ In Progress'}
-                        </span>
+                  <div className="space-y-4 animate-in fade-in text-xs">
+                    
+                    {/* Header Summary Banner */}
+                    <div className="p-3 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950 flex items-center justify-between gap-3">
+                      <div>
+                        <div className="font-bold text-gray-800 dark:text-white text-xs">
+                          Submission History ({submissions.length})
+                        </div>
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                          {submissions.length > 0
+                            ? `Latest submitted code is saved automatically.`
+                            : 'Submit your solution to track execution status, date & time.'}
+                        </p>
                       </div>
 
-                      <p className="text-gray-500 dark:text-gray-400 text-[11px]">
-                        Your solution code is automatically saved whenever all test cases pass upon clicking <strong>Submit</strong>.
-                      </p>
+                      {submissions.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleClearSubmissions}
+                          className="px-2 py-1 rounded-lg text-[11px] text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors flex items-center gap-1 cursor-pointer"
+                          title="Clear Submissions History"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          <span>Clear</span>
+                        </button>
+                      )}
                     </div>
+
+                    {/* Submissions List */}
+                    {submissions.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {submissions.map((sub, idx) => {
+                          const isExpanded = expandedSubmissionId === sub.id;
+                          return (
+                            <div
+                              key={sub.id || idx}
+                              className={`rounded-xl border transition-all overflow-hidden ${
+                                sub.allPassed
+                                  ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/30 dark:bg-emerald-950/20'
+                                  : 'border-rose-200 dark:border-rose-900/60 bg-rose-50/30 dark:bg-rose-950/20'
+                              }`}
+                            >
+                              {/* Submission Header Row */}
+                              <div className="p-3 flex items-center justify-between gap-2.5">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  {sub.allPassed ? (
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                  ) : sub.status === 'Runtime Error' ? (
+                                    <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+                                  ) : (
+                                    <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                                  )}
+
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      <span className={`font-extrabold text-xs ${
+                                        sub.allPassed
+                                          ? 'text-emerald-700 dark:text-emerald-400'
+                                          : sub.status === 'Runtime Error'
+                                          ? 'text-amber-700 dark:text-amber-400'
+                                          : 'text-rose-700 dark:text-rose-400'
+                                      }`}>
+                                        {sub.status || (sub.allPassed ? 'Accepted' : 'Wrong Answer')}
+                                      </span>
+
+                                      <span className="text-[11px] font-mono text-gray-500 dark:text-gray-400">
+                                        ({sub.passedCount ?? (sub.allPassed ? allCases.length : 0)}/{sub.totalCount || allCases.length} passed)
+                                      </span>
+                                    </div>
+
+                                    {/* Date & Time Timestamp */}
+                                    <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 font-medium flex-wrap">
+                                      <span className="flex items-center gap-1">
+                                        <Calendar className="w-3 h-3 text-gray-400" />
+                                        {sub.formattedDate || new Date(sub.timestamp).toLocaleDateString()}
+                                      </span>
+                                      <span>•</span>
+                                      <span className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3 text-gray-400" />
+                                        {sub.formattedTime || new Date(sub.timestamp).toLocaleTimeString()}
+                                      </span>
+                                      {sub.runtimeMs !== undefined && (
+                                        <>
+                                          <span>•</span>
+                                          <span className="font-mono">{sub.runtimeMs} ms</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className="flex items-center gap-1.5 shrink-0">
+                                  <button
+                                    type="button"
+                                    onClick={() => setExpandedSubmissionId(isExpanded ? null : sub.id)}
+                                    className="px-2 py-1 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300 text-[11px] font-bold transition-colors cursor-pointer"
+                                  >
+                                    {isExpanded ? 'Hide Code' : 'View Code'}
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Expanded Code View */}
+                              {isExpanded && (
+                                <div className="border-t border-gray-200 dark:border-slate-800 bg-slate-950 p-3 space-y-2 animate-in fade-in">
+                                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                                    <span className="flex items-center gap-1 text-slate-300 font-bold">
+                                      <FileCode className="w-3 h-3 text-emerald-400" />
+                                      {sub.language || 'Python 3'} Snapshot
+                                    </span>
+
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(sub.code);
+                                          setCopiedSubmissionId(sub.id);
+                                          setTimeout(() => setCopiedSubmissionId(null), 2000);
+                                        }}
+                                        className="hover:text-white flex items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer"
+                                      >
+                                        {copiedSubmissionId === sub.id ? (
+                                          <>
+                                            <Check className="w-3 h-3 text-emerald-400" />
+                                            <span className="text-emerald-400">Copied</span>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Copy className="w-3 h-3" />
+                                            <span>Copy</span>
+                                          </>
+                                        )}
+                                      </button>
+
+                                      <button
+                                        type="button"
+                                        onClick={() => handleLoadSubmissionCode(sub.code)}
+                                        className="px-2 py-0.5 rounded bg-blue-600 hover:bg-blue-500 text-white font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
+                                        title="Restore this submission code into the active editor"
+                                      >
+                                        <ArrowLeft className="w-3 h-3" />
+                                        <span>Load into Editor</span>
+                                      </button>
+                                    </div>
+                                  </div>
+
+                                  <pre className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 font-mono text-[11px] overflow-x-auto leading-relaxed max-h-60">
+                                    {sub.code}
+                                  </pre>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="py-12 flex flex-col items-center justify-center text-center space-y-2 border border-dashed border-gray-300 dark:border-slate-800 rounded-xl p-6">
+                        <History className="w-8 h-8 text-gray-400 opacity-40" />
+                        <div className="font-bold text-gray-700 dark:text-gray-300 text-xs">No Submissions Yet</div>
+                        <p className="text-[11px] text-gray-500 dark:text-gray-400 max-w-xs">
+                          Write your Python solution in the code editor and click <strong>Submit</strong> to evaluate all test cases and record your submission history.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -715,9 +984,27 @@ export default function CodePlaygroundModal({
                     <option value="python3">Python 3 (CPython 3.11)</option>
                     <option value="python">Python</option>
                   </select>
+
+                  {/* Saved Status Indicator */}
+                  {saveToast && (
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 animate-in fade-in">
+                      <Check className="w-3 h-3" />
+                      <span>Code Saved</span>
+                    </span>
+                  )}
                 </div>
                 
                 <div className="flex items-center gap-1.5">
+                  {/* Save Button */}
+                  <button
+                    onClick={() => handleSaveCode(code, true)}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-bold transition-colors cursor-pointer shadow-xs"
+                    title="Save Code (Ctrl + S)"
+                  >
+                    <Save className="w-3 h-3 text-blue-400" />
+                    <span>Save</span>
+                  </button>
+
                   {/* Font Size Adjuster */}
                   <div className="flex items-center gap-1 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-[11px]">
                     <Type className="w-3 h-3 text-slate-400" />
@@ -747,11 +1034,11 @@ export default function CodePlaygroundModal({
                     <WrapText className="w-3 h-3" />
                   </button>
 
-                  {/* Reset Code */}
+                  {/* Clear / Reset Code */}
                   <button
                     onClick={handleResetCode}
                     className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700 transition-colors cursor-pointer"
-                    title="Reset Template"
+                    title="Clear Editor & Start Fresh"
                   >
                     <RotateCcw className="w-3 h-3" />
                   </button>
@@ -789,7 +1076,7 @@ export default function CodePlaygroundModal({
                   onKeyDown={handleKeyDownTextarea}
                   spellCheck="false"
                   className={`flex-1 h-full p-3 font-mono text-slate-100 bg-slate-950 resize-none outline-none leading-relaxed selection:bg-blue-600/40 ${isWordWrap ? 'whitespace-pre-wrap' : 'whitespace-pre overflow-x-auto'}`}
-                  placeholder="# Write your complete Python solution (import sys ... print) here..."
+                  placeholder="# Write your code from here (import sys ... print)"
                   style={{ tabSize: 4, fontSize: `${fontSize}px` }}
                 />
               </div>
@@ -852,7 +1139,7 @@ export default function CodePlaygroundModal({
                   {/* Toggle Minimize/Maximize Console */}
                   <button
                     onClick={() => setIsConsoleMinimized(!isConsoleMinimized)}
-                    className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded text-gray-500 dark:text-gray-400"
+                    className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded text-gray-500 dark:text-gray-400 cursor-pointer"
                     title={isConsoleMinimized ? "Expand Console" : "Minimize Console"}
                   >
                     {isConsoleMinimized ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -946,8 +1233,8 @@ export default function CodePlaygroundModal({
                           {/* Overall Banner */}
                           <div className={`p-2.5 rounded-xl border flex items-center justify-between ${
                             activeResult.allPassed
-                              ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
-                              : 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
+                                ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
+                                : 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
                           }`}>
                             <div className="flex items-center gap-2">
                               {activeResult.allPassed ? (
@@ -1049,11 +1336,22 @@ export default function CodePlaygroundModal({
         <div className="px-3 py-2 sm:px-4 sm:py-2.5 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 flex items-center justify-between gap-3 text-xs shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-gray-500 dark:text-gray-400 hidden sm:inline">
-              💡 Complete code from <code className="text-purple-600 dark:text-purple-400 font-mono font-bold">import</code> to <code className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">print()</code>. Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + Enter</kbd> to Run.
+              💡 Write your code from scratch (<code className="text-purple-600 dark:text-purple-400 font-mono font-bold">import</code> to <code className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">print()</code>). Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + Enter</kbd> to Run or <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + S</kbd> to Save.
             </span>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Save Code Button */}
+            <button
+              type="button"
+              onClick={() => handleSaveCode(code, true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 font-bold transition-all cursor-pointer shadow-xs"
+              title="Save Code (Ctrl + S)"
+            >
+              <Save className="w-3.5 h-3.5 text-blue-500" />
+              <span>Save</span>
+            </button>
+
             {/* Run Code Button */}
             <button
               type="button"
@@ -1081,3 +1379,4 @@ export default function CodePlaygroundModal({
     </div>
   );
 }
+
