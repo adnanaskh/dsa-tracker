@@ -162,12 +162,15 @@ export default function LeaderboardTab({
         }`}>
           {/* 2nd Place (Silver) - only if >= 2 users */}
           {combinedUsers.length >= 2 && top3[1] && (
-            <div className="order-2 md:order-1 p-5 rounded-2xl border border-slate-300 dark:border-slate-800 bg-gradient-to-b from-slate-100 to-white dark:from-slate-800/80 dark:to-slate-900 flex flex-col items-center text-center relative shadow-sm">
+            <div 
+              onClick={() => onOpenProfile(top3[1]?.isCurrentUser ? null : top3[1])}
+              className="order-2 md:order-1 p-5 rounded-2xl border border-slate-300 dark:border-slate-800 bg-gradient-to-b from-slate-100 to-white dark:from-slate-800/80 dark:to-slate-900 flex flex-col items-center text-center relative shadow-sm cursor-pointer hover:shadow-md transition-all group"
+            >
               <div className="absolute -top-3 px-3 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-black uppercase tracking-wider flex items-center gap-1 border border-slate-300 dark:border-slate-600">
                 <Medal className="w-3.5 h-3.5 text-slate-400" /> 2nd Place
               </div>
 
-              <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-400 flex items-center justify-center font-bold text-lg text-slate-700 dark:text-slate-200 mt-2 mb-3 shadow-sm overflow-hidden">
+              <div className="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 border-2 border-slate-400 flex items-center justify-center font-bold text-lg text-slate-700 dark:text-slate-200 mt-2 mb-3 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
                 {top3[1]?.photoURL ? (
                   <img src={top3[1].photoURL} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -197,12 +200,15 @@ export default function LeaderboardTab({
 
           {/* 1st Place (Gold) */}
           {combinedUsers.length >= 1 && top3[0] && (
-            <div className={`order-1 ${combinedUsers.length >= 3 ? 'md:order-2 md:-translate-y-2' : ''} p-6 rounded-2xl border-2 border-amber-400/80 bg-gradient-to-b from-amber-500/15 to-white dark:from-amber-500/20 dark:to-slate-900 flex flex-col items-center text-center relative shadow-md`}>
+            <div 
+              onClick={() => onOpenProfile(top3[0]?.isCurrentUser ? null : top3[0])}
+              className={`order-1 ${combinedUsers.length >= 3 ? 'md:order-2 md:-translate-y-2' : ''} p-6 rounded-2xl border-2 border-amber-400/80 bg-gradient-to-b from-amber-500/15 to-white dark:from-amber-500/20 dark:to-slate-900 flex flex-col items-center text-center relative shadow-md cursor-pointer hover:shadow-lg transition-all group`}
+            >
               <div className="absolute -top-3.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-xs font-black uppercase tracking-wider flex items-center gap-1 shadow-sm">
                 <Crown className="w-4 h-4 fill-slate-950" /> 1st Place Champion
               </div>
 
-              <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/80 border-3 border-amber-400 flex items-center justify-center font-extrabold text-2xl text-amber-600 dark:text-amber-300 mt-2 mb-3 shadow-md overflow-hidden">
+              <div className="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/80 border-3 border-amber-400 flex items-center justify-center font-extrabold text-2xl text-amber-600 dark:text-amber-300 mt-2 mb-3 shadow-md overflow-hidden group-hover:scale-105 transition-transform">
                 {top3[0]?.photoURL ? (
                   <img src={top3[0].photoURL} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -232,12 +238,15 @@ export default function LeaderboardTab({
 
           {/* 3rd Place (Bronze) - only if >= 3 users */}
           {combinedUsers.length >= 3 && top3[2] && (
-            <div className="order-3 p-5 rounded-2xl border border-amber-800/20 dark:border-amber-900/40 bg-gradient-to-b from-amber-900/10 to-white dark:from-amber-950/30 dark:to-slate-900 flex flex-col items-center text-center relative shadow-sm">
+            <div 
+              onClick={() => onOpenProfile(top3[2]?.isCurrentUser ? null : top3[2])}
+              className="order-3 p-5 rounded-2xl border border-amber-800/20 dark:border-amber-900/40 bg-gradient-to-b from-amber-900/10 to-white dark:from-amber-950/30 dark:to-slate-900 flex flex-col items-center text-center relative shadow-sm cursor-pointer hover:shadow-md transition-all group"
+            >
               <div className="absolute -top-3 px-3 py-0.5 rounded-full bg-amber-900/20 text-amber-800 dark:text-amber-300 text-xs font-black uppercase tracking-wider flex items-center gap-1 border border-amber-800/30">
                 <Medal className="w-3.5 h-3.5 text-amber-700" /> 3rd Place
               </div>
 
-              <div className="w-16 h-16 rounded-full bg-amber-900/10 border-2 border-amber-700/60 flex items-center justify-center font-bold text-lg text-amber-800 dark:text-amber-300 mt-2 mb-3 shadow-sm overflow-hidden">
+              <div className="w-16 h-16 rounded-full bg-amber-900/10 border-2 border-amber-700/60 flex items-center justify-center font-bold text-lg text-amber-800 dark:text-amber-300 mt-2 mb-3 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
                 {top3[2]?.photoURL ? (
                   <img src={top3[2].photoURL} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -436,16 +445,16 @@ export default function LeaderboardTab({
                     </td>
 
                     <td className="py-3 px-4 text-right">
-                      {isCurrent ? (
-                        <button
-                          onClick={onOpenProfile}
-                          className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px] transition-colors"
-                        >
-                          Profile
-                        </button>
-                      ) : (
-                        <span className="text-gray-400 text-[11px]">Ranked</span>
-                      )}
+                      <button
+                        onClick={() => onOpenProfile(isCurrent ? null : u)}
+                        className={`px-2.5 py-1 rounded text-[11px] font-semibold transition-colors cursor-pointer ${
+                          isCurrent
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
+                            : 'bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        {isCurrent ? 'My Profile' : 'View'}
+                      </button>
                     </td>
                   </tr>
                 );

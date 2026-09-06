@@ -13,7 +13,8 @@ import {
   onSnapshot, 
   doc, 
   setDoc,
-  deleteDoc
+  deleteDoc,
+  getDocs
 } from 'firebase/firestore';
 import { 
   LayoutDashboard, 
@@ -144,6 +145,19 @@ export default function App() {
   const [customDisplayName, setCustomDisplayName] = useState(() => {
     return localStorage.getItem('dsa_custom_handle') || '';
   });
+  const [customUsername, setCustomUsername] = useState(() => {
+    return localStorage.getItem('dsa_custom_username') || '';
+  });
+  const [customBio, setCustomBio] = useState(() => {
+    return localStorage.getItem('dsa_custom_bio') || '';
+  });
+  const [customLinkedin, setCustomLinkedin] = useState(() => {
+    return localStorage.getItem('dsa_custom_linkedin') || '';
+  });
+  const [customGithub, setCustomGithub] = useState(() => {
+    return localStorage.getItem('dsa_custom_github') || '';
+  });
+  const [viewingPublicProfile, setViewingPublicProfile] = useState(null);
   const [cloudLeaderboard, setCloudLeaderboard] = useState([]);
 
   // Helper to generate SEO clean slugs for problem deep links
@@ -174,7 +188,7 @@ export default function App() {
     } catch {}
   }, []);
 
-  // Deep-Linking Handler on Page Load (?solution=two-sum or ?q=3)
+  // Deep-Linking Handler on Page Load (?solution=two-sum or ?u=username or ?user=username)
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -190,10 +204,24 @@ export default function App() {
           setActiveEditorialQuestion(matched);
         }
       }
+
+      const userQuery = params.get('u') || params.get('user') || params.get('profile');
+      if (userQuery) {
+        const cleanU = userQuery.trim().toLowerCase();
+        const userMatch = cloudLeaderboard.find(u => 
+          (u.username && u.username.toLowerCase() === cleanU) ||
+          (u.uid && u.uid.toLowerCase() === cleanU) ||
+          (u.displayName && u.displayName.toLowerCase().replace(/[^a-z0-9_]/g, '') === cleanU)
+        );
+        if (userMatch) {
+          setViewingPublicProfile(userMatch);
+          setIsProfileModalOpen(true);
+        }
+      }
     } catch (e) {
       console.error("Deep-linking error:", e);
     }
-  }, [toSlug]);
+  }, [toSlug, cloudLeaderboard]);
 
   // Auth Protection Guard
   const requireAuth = useCallback((featureName, callback) => {
@@ -422,22 +450,50 @@ export default function App() {
     }
   }, []);
 
-  // Sync user's public stats to Leaderboard in Firestore
+  // Sync user's public stats & profile to Leaderboard in Firestore
   useEffect(() => {
     if (!user) return;
+    const effectiveUsername = (customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
     const userDocRef = doc(db, 'artifacts', appId, 'leaderboard', user.uid);
     setDoc(userDocRef, {
       uid: user.uid,
       displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'Coder',
+      username: effectiveUsername,
+      bio: customBio || '',
+      linkedin: customLinkedin || '',
+      github: customGithub || '',
       photoURL: user.photoURL || null,
       solvedCount: userStats.solved,
       streak: userStats.streak,
+      maxStreak: userStats.maxStreak,
       easyCount: userStats.easy,
       medCount: userStats.med,
       hardCount: userStats.hard,
+      questionsProgress: questionsProgress,
+      revisionLogs: revisionLogs,
       lastActive: new Date().toISOString()
     }, { merge: true }).catch(err => console.error("Error updating leaderboard entry:", err));
-  }, [user, userStats, customDisplayName]);
+
+    // Also index username for direct URL deep-linking (?u=username)
+    if (effectiveUsername) {
+      const unameDoc = doc(db, 'artifacts', appId, 'usernames', effectiveUsername);
+      setDoc(unameDoc, {
+        uid: user.uid,
+        username: effectiveUsername,
+        updatedAt: new Date().toISOString()
+      }, { merge: true }).catch(() => {});
+    }
+  }, [
+    user, 
+    userStats, 
+    customDisplayName, 
+    customUsername, 
+    customBio, 
+    customLinkedin, 
+    customGithub, 
+    questionsProgress, 
+    revisionLogs
+  ]);
 
   // Real leaderboard list containing only real authenticated users from Firestore
   const combinedLeaderboard = useMemo(() => {
@@ -451,22 +507,41 @@ export default function App() {
 
     // If current authenticated user is signed in, ensure their latest live stats are represented immediately
     if (user) {
+      const effectiveUsername = (customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
       map.set(user.uid, {
         uid: user.uid,
         displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'Coder',
+        username: effectiveUsername,
+        bio: customBio || '',
+        linkedin: customLinkedin || '',
+        github: customGithub || '',
         photoURL: user.photoURL || null,
         solvedCount: userStats.solved || 0,
         streak: userStats.streak || 0,
+        maxStreak: userStats.maxStreak || 0,
         easyCount: userStats.easy || 0,
         medCount: userStats.med || 0,
         hardCount: userStats.hard || 0,
+        questionsProgress: questionsProgress,
+        revisionLogs: revisionLogs,
         isCurrentUser: true,
         lastActive: new Date().toISOString()
       });
     }
 
     return Array.from(map.values());
-  }, [cloudLeaderboard, user, userStats, customDisplayName]);
+  }, [
+    cloudLeaderboard, 
+    user, 
+    userStats, 
+    customDisplayName, 
+    customUsername, 
+    customBio, 
+    customLinkedin, 
+    customGithub, 
+    questionsProgress, 
+    revisionLogs
+  ]);
 
   // Calculate real rank of current user among real users
   const estimatedRank = useMemo(() => {
@@ -484,13 +559,144 @@ export default function App() {
     return higherCount + 1;
   }, [combinedLeaderboard, user, userStats]);
 
-  const handleSaveDisplayName = (newName) => {
-    setCustomDisplayName(newName);
-    localStorage.setItem('dsa_custom_handle', newName);
+  // Save Profile Handler (Display Name, Username, Bio, Social Links)
+  const handleSaveProfile = async ({ displayName, username, bio, linkedin, github }) => {
+    if (displayName !== undefined) {
+      setCustomDisplayName(displayName);
+      localStorage.setItem('dsa_custom_handle', displayName);
+    }
+    if (username !== undefined) {
+      setCustomUsername(username);
+      localStorage.setItem('dsa_custom_username', username);
+    }
+    if (bio !== undefined) {
+      setCustomBio(bio);
+      localStorage.setItem('dsa_custom_bio', bio);
+    }
+    if (linkedin !== undefined) {
+      setCustomLinkedin(linkedin);
+      localStorage.setItem('dsa_custom_linkedin', linkedin);
+    }
+    if (github !== undefined) {
+      setCustomGithub(github);
+      localStorage.setItem('dsa_custom_github', github);
+    }
+
     if (user) {
-      setDoc(doc(db, 'artifacts', appId, 'leaderboard', user.uid), {
-        displayName: newName
-      }, { merge: true }).catch(console.error);
+      try {
+        const cleanUsername = (username || customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
+        const userDocRef = doc(db, 'artifacts', appId, 'leaderboard', user.uid);
+        await setDoc(userDocRef, {
+          displayName: displayName || customDisplayName || user.displayName || 'Coder',
+          username: cleanUsername,
+          bio: bio || '',
+          linkedin: linkedin || '',
+          github: github || '',
+          photoURL: user.photoURL || null,
+          solvedCount: userStats.solved,
+          streak: userStats.streak,
+          maxStreak: userStats.maxStreak,
+          easyCount: userStats.easy,
+          medCount: userStats.med,
+          hardCount: userStats.hard,
+          questionsProgress: questionsProgress,
+          revisionLogs: revisionLogs,
+          lastActive: new Date().toISOString()
+        }, { merge: true });
+
+        if (cleanUsername) {
+          const unameDoc = doc(db, 'artifacts', appId, 'usernames', cleanUsername);
+          await setDoc(unameDoc, {
+            uid: user.uid,
+            username: cleanUsername,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        }
+      } catch (err) {
+        console.error("Error saving profile:", err);
+      }
+    }
+  };
+
+  // Delete Profile Handler (Owner-Only)
+  const handleDeleteProfile = async () => {
+    try {
+      if (user) {
+        const uid = user.uid;
+        const currentUname = (customUsername || user.email?.split('@')[0] || '').toLowerCase().replace(/[^a-z0-9_]/g, '');
+
+        // 1. Delete leaderboard entry
+        try {
+          await deleteDoc(doc(db, 'artifacts', appId, 'leaderboard', uid));
+        } catch (e) {
+          console.error("Error removing leaderboard record:", e);
+        }
+
+        // 2. Delete username index
+        if (currentUname) {
+          try {
+            await deleteDoc(doc(db, 'artifacts', appId, 'usernames', currentUname));
+          } catch (e) {
+            console.error("Error removing username index:", e);
+          }
+        }
+
+        // 3. Clear cloud subcollections
+        const collections = ['questionsProgress', 'plannerProgress', 'revisionLogs', 'weeklyReviews', 'solutions'];
+        for (const colName of collections) {
+          try {
+            const snap = await getDocs(collection(db, 'artifacts', appId, 'users', uid, colName));
+            const deleteOps = [];
+            snap.forEach(d => deleteOps.push(deleteDoc(d.ref)));
+            await Promise.all(deleteOps);
+          } catch (e) {
+            console.error(`Error purging ${colName}:`, e);
+          }
+        }
+      }
+
+      // 4. Wipe local storage
+      localStorage.removeItem(LS_KEYS.QUESTIONS);
+      localStorage.removeItem(LS_KEYS.PLANNER);
+      localStorage.removeItem(LS_KEYS.REVISION);
+      localStorage.removeItem(LS_KEYS.WEEKLY);
+      localStorage.removeItem(LS_KEYS.SOLUTIONS);
+      localStorage.removeItem('dsa_custom_handle');
+      localStorage.removeItem('dsa_custom_username');
+      localStorage.removeItem('dsa_custom_bio');
+      localStorage.removeItem('dsa_custom_linkedin');
+      localStorage.removeItem('dsa_custom_github');
+
+      // 5. Reset local component states
+      setQuestionsProgress({});
+      setPlannerProgress({});
+      setRevisionLogs({});
+      setWeeklyReviews({});
+      setSolutions({});
+      setCustomDisplayName('');
+      setCustomUsername('');
+      setCustomBio('');
+      setCustomLinkedin('');
+      setCustomGithub('');
+      setViewingPublicProfile(null);
+      setIsProfileModalOpen(false);
+
+      // 6. Clean URL parameters
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('u');
+        url.searchParams.delete('user');
+        url.searchParams.delete('profile');
+        window.history.pushState({}, '', url.toString());
+      } catch {}
+
+      // 7. Sign out auth session
+      if (user) {
+        await signOut(auth);
+      }
+    } catch (err) {
+      console.error("Failed to delete profile:", err);
+      throw err;
     }
   };
 
@@ -754,7 +960,10 @@ export default function App() {
 
             {/* User Profile & Achievements Pill - Always accessible */}
             <button
-              onClick={() => setIsProfileModalOpen(true)}
+              onClick={() => {
+                setViewingPublicProfile(null);
+                setIsProfileModalOpen(true);
+              }}
               className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
               title="View Profile, Achievements & Stats"
             >
@@ -912,7 +1121,10 @@ export default function App() {
               currentUser={user}
               userStats={userStats}
               customDisplayName={customDisplayName}
-              onOpenProfile={() => setIsProfileModalOpen(true)}
+              onOpenProfile={(targetUser) => {
+                setViewingPublicProfile(targetUser && targetUser.uid !== user?.uid ? targetUser : null);
+                setIsProfileModalOpen(true);
+              }}
               onGoogleSignIn={handleGoogleSignIn}
             />
           )}
@@ -1108,15 +1320,33 @@ export default function App() {
         </div>
       )}
 
-      {/* User Profile & Rank Modal */}
+      {/* User Profile, LeetCode-Style Public Showcase & Rank Modal */}
       <ProfileModal
         isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
+        onClose={() => {
+          setIsProfileModalOpen(false);
+          setViewingPublicProfile(null);
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('u');
+            url.searchParams.delete('user');
+            url.searchParams.delete('profile');
+            window.history.pushState({}, '', url.toString());
+          } catch {}
+        }}
         currentUser={user}
+        profileData={viewingPublicProfile}
         userStats={userStats}
         globalRank={estimatedRank}
         customDisplayName={customDisplayName}
-        onSaveDisplayName={handleSaveDisplayName}
+        customUsername={customUsername}
+        customBio={customBio}
+        customLinkedin={customLinkedin}
+        customGithub={customGithub}
+        questionsProgress={questionsProgress}
+        revisionLogs={revisionLogs}
+        onSaveProfile={handleSaveProfile}
+        onDeleteProfile={handleDeleteProfile}
         onGoogleSignIn={handleGoogleSignIn}
         onSignOut={handleSignOut}
       />
@@ -1141,6 +1371,7 @@ export default function App() {
         }}
         onOpenProfile={() => {
           setIsCommandPaletteOpen(false);
+          setViewingPublicProfile(null);
           setIsProfileModalOpen(true);
         }}
       />
