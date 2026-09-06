@@ -422,27 +422,24 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
           )}
         </div>
 
-        {/* Horizontal Scroll Hint and Buttons */}
-        <div className="flex items-center gap-2 text-xs text-gray-400">
-          <span className="hidden sm:inline text-[11px]">Scroll Left ⇄ Right (Past to Current)</span>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={handleScrollLeft}
-              className="p-1 rounded bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 cursor-pointer active:scale-95"
-              title="Scroll Left (Earlier in Year)"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={handleScrollRight}
-              className="p-1 rounded bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 cursor-pointer active:scale-95"
-              title="Scroll Right (Later in Year)"
-            >
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        {/* Horizontal Scroll Navigation */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleScrollLeft}
+            className="p-1 rounded bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 cursor-pointer active:scale-95"
+            title="Scroll Left (Earlier in Year)"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={handleScrollRight}
+            className="p-1 rounded bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-slate-700 cursor-pointer active:scale-95"
+            title="Scroll Right (Later in Year)"
+          >
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
 
