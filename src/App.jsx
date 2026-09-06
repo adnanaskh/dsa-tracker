@@ -14,7 +14,8 @@ import {
   doc, 
   setDoc,
   deleteDoc,
-  getDocs
+  getDocs,
+  getDoc
 } from 'firebase/firestore';
 import { 
   LayoutDashboard, 
@@ -188,7 +189,7 @@ export default function App() {
     } catch {}
   }, []);
 
-  // Deep-Linking Handler on Page Load (?solution=two-sum or ?u=username or ?user=username)
+  // Deep-Linking Handler for Editorial (?solution=two-sum) and Public Profiles (https://dsa.adnanahmad.tech/username or ?u=username)
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -205,17 +206,70 @@ export default function App() {
         }
       }
 
-      const userQuery = params.get('u') || params.get('user') || params.get('profile');
+      // Check search params or direct path (e.g. https://dsa.adnanahmad.tech/username or /u/username)
+      let userQuery = params.get('u') || params.get('user') || params.get('profile');
+      if (!userQuery) {
+        const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+        const segments = rawPath.split('/').filter(Boolean);
+        const SYSTEM_PATHS = new Set([
+          '',
+          'index.html',
+          'favicon.svg',
+          'icons.svg',
+          'robots.txt',
+          'sitemap.xml',
+          'manifest.json',
+          '_redirects',
+          'google857404d1925a5f5a.html'
+        ]);
+
+        if (segments.length > 0) {
+          const first = segments[0].toLowerCase();
+          if (first === 'u' && segments.length > 1) {
+            userQuery = segments[1];
+          } else if (!SYSTEM_PATHS.has(first) && !first.includes('.')) {
+            userQuery = segments[0];
+          }
+        }
+      }
+
       if (userQuery) {
         const cleanU = userQuery.trim().toLowerCase();
+        
+        // 1. Check loaded cloudLeaderboard
         const userMatch = cloudLeaderboard.find(u => 
           (u.username && u.username.toLowerCase() === cleanU) ||
           (u.uid && u.uid.toLowerCase() === cleanU) ||
           (u.displayName && u.displayName.toLowerCase().replace(/[^a-z0-9_]/g, '') === cleanU)
         );
+
         if (userMatch) {
           setViewingPublicProfile(userMatch);
           setIsProfileModalOpen(true);
+        } else {
+          // 2. Fetch directly from Firestore (completely public / works without sign in)
+          (async () => {
+            try {
+              let targetUid = null;
+              // Check username mapping index
+              const unameSnap = await getDoc(doc(db, 'artifacts', appId, 'usernames', cleanU));
+              if (unameSnap.exists()) {
+                targetUid = unameSnap.data().uid;
+              } else {
+                targetUid = cleanU;
+              }
+
+              if (targetUid) {
+                const userSnap = await getDoc(doc(db, 'artifacts', appId, 'leaderboard', targetUid));
+                if (userSnap.exists()) {
+                  setViewingPublicProfile({ uid: userSnap.id, ...userSnap.data() });
+                  setIsProfileModalOpen(true);
+                }
+              }
+            } catch (err) {
+              console.error("Direct public profile fetch error:", err);
+            }
+          })();
         }
       }
     } catch (e) {
@@ -1327,11 +1381,7 @@ export default function App() {
           setIsProfileModalOpen(false);
           setViewingPublicProfile(null);
           try {
-            const url = new URL(window.location.href);
-            url.searchParams.delete('u');
-            url.searchParams.delete('user');
-            url.searchParams.delete('profile');
-            window.history.pushState({}, '', url.toString());
+            window.history.pushState({}, '', '/');
           } catch {}
         }}
         currentUser={user}

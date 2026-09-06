@@ -169,12 +169,22 @@ export default function ProfileModal({
       setIsConfirmingDelete(false);
     }
   }, [isOpen, displayUser]);
-
-  // Public Profile URL with username
   const publicProfileUrl = useMemo(() => {
     const u = displayUser.username || 'coder';
-    return `https://dsa.adnanahmad.tech/?u=${encodeURIComponent(u)}`;
+    return `https://dsa.adnanahmad.tech/${encodeURIComponent(u)}`;
   }, [displayUser.username]);
+
+  // Sync browser address bar with direct /username URL while viewing profile
+  useEffect(() => {
+    if (isOpen && displayUser?.username) {
+      try {
+        const targetPath = `/${encodeURIComponent(displayUser.username)}`;
+        if (window.location.pathname !== targetPath) {
+          window.history.pushState({ username: displayUser.username }, '', targetPath);
+        }
+      } catch {}
+    }
+  }, [isOpen, displayUser?.username]);
 
   const handleCopyProfileLink = () => {
     navigator.clipboard.writeText(publicProfileUrl);
@@ -552,6 +562,19 @@ export default function ProfileModal({
               )}
             </button>
           </div>
+
+          {/* Public Profile View-Only Mode Indicator (When viewing another user's profile) */}
+          {!isOwner && (
+            <div className="mt-3 py-1.5 px-3 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-between text-[11px] text-blue-200">
+              <span className="font-semibold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Public Profile (View-Only Mode)
+              </span>
+              <span className="text-[10px] text-slate-300">
+                Only @{displayUser.username} can edit or delete this profile
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Edit Profile Form Overlay (Owner Only) */}
