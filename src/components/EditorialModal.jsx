@@ -27,6 +27,7 @@ export default function EditorialModal({
   question,
   onMarkDone = () => {},
   onScheduleRevision = () => {},
+  onOpenPlayground = () => {},
   isDone = false,
   isRevisit = false
 }) {
@@ -416,12 +417,25 @@ export default function EditorialModal({
             </button>
           </div>
 
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
-          >
-            Close Editorial
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                onClose();
+                onOpenPlayground(question);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all cursor-pointer shadow-xs"
+            >
+              <Code2 className="w-4 h-4" />
+              <span>Solve in Python Sandbox</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="px-4 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            >
+              Close Editorial
+            </button>
+          </div>
         </div>
       </div>
     </div>

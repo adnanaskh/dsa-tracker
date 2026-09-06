@@ -76,6 +76,7 @@ import ExportBackupModal from './components/ExportBackupModal';
 import LeaderboardTab from './components/LeaderboardTab';
 import ProfileModal from './components/ProfileModal';
 import EditorialModal from './components/EditorialModal';
+import CodePlaygroundModal from './components/CodePlaygroundModal';
 
 // --- Firebase Configuration ---
 const firebaseConfig = {
@@ -143,6 +144,7 @@ export default function App() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [randomQuestionModal, setRandomQuestionModal] = useState(null);
   const [activeEditorialQuestion, setActiveEditorialQuestion] = useState(null);
+  const [activePlaygroundQuestion, setActivePlaygroundQuestion] = useState(null);
   const [customDisplayName, setCustomDisplayName] = useState(() => {
     return localStorage.getItem('dsa_custom_handle') || '';
   });
@@ -1248,6 +1250,7 @@ export default function App() {
               isDark={isDark}
               requireAuth={requireAuth}
               onOpenEditorial={(q) => openEditorialSolution(q)}
+              onOpenPlayground={(q) => setActivePlaygroundQuestion(q)}
             />
           )}
 
@@ -1553,6 +1556,41 @@ export default function App() {
           }}
           isDone={(questionsProgress[activeEditorialQuestion.id] || {}).status === '✅ Done'}
           isRevisit={(questionsProgress[activeEditorialQuestion.id] || {}).revisit === '🔄 Revisit'}
+          onOpenPlayground={(q) => setActivePlaygroundQuestion(q)}
+        />
+      )}
+
+      {/* Python 3 Code Playground & Automated Test Runner Modal */}
+      {activePlaygroundQuestion && (
+        <CodePlaygroundModal
+          isOpen={!!activePlaygroundQuestion}
+          question={activePlaygroundQuestion}
+          initialCode={(solutions[`q_${activePlaygroundQuestion.id}`] || {}).code || null}
+          isDone={(questionsProgress[activePlaygroundQuestion.id] || {}).status === '✅ Done'}
+          onClose={() => setActivePlaygroundQuestion(null)}
+          onSubmitSuccess={(q, submittedCode) => {
+            const now = new Date().toISOString();
+            const prog = questionsProgress[q.id] || {};
+            saveData('questionsProgress', q.id, {
+              ...prog,
+              status: '✅ Done',
+              completedAt: now,
+              lastModified: now
+            });
+            saveData('solutions', `q_${q.id}`, {
+              questionId: q.id,
+              questionName: q.name,
+              code: submittedCode,
+              language: 'python',
+              uploadedAt: now,
+              userId: user?.uid || 'guest',
+              userEmail: user?.email || 'guest'
+            });
+          }}
+          onOpenEditorial={(q) => {
+            setActivePlaygroundQuestion(null);
+            openEditorialSolution(q);
+          }}
         />
       )}
 
@@ -1871,7 +1909,8 @@ function QuestionsTab({
   user,
   isDark,
   requireAuth,
-  onOpenEditorial
+  onOpenEditorial,
+  onOpenPlayground = () => {}
 }) {
   const [filterTopic, setFilterTopic] = useState('All');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
@@ -2089,6 +2128,7 @@ function QuestionsTab({
               <th className="py-2.5 px-3">PATTERN</th>
               <th className="py-2.5 px-3 text-center">STATUS</th>
               <th className="py-2.5 px-3 text-center">REVISIT</th>
+              <th className="py-2.5 px-3 text-center">SOLVE</th>
               <th className="py-2.5 px-3 text-center">EDITORIAL</th>
               <th className="py-2.5 px-3 text-center">SUBMISSIONS</th>
               <th className="py-2.5 px-3 text-center w-14">ACTION</th>
@@ -2168,12 +2208,22 @@ function QuestionsTab({
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
+                      onClick={() => onOpenPlayground(q)}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
+                      title="Open Python 3 in-browser code editor and test suite"
+                    >
+                      <Play className="w-3 h-3 text-emerald-500 fill-emerald-500" />
+                      <span>Solve</span>
+                    </button>
+                  </td>
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap">
+                    <button
                       onClick={() => onOpenEditorial(q)}
                       className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
                       title="Read complete GFG-style editorial with Python, Java, C++, JS code"
                     >
                       <BookOpen className="w-3 h-3 text-purple-500" />
-                      <span>Solution</span>
+                      <span>Editorial</span>
                     </button>
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
