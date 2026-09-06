@@ -2213,13 +2213,11 @@ function QuestionsTab({
               <th className="py-2.5 px-3 text-center">REVISIT</th>
               <th className="py-2.5 px-3 text-center">SOLVE</th>
               <th className="py-2.5 px-3 text-center">EDITORIAL</th>
-              <th className="py-2.5 px-3 text-center">SUBMISSIONS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-slate-800/60">
             {filteredQuestions.map(q => {
               const prog = questionsProgress[q.id] || {};
-              const sol = solutions[`q_${q.id}`];
               const isDone = prog.status === '✅ Done';
               const isRevisit = prog.revisit === '🔄 Revisit';
 
@@ -2307,34 +2305,6 @@ function QuestionsTab({
                       <BookOpen className="w-3 h-3 text-purple-500" />
                       <span>Editorial</span>
                     </button>
-                  </td>
-                  <td className="py-2.5 px-3 text-center whitespace-nowrap">
-                    {sol ? (
-                      <button
-                        onClick={() => {
-                          requireAuth('view saved code solutions', () => {
-                            setViewingSolutionQ({ ...q, solution: sol });
-                          });
-                        }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium text-[11px] border border-blue-200 dark:border-blue-800 transition-colors shadow-2xs"
-                      >
-                        <Eye className="w-3 h-3" />
-                        View ({sol.language})
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          requireAuth('upload your code solution', () => {
-                            setUploadingQ(q);
-                            setUploadCode('');
-                          });
-                        }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 font-medium text-[11px] border border-gray-300 dark:border-slate-700 transition-colors shadow-2xs"
-                      >
-                        <Upload className="w-3 h-3" />
-                        Upload
-                      </button>
-                    )}
                   </td>
                 </tr>
               );

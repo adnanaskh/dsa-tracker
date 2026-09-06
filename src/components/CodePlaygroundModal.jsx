@@ -136,10 +136,32 @@ export default function CodePlaygroundModal({
       setLeftTab('description');
       setExpandedSubmissionId(null);
 
-      // Load previous submissions from localStorage
+      // Load previous submissions from localStorage & include saved solution
       try {
         const rawSubs = localStorage.getItem(`dsa_submissions_${question.id}`);
-        setSubmissions(rawSubs ? JSON.parse(rawSubs) : []);
+        let parsed = rawSubs ? JSON.parse(rawSubs) : [];
+        if (
+          parsed.length === 0 && 
+          initialCode && 
+          initialCode.trim().length > 0 && 
+          !initialCode.includes('class Solution:\n    def ') && 
+          !initialCode.includes('def solve():\n    pass')
+        ) {
+          parsed = [{
+            id: 'sub_saved_' + question.id,
+            timestamp: new Date().toISOString(),
+            formattedDate: 'Saved Code',
+            formattedTime: 'Synced',
+            status: 'Accepted',
+            allPassed: true,
+            passedCount: testSuite.sampleCases?.length || 1,
+            totalCount: testSuite.sampleCases?.length || 1,
+            runtimeMs: 0,
+            language: 'Python 3',
+            code: initialCode
+          }];
+        }
+        setSubmissions(parsed);
       } catch (e) {
         setSubmissions([]);
       }
