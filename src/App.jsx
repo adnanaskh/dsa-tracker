@@ -696,14 +696,14 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-lg sm:text-xl font-extrabold tracking-tight">
-                  DSA MASTERY TRACKER
+                  DSA TRACKER
                 </h1>
                 <span className="hidden sm:inline-block text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                   60 DAYS • 305 PROBLEMS
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">
-                60-Day Practice Course & DSA Problem Tracker • Spaced Repetition • FAANG Interview Roadmap
+                Curated 305 LeetCode problems & solution vault with spaced repetition revision
               </p>
             </div>
           </div>
@@ -947,7 +947,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* Semantic SEO & Navigation Footer */}
+      {/* Navigation Footer */}
       <footer className="mt-12 border-t border-gray-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs py-10 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -955,17 +955,13 @@ export default function App() {
               <div className="flex items-center gap-2 mb-2">
                 <span className="font-mono text-emerald-500 font-black text-lg">&lt;/&gt;</span>
                 <span className="font-extrabold text-base tracking-tight text-gray-900 dark:text-white">
-                  DSA Mastery Tracker & 60-Day Practice Course
+                  DSA Tracker & 60-Day Roadmap
                 </span>
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
-                The premier open-access Data Structures and Algorithms preparation tracker designed to help software engineers systematically conquer 305 curated problems across all major algorithmic patterns for FAANG, Big Tech, and Tier-1 engineering interviews.
+                A structured practice roadmap featuring 305 curated problems across all major algorithmic patterns, equipped with spaced repetition revision, solution code storage, and activity tracking.
               </p>
-              <div className="flex items-center gap-2 mt-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Curated for Google, Meta, Amazon, Microsoft & Apple Interview Readiness</span>
-              </div>
-              <div className="mt-3">
+              <div className="mt-4">
                 <a
                   href="https://www.linkedin.com/in/adnanrahmad"
                   target="_blank"
@@ -973,7 +969,7 @@ export default function App() {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0a66c2] hover:bg-[#004182] text-white font-bold text-xs transition-colors shadow-xs"
                 >
                   <LinkedinIcon className="w-3.5 h-3.5 fill-current" />
-                  <span>Connect with Adnan Ahmad on LinkedIn</span>
+                  <span>Connect on LinkedIn</span>
                 </a>
               </div>
             </div>
@@ -984,32 +980,32 @@ export default function App() {
               </h3>
               <ul className="space-y-1.5 text-xs text-gray-600 dark:text-gray-400">
                 <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Arrays & Hashing (Days 1–5)</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Strings Foundation (Days 6–10)</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Two Pointers & Sliding Window (Days 11–16)</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Binary Search & Stack (Days 17–22)</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Linked Lists & Trees (Days 23–30)</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Graphs & Dynamic Programming (Days 44–56)</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Strings (Days 6–10)</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Two Pointers & Sliding Window</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Binary Search & Stack</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Linked Lists & Trees</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('questions')}>Graphs & Dynamic Programming</span></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-gray-200 mb-3">
-                Learning Features
+                Features
               </h3>
               <ul className="space-y-1.5 text-xs text-gray-600 dark:text-gray-400">
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('revision')}>Spaced Repetition (SRS) Review</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('patterns')}>Algorithmic Patterns Guide</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('planner')}>Structured 60-Day Planner</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('leaderboard')}>Live Community Leaderboard</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('dashboard')}>GitHub-Style Activity Heatmap</span></li>
-                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => setIsExportModalOpen(true)}>Backup & CSV/JSON Data Export</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('revision')}>Spaced Repetition (SRS)</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('patterns')}>Algorithmic Patterns</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('planner')}>60-Day Planner</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('leaderboard')}>Community Leaderboard</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => handleTabClick('dashboard')}>Activity Heatmap</span></li>
+                <li><span className="hover:text-emerald-500 cursor-pointer" onClick={() => setIsExportModalOpen(true)}>Data Backup & Export</span></li>
               </ul>
             </div>
           </div>
 
           <div className="pt-6 border-t border-gray-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span>© {new Date().getFullYear()} DSA Mastery Tracker. Developed by </span>
+              <span>© {new Date().getFullYear()} DSA Tracker. Created by </span>
               <a
                 href="https://www.linkedin.com/in/adnanrahmad"
                 target="_blank"
@@ -1019,7 +1015,7 @@ export default function App() {
                 <span>Adnan Ahmad</span>
                 <LinkedinIcon className="w-3 h-3 text-[#0a66c2]" />
               </a>
-              <span>• 100% Free Open Educational Tool.</span>
+              <span>• Free educational tool.</span>
             </div>
             <div className="flex items-center gap-4">
               <a href="https://dsa.adnanahmad.tech/" className="hover:underline">Home</a>
@@ -1033,10 +1029,6 @@ export default function App() {
                 <LinkedinIcon className="w-3.5 h-3.5 fill-current" />
                 <span>LinkedIn</span>
               </a>
-              <span>•</span>
-              <a href="https://dsa.adnanahmad.tech/sitemap.xml" target="_blank" rel="noreferrer" className="hover:underline">Sitemap</a>
-              <span>•</span>
-              <a href="https://dsa.adnanahmad.tech/robots.txt" target="_blank" rel="noreferrer" className="hover:underline">Robots</a>
             </div>
           </div>
         </div>

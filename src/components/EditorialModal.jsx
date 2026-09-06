@@ -153,9 +153,6 @@ export default function EditorialModal({
 
             <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
               <span>{question.name}</span>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                GFG-Style Editorial
-              </span>
             </h2>
           </div>
 
@@ -169,7 +166,7 @@ export default function EditorialModal({
               {copiedLink ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Copied Link!</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Copied!</span>
                 </>
               ) : (
                 <>
@@ -206,7 +203,7 @@ export default function EditorialModal({
         <div className="px-4 py-2 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-transparent border-b border-gray-200 dark:border-slate-800 flex items-center justify-between gap-2 text-[11px] text-gray-600 dark:text-gray-300">
           <div className="flex items-center gap-1.5 truncate">
             <LinkIcon className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-            <span className="font-semibold text-gray-800 dark:text-gray-200">Direct SEO Link:</span>
+            <span className="font-semibold text-gray-800 dark:text-gray-200">Share Link:</span>
             <code className="font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-gray-200 dark:border-slate-700 text-purple-600 dark:text-purple-400 truncate">
               {shareableUrl}
             </code>

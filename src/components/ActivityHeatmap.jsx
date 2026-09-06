@@ -351,12 +351,7 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
       {/* Year Selection and Scroll Controls Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
         {/* Year Tabs & Stepper */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mr-1">
-            <History className="w-3.5 h-3.5 text-emerald-500" />
-            Year History:
-          </span>
-
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={() => setSelectedYear(prev => Math.max(baseYear, prev - 1))}
@@ -502,18 +497,8 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
 
           {/* Bottom Info Bar & Legend */}
           <div className="flex flex-wrap items-center justify-between text-xs text-gray-400 mt-4 pt-2.5 border-t border-gray-100 dark:border-slate-800/80 gap-3">
-            <div className="flex items-center gap-2 text-[11px]">
-              <span className="font-semibold text-gray-600 dark:text-gray-300">
-                Jan 1, {selectedYear} – Dec 31, {selectedYear}
-              </span>
-              <span className="text-gray-300 dark:text-slate-700">•</span>
-              <span>52 Weeks (Entire Year)</span>
-              {selectedYear === currentCalendarYear && (
-                <>
-                  <span className="text-gray-300 dark:text-slate-700">•</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Active Calendar Year</span>
-                </>
-              )}
+            <div className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+              {selectedYear} Activity
             </div>
 
             <div className="flex items-center gap-2">
