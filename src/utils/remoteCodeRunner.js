@@ -4,7 +4,7 @@
  */
 import { formatStdinFromInput, formatExpectedStdout, compareStdoutResults } from './testComparison.js';
 
-const API_BASE = 'https://api.paiza.io/runners';
+const API_BASE = typeof window !== 'undefined' ? '/api/runners' : 'https://api.paiza.io/runners';
 const API_KEY = 'guest';
 const POLL_INTERVAL_MS = 350;
 const MAX_POLL_ATTEMPTS = 25; // ~8.5 seconds max

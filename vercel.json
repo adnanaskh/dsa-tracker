@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/runners/(.*)",
+      "destination": "https://api.paiza.io/runners/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
