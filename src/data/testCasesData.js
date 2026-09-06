@@ -2,483 +2,359 @@
 export const PROBLEM_TEST_CASES = {
   "1": {
     "methodName": "containsDuplicate",
-    "starterCode": "class Solution:\n    def containsDuplicate(self, nums: list[int]) -> bool:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\n\ndef solve():\n    input_data = sys.stdin.read().split()\n    if not input_data:\n        return\n    \n    n = int(input_data[0])\n    nums = [int(x) for x in input_data[1:n+1]]\n    \n    # Write your logic here\n    # Print 'true' or 'false'\n    seen = set()\n    for num in nums:\n        if num in seen:\n            print(\"true\")\n            return\n        seen.add(num)\n    print(\"false\")\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3,
-            1
-          ]
-        ],
+        "stdin": "4\n1 2 3 1",
+        "expectedStdout": "true",
+        "input": [[1, 2, 3, 1]],
         "expected": true
       },
       {
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4
-          ]
-        ],
+        "stdin": "4\n1 2 3 4",
+        "expectedStdout": "false",
+        "input": [[1, 2, 3, 4]],
         "expected": false
       },
       {
-        "input": [
-          [
-            1,
-            1,
-            1,
-            3,
-            3,
-            4,
-            3,
-            2,
-            4,
-            2
-          ]
-        ],
+        "stdin": "10\n1 1 1 3 3 4 3 2 4 2",
+        "expectedStdout": "true",
+        "input": [[1, 1, 1, 3, 3, 4, 3, 2, 4, 2]],
         "expected": true
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            99
-          ]
-        ],
+        "stdin": "1\n99",
+        "expectedStdout": "false",
+        "input": [[99]],
         "expected": false
       },
       {
-        "input": [
-          [
-            0,
-            0
-          ]
-        ],
+        "stdin": "2\n0 0",
+        "expectedStdout": "true",
+        "input": [[0, 0]],
         "expected": true
       }
     ]
   },
   "2": {
     "methodName": "isAnagram",
-    "starterCode": "class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\n\ndef solve():\n    lines = sys.stdin.read().split()\n    if len(lines) < 2:\n        return\n    s, t = lines[0], lines[1]\n    \n    # Write your logic here\n    # Print 'true' or 'false'\n    if len(s) != len(t):\n        print(\"false\")\n        return\n    counts = {}\n    for ch in s:\n        counts[ch] = counts.get(ch, 0) + 1\n    for ch in t:\n        if ch not in counts or counts[ch] == 0:\n            print(\"false\")\n            return\n        counts[ch] -= 1\n    print(\"true\")\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          "anagram",
-          "nagaram"
-        ],
+        "stdin": "anagram\nnagaram",
+        "expectedStdout": "true",
+        "input": ["anagram", "nagaram"],
         "expected": true
       },
       {
-        "input": [
-          "rat",
-          "car"
-        ],
+        "stdin": "rat\ncar",
+        "expectedStdout": "false",
+        "input": ["rat", "car"],
         "expected": false
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          "a",
-          "a"
-        ],
+        "stdin": "a\na",
+        "expectedStdout": "true",
+        "input": ["a", "a"],
         "expected": true
       },
       {
-        "input": [
-          "ab",
-          "a"
-        ],
+        "stdin": "ab\na",
+        "expectedStdout": "false",
+        "input": ["ab", "a"],
         "expected": false
       }
     ]
   },
   "3": {
     "methodName": "twoSum",
-    "starterCode": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    nums = [int(x) for x in tokens[1:n+1]]\n    target = int(tokens[n+1])\n    \n    # Write your logic here\n    # Print 'i j'\n    seen = {}\n    for i, num in enumerate(nums):\n        diff = target - num\n        if diff in seen:\n            print(f\"{seen[diff]} {i}\")\n            return\n        seen[num] = i\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            2,
-            7,
-            11,
-            15
-          ],
-          9
-        ],
-        "expected": [
-          0,
-          1
-        ]
+        "stdin": "4\n2 7 11 15\n9",
+        "expectedStdout": "0 1",
+        "input": [[2, 7, 11, 15], 9],
+        "expected": [0, 1]
       },
       {
-        "input": [
-          [
-            3,
-            2,
-            4
-          ],
-          6
-        ],
-        "expected": [
-          1,
-          2
-        ]
+        "stdin": "3\n3 2 4\n6",
+        "expectedStdout": "1 2",
+        "input": [[3, 2, 4], 6],
+        "expected": [1, 2]
       },
       {
-        "input": [
-          [
-            3,
-            3
-          ],
-          6
-        ],
-        "expected": [
-          0,
-          1
-        ]
+        "stdin": "2\n3 3\n6",
+        "expectedStdout": "0 1",
+        "input": [[3, 3], 6],
+        "expected": [0, 1]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            -1,
-            -2,
-            -3,
-            -4,
-            -5
-          ],
-          -8
-        ],
-        "expected": [
-          2,
-          4
-        ]
+        "stdin": "5\n-1 -2 -3 -4 -5\n-8",
+        "expectedStdout": "2 4",
+        "input": [[-1, -2, -3, -4, -5], -8],
+        "expected": [2, 4]
       }
     ]
   },
   "4": {
     "methodName": "maxProfit",
-    "starterCode": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    prices = [int(x) for x in tokens[1:n+1]]\n    \n    # Write your logic here\n    # Print maximum profit integer\n    min_price = float('inf')\n    max_profit = 0\n    for p in prices:\n        if p < min_price:\n            min_price = p\n        elif p - min_price > max_profit:\n            max_profit = p - min_price\n    print(max_profit)\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            7,
-            1,
-            5,
-            3,
-            6,
-            4
-          ]
-        ],
+        "stdin": "6\n7 1 5 3 6 4",
+        "expectedStdout": "5",
+        "input": [[7, 1, 5, 3, 6, 4]],
         "expected": 5
       },
       {
-        "input": [
-          [
-            7,
-            6,
-            4,
-            3,
-            1
-          ]
-        ],
+        "stdin": "5\n7 6 4 3 1",
+        "expectedStdout": "0",
+        "input": [[7, 6, 4, 3, 1]],
         "expected": 0
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            1,
-            2
-          ]
-        ],
+        "stdin": "2\n1 2",
+        "expectedStdout": "1",
+        "input": [[1, 2]],
         "expected": 1
       },
       {
-        "input": [
-          [
-            2,
-            4,
-            1
-          ]
-        ],
+        "stdin": "3\n2 4 1",
+        "expectedStdout": "2",
+        "input": [[2, 4, 1]],
         "expected": 2
       }
     ]
   },
   "5": {
     "methodName": "singleNumber",
-    "starterCode": "class Solution:\n    def singleNumber(self, nums: list[int]) -> int:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    nums = [int(x) for x in tokens[1:n+1]]\n    \n    # Write your logic here\n    # Print the unique single integer\n    res = 0\n    for x in nums:\n        res ^= x\n    print(res)\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            2,
-            2,
-            1
-          ]
-        ],
+        "stdin": "3\n2 2 1",
+        "expectedStdout": "1",
+        "input": [[2, 2, 1]],
         "expected": 1
       },
       {
-        "input": [
-          [
-            4,
-            1,
-            2,
-            1,
-            2
-          ]
-        ],
+        "stdin": "5\n4 1 2 1 2",
+        "expectedStdout": "4",
+        "input": [[4, 1, 2, 1, 2]],
         "expected": 4
       },
       {
-        "input": [
-          [
-            1
-          ]
-        ],
+        "stdin": "1\n1",
+        "expectedStdout": "1",
+        "input": [[1]],
         "expected": 1
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            -1,
-            -1,
-            -2
-          ]
-        ],
+        "stdin": "3\n-1 -1 -2",
+        "expectedStdout": "-2",
+        "input": [[-1, -1, -2]],
         "expected": -2
       }
     ]
   },
   "6": {
     "methodName": "groupAnagrams",
-    "starterCode": "class Solution:\n    def groupAnagrams(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "starterCode": "import sys\nimport json\nfrom collections import defaultdict\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    strs = tokens[1:n+1]\n    \n    # Write your logic here\n    # Print JSON 2D array of grouped anagrams\n    groups = defaultdict(list)\n    for s in strs:\n        key = \"\".join(sorted(s))\n        groups[key].append(s)\n    res = [sorted(g) for g in groups.values()]\n    res.sort()\n    print(json.dumps(res))\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "6\neat tea tan ate nat bat",
+        "expectedStdout": "[[\"ate\", \"eat\", \"tea\"], [\"bat\"], [\"nat\", \"tan\"]]",
+        "input": [["eat", "tea", "tan", "ate", "nat", "bat"]],
+        "expected": [["ate", "eat", "tea"], ["bat"], ["nat", "tan"]]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "1\na",
+        "expectedStdout": "[[\"a\"]]",
+        "input": [["a"]],
+        "expected": [["a"]]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "2\nab ba",
+        "expectedStdout": "[[\"ab\", \"ba\"]]",
+        "input": [["ab", "ba"]],
+        "expected": [["ab", "ba"]]
       }
     ]
   },
   "7": {
-    "methodName": "topKFrequentElements",
-    "starterCode": "class Solution:\n    def topKFrequentElements(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "topKFrequent",
+    "starterCode": "import sys\nfrom collections import Counter\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    nums = [int(x) for x in tokens[1:n+1]]\n    k = int(tokens[n+1])\n    \n    # Write your logic here\n    # Print space-separated top k frequent numbers\n    counts = Counter(nums)\n    most_common = [str(x[0]) for x in counts.most_common(k)]\n    print(\" \".join(most_common))\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "6\n1 1 1 2 2 3\n2",
+        "expectedStdout": "1 2",
+        "input": [[1, 1, 1, 2, 2, 3], 2],
+        "expected": [1, 2]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [[1], 1],
+        "expected": [1]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "5\n5 5 5 5 5\n1",
+        "expectedStdout": "5",
+        "input": [[5, 5, 5, 5, 5], 1],
+        "expected": [5]
       }
     ]
   },
   "8": {
-    "methodName": "productOfArrayExceptSelf",
-    "starterCode": "class Solution:\n    def productOfArrayExceptSelf(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "productExceptSelf",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        return\n    n = int(tokens[0])\n    nums = [int(x) for x in tokens[1:n+1]]\n    \n    # Write your logic here\n    # Print N space-separated numbers without using division\n    res = [1] * n\n    prefix = 1\n    for i in range(n):\n        res[i] = prefix\n        prefix *= nums[i]\n    postfix = 1\n    for i in range(n - 1, -1, -1):\n        res[i] *= postfix\n        postfix *= nums[i]\n    print(\" \".join(str(x) for x in res))\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "4\n1 2 3 4",
+        "expectedStdout": "24 12 8 6",
+        "input": [[1, 2, 3, 4]],
+        "expected": [24, 12, 8, 6]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "5\n-1 1 0 -3 3",
+        "expectedStdout": "0 0 9 0 0",
+        "input": [[-1, 1, 0, -3, 3]],
+        "expected": [0, 0, 9, 0, 0]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "3\n2 3 4",
+        "expectedStdout": "12 8 6",
+        "input": [[2, 3, 4]],
+        "expected": [12, 8, 6]
       }
     ]
   },
   "9": {
-    "methodName": "validSudoku",
-    "starterCode": "class Solution:\n    def validSudoku(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "isValidSudoku",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if len(tokens) < 81:\n        return\n    board = [tokens[i*9:(i+1)*9] for i in range(9)]\n    \n    # Write your logic here\n    # Print 'true' or 'false'\n    rows = [set() for _ in range(9)]\n    cols = [set() for _ in range(9)]\n    boxes = [set() for _ in range(9)]\n    \n    for r in range(9):\n        for c in range(9):\n            val = board[r][c]\n            if val == '.':\n                continue\n            b_idx = (r // 3) * 3 + (c // 3)\n            if val in rows[r] or val in cols[c] or val in boxes[b_idx]:\n                print(\"false\")\n                return\n            rows[r].add(val)\n            cols[c].add(val)\n            boxes[b_idx].add(val)\n    print(\"true\")\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "5 3 . . 7 . . . .\n6 . . 1 9 5 . . .\n. 9 8 . . . . 6 .\n8 . . . 6 . . . 3\n4 . . 8 . 3 . . 1\n7 . . . 2 . . . 6\n. 6 . . . . 2 8 .\n. . . 4 1 9 . . 5\n. . . . 8 . . 7 9",
+        "expectedStdout": "true",
+        "input": [[
+          ["5","3",".",".","7",".",".",".","."],
+          ["6",".",".","1","9","5",".",".","."],
+          [".","9","8",".",".",".",".","6","."],
+          ["8",".",".",".","6",".",".",".","3"],
+          ["4",".",".","8",".","3",".",".","1"],
+          ["7",".",".",".","2",".",".",".","6"],
+          [".","6",".",".",".",".","2","8","."],
+          [".",".",".","4","1","9",".",".","5"],
+          [".",".",".",".","8",".",".","7","9"]
+        ]],
+        "expected": true
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "8 3 . . 7 . . . .\n6 . . 1 9 5 . . .\n. 9 8 . . . . 6 .\n8 . . . 6 . . . 3\n4 . . 8 . 3 . . 1\n7 . . . 2 . . . 6\n. 6 . . . . 2 8 .\n. . . 4 1 9 . . 5\n. . . . 8 . . 7 9",
+        "expectedStdout": "false",
+        "input": [[
+          ["8","3",".",".","7",".",".",".","."],
+          ["6",".",".","1","9","5",".",".","."],
+          [".","9","8",".",".",".",".","6","."],
+          ["8",".",".",".","6",".",".",".","3"],
+          ["4",".",".","8",".","3",".",".","1"],
+          ["7",".",".",".","2",".",".",".","6"],
+          [".","6",".",".",".",".","2","8","."],
+          [".",".",".","4","1","9",".",".","5"],
+          [".",".",".",".","8",".",".","7","9"]
+        ]],
+        "expected": false
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": ". . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .\n. . . . . . . . .",
+        "expectedStdout": "true",
+        "input": [[
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."],
+          [".",".",".",".",".",".",".",".","."]
+        ]],
+        "expected": true
       }
     ]
   },
   "10": {
-    "methodName": "encodeAndDecodeStrings",
-    "starterCode": "class Solution:\n    def encodeAndDecodeStrings(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "encodeAndDecode",
+    "starterCode": "import sys\nimport json\n\nclass Codec:\n    def encode(self, strs: list[str]) -> str:\n        res = \"\"\n        for s in strs:\n            res += f\"{len(s)}#{s}\"\n        return res\n\n    def decode(self, s: str) -> list[str]:\n        res = []\n        i = 0\n        while i < len(s):\n            j = i\n            while s[j] != '#':\n                j += 1\n            length = int(s[i:j])\n            res.append(s[j+1 : j+1+length])\n            i = j + 1 + length\n        return res\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        print(\"[]\")\n        return\n    n = int(tokens[0])\n    strs = tokens[1:n+1]\n    codec = Codec()\n    encoded = codec.encode(strs)\n    decoded = codec.decode(encoded)\n    print(json.dumps(decoded))\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "4\nlint code love you",
+        "expectedStdout": "[\"lint\", \"code\", \"love\", \"you\"]",
+        "input": [["lint", "code", "love", "you"]],
+        "expected": ["lint", "code", "love", "you"]
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "2\nwe say",
+        "expectedStdout": "[\"we\", \"say\"]",
+        "input": [["we", "say"]],
+        "expected": ["we", "say"]
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
+        "stdin": "1\nhello",
+        "expectedStdout": "[\"hello\"]",
+        "input": [["hello"]],
+        "expected": ["hello"]
       }
     ]
   },
   "11": {
-    "methodName": "longestConsecutiveSequence",
-    "starterCode": "class Solution:\n    def longestConsecutiveSequence(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "longestConsecutive",
+    "starterCode": "import sys\n\ndef solve():\n    tokens = sys.stdin.read().split()\n    if not tokens:\n        print(0)\n        return\n    n = int(tokens[0])\n    if n == 0:\n        print(0)\n        return\n    nums = [int(x) for x in tokens[1:n+1]]\n    num_set = set(nums)\n    longest = 0\n    for num in num_set:\n        if (num - 1) not in num_set:\n            cur = num\n            streak = 1\n            while (cur + 1) in num_set:\n                cur += 1\n                streak += 1\n            longest = max(longest, streak)\n    print(longest)\n\nif __name__ == '__main__':\n    solve()",
     "sampleCases": [
       {
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expected": 1
+        "stdin": "6\n100 4 200 1 3 2",
+        "expectedStdout": "4",
+        "input": [[100, 4, 200, 1, 3, 2]],
+        "expected": 4
       },
       {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
+        "stdin": "10\n0 3 7 2 5 8 4 6 0 1",
+        "expectedStdout": "9",
+        "input": [[0, 3, 7, 2, 5, 8, 4, 6, 0, 1]],
+        "expected": 9
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
+        "stdin": "0",
+        "expectedStdout": "0",
+        "input": [[]],
         "expected": 0
+      },
+      {
+        "stdin": "1\n9",
+        "expectedStdout": "1",
+        "input": [[9]],
+        "expected": 1
       }
     ]
   },

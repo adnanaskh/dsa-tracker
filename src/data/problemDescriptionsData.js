@@ -98,7 +98,7 @@ An **Anagram** is a word or phrase formed by rearranging the letters of a differ
     examples: [
       {
         id: 1,
-        input: "anagram\nagaram",
+        input: "anagram\nnagaram",
         output: "true",
         explanation: "Both strings contain identical character counts: 3 'a's, 1 'n', 1 'g', 1 'r', 1 'm'."
       },
@@ -359,7 +359,7 @@ An **Anagram** is a word formed by rearranging the letters of another word using
       explanation: "Read the count N, then N space-separated lowercase words."
     },
     outputFormat: {
-      standardOutput: "Print the grouped anagrams as nested JSON list format or one group per line.",
+      standardOutput: "Print the grouped anagrams as a 2D JSON array `[[\"...\"]]` or one group per line.",
       explanation: "A 2D array representation containing groups of anagrams."
     },
     constraints: [
@@ -373,7 +373,7 @@ An **Anagram** is a word formed by rearranging the letters of another word using
       {
         id: 1,
         input: "6\neat tea tan ate nat bat",
-        output: '[["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]',
+        output: '[["ate", "eat", "tea"], ["bat"], ["nat", "tan"]]',
         explanation: 'Strings sharing the same character multiset are grouped together.'
       },
       {
@@ -400,7 +400,9 @@ def solve():
         key = "".join(sorted(s))
         groups[key].append(s)
         
-    print(json.dumps(list(groups.values())))
+    res = [sorted(g) for g in groups.values()]
+    res.sort()
+    print(json.dumps(res))
 
 if __name__ == '__main__':
     solve()
@@ -580,6 +582,20 @@ Empty cells are represented by the character \`"."\`.`,
 . . . . 8 . . 7 9`,
         output: "true",
         explanation: "All rows, columns, and 3x3 subgrids contain no duplicates among filled digits."
+      },
+      {
+        id: 2,
+        input: `8 3 . . 7 . . . .
+6 . . 1 9 5 . . .
+. 9 8 . . . . 6 .
+8 . . . 6 . . . 3
+4 . . 8 . 3 . . 1
+7 . . . 2 . . . 6
+. 6 . . . . 2 8 .
+. . . 4 1 9 . . 5
+. . . . 8 . . 7 9`,
+        output: "false",
+        explanation: "Duplicate '8' in row 0 column 0 and row 3 column 0 violates column uniqueness."
       }
     ],
     starterCode: `import sys
@@ -620,6 +636,87 @@ if __name__ == '__main__':
 
   "10": {
     id: 10,
+    title: "Encode and Decode Strings",
+    difficulty: "Medium",
+    topic: "Arrays & Hashing",
+    pattern: "String Manipulation",
+    statement: `Design an algorithm to **encode** a list of strings to a single string, and **decode** that string back to the original list of strings.
+
+The encoded string is transmitted across the network and decoded. You must ensure the decoding reconstructs the original strings even if they contain delimiters or special characters.`,
+    inputFormat: {
+      standardInput: `• Line 1: An integer \`N\` (number of strings).
+• Line 2: \`N\` space-separated strings.`,
+      explanation: "Read count N followed by the sequence of words."
+    },
+    outputFormat: {
+      standardOutput: "Print the decoded list of strings formatted as JSON `[\"word1\", \"word2\", ...]`.",
+      explanation: "A JSON array of decoded strings."
+    },
+    constraints: [
+      "0 <= N <= 200",
+      "0 <= len(strs[i]) <= 200",
+      "strs[i] contains any valid ASCII characters.",
+      "Time Limit: 1.0s",
+      "Memory Limit: 256 MB"
+    ],
+    examples: [
+      {
+        id: 1,
+        input: "4\nlint code love you",
+        output: '["lint", "code", "love", "you"]',
+        explanation: "Encoding format: '4#lint4#code4#love3#you'. Decoding reconstructs the original 4 strings."
+      },
+      {
+        id: 2,
+        input: "2\nwe say",
+        output: '["we", "say"]',
+        explanation: "Decoding yields original strings 'we' and 'say'."
+      }
+    ],
+    starterCode: `import sys
+import json
+
+class Codec:
+    def encode(self, strs: list[str]) -> str:
+        res = ""
+        for s in strs:
+            res += f"{len(s)}#{s}"
+        return res
+
+    def decode(self, s: str) -> list[str]:
+        res = []
+        i = 0
+        while i < len(s):
+            j = i
+            while s[j] != '#':
+                j += 1
+            length = int(s[i:j])
+            res.append(s[j+1 : j+1+length])
+            i = j + 1 + length
+        return res
+
+def solve():
+    tokens = sys.stdin.read().split()
+    if not tokens:
+        print("[]")
+        return
+        
+    n = int(tokens[0])
+    strs = tokens[1:n+1]
+    
+    codec = Codec()
+    encoded = codec.encode(strs)
+    decoded = codec.decode(encoded)
+    print(json.dumps(decoded))
+
+if __name__ == '__main__':
+    solve()
+`,
+    notes: "Length-prefix encoding (e.g. `<length>#<string>`) guarantees stateless, unambiguous parsing in O(N) time."
+  },
+
+  "11": {
+    id: 11,
     title: "Longest Consecutive Sequence",
     difficulty: "Medium",
     topic: "Arrays & Hashing",
@@ -675,7 +772,6 @@ def solve():
     longest = 0
     
     for num in num_set:
-        # Check if it's the start of a sequence
         if (num - 1) not in num_set:
             current = num
             streak = 1
@@ -695,7 +791,7 @@ if __name__ == '__main__':
 
 /**
  * Returns formatted problem description with standard Online Judge layout.
- * Dynamic fallback generator ensures questions 11-305 have full structure.
+ * Dynamic fallback generator ensures questions 12-305 have full structure.
  */
 export function getProblemDescription(id, question, testSuite = null) {
   const strId = String(id);
@@ -703,12 +799,11 @@ export function getProblemDescription(id, question, testSuite = null) {
     return DETAILED_PROBLEM_DESCRIPTIONS[strId];
   }
 
-  // Dynamic Fallback generator for questions 11-305
+  // Dynamic Fallback generator for questions 12-305
   const name = question?.name || "Problem " + id;
   const topic = question?.topic || "Data Structures & Algorithms";
   const difficulty = question?.difficulty || "Medium";
   const pattern = question?.pattern || "Optimal Algorithm";
-  const methodName = testSuite?.methodName || "solve";
 
   const sampleCases = testSuite?.sampleCases || [];
 

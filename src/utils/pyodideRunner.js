@@ -42,7 +42,6 @@ export function formatStdinFromInput(input) {
   if (typeof input === 'string') return input;
 
   if (Array.isArray(input)) {
-    // If input is an array of arguments (e.g. [[1,2,3,1]] or [nums, target])
     const lines = [];
     for (const arg of input) {
       if (Array.isArray(arg)) {
@@ -71,11 +70,6 @@ export function formatStdinFromInput(input) {
 /**
  * Runs Python code against a set of test cases inside Pyodide sandbox
  * Supports full STDIN -> STDOUT execution model and class Solution method invocation.
- *
- * @param {string} userCode - Complete Python 3 script (with imports, stdin reading, stdout printing)
- * @param {string} methodName - Method name fallback
- * @param {Array} testCases - Array of test cases ({ input, expected, stdin, expectedStdout })
- * @returns {Promise<{ allPassed: boolean, results: Array, totalTimeMs: number, error: string|null }>}
  */
 export async function runPythonTests(userCode, methodName, testCases) {
   const startTime = performance.now();
@@ -126,7 +120,6 @@ sys.stdin = io.StringIO(${JSON.stringify(stdinContent)})
         stdout = pyodide.runPython(`sys_stdout_catcher.get_value()`).trim();
 
         if (stdout.length > 0) {
-          // Output was printed via print() (Standard Competitive Programming STDOUT)
           actualOutput = stdout;
           isPassed = compareStdoutResults(stdout, expectedStdout, tc.expected);
         } else if (methodName && userCode.includes('class Solution')) {
@@ -206,7 +199,6 @@ function formatExpectedStdout(expected) {
   if (expected === false) return 'false';
   if (expected === null || expected === undefined) return '';
   if (Array.isArray(expected)) {
-    // If array of arrays (e.g. Group Anagrams)
     if (expected.length > 0 && Array.isArray(expected[0])) {
       return JSON.stringify(expected);
     }
@@ -226,16 +218,20 @@ function compareStdoutResults(actualStdout, expectedStdout, rawExpected) {
   // Exact match
   if (actualTrim === expectTrim) return true;
 
-  // Case insensitive match (e.g. "True" vs "true")
+  // Case-insensitive match (e.g. "True" vs "true")
   if (actualTrim.toLowerCase() === expectTrim.toLowerCase()) return true;
 
-  // Compare as JSON / Arrays / Integers
+  // Compare as JSON Arrays / Objects
   try {
     const parsedActual = JSON.parse(actualTrim);
-    if (compareResults(parsedActual, rawExpected)) return true;
+    let parsedExpected = rawExpected;
+    if (parsedExpected === undefined && expectTrim) {
+      try { parsedExpected = JSON.parse(expectTrim); } catch {}
+    }
+    if (compareResults(parsedActual, parsedExpected)) return true;
   } catch {}
 
-  // Compare space-separated tokens
+  // Compare space/newline separated tokens
   const actualTokens = actualTrim.split(/\s+/).filter(Boolean);
   const expectTokens = expectTrim.split(/\s+/).filter(Boolean);
 
@@ -248,6 +244,13 @@ function compareStdoutResults(actualStdout, expectedStdout, rawExpected) {
       }
     }
     if (allTokensMatch) return true;
+
+    // Check if permutations match (e.g., unordered set elements)
+    const sortedActual = [...actualTokens].map(s => s.toLowerCase()).sort();
+    const sortedExpect = [...expectTokens].map(s => s.toLowerCase()).sort();
+    if (JSON.stringify(sortedActual) === JSON.stringify(sortedExpect)) {
+      return true;
+    }
   }
 
   // Fallback direct compare
@@ -255,11 +258,11 @@ function compareStdoutResults(actualStdout, expectedStdout, rawExpected) {
 }
 
 /**
- * Deep comparison of structured outputs
+ * Deep comparison of structured outputs (handles nested 2D array permutations for Group Anagrams)
  */
 function compareResults(actual, expected) {
   if (actual === expected) return true;
-  if (actual === null || expected === null) return actual === expected;
+  if (actual === null || expected === null || actual === undefined || expected === undefined) return actual === expected;
 
   // Boolean loose compare
   if (typeof actual === 'boolean' || typeof expected === 'boolean') {
@@ -274,10 +277,30 @@ function compareResults(actual, expected) {
   // Array comparison
   if (Array.isArray(actual) && Array.isArray(expected)) {
     if (actual.length !== expected.length) return false;
+
+    // Direct element-by-element match
+    let directMatch = true;
     for (let i = 0; i < actual.length; i++) {
-      if (!compareResults(actual[i], expected[i])) return false;
+      if (!compareResults(actual[i], expected[i])) {
+        directMatch = false;
+        break;
+      }
     }
-    return true;
+    if (directMatch) return true;
+
+    // Permutation match for 2D array of groups (e.g. Group Anagrams)
+    if (actual.length > 0 && Array.isArray(actual[0])) {
+      const canonicalActual = actual.map(group => Array.isArray(group) ? [...group].sort().join(',') : String(group)).sort();
+      const canonicalExpect = expected.map(group => Array.isArray(group) ? [...group].sort().join(',') : String(group)).sort();
+      if (JSON.stringify(canonicalActual) === JSON.stringify(canonicalExpect)) {
+        return true;
+      }
+    }
+
+    // Permutation match for 1D arrays (e.g. unordered results)
+    const sortedActual = [...actual].map(x => String(x)).sort();
+    const sortedExpect = [...expected].map(x => String(x)).sort();
+    return JSON.stringify(sortedActual) === JSON.stringify(sortedExpect);
   }
 
   // Object comparison
