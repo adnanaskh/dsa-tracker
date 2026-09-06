@@ -570,8 +570,8 @@ export default function App() {
         snapshot.forEach(docSnap => {
           const data = docSnap.data();
           const docId = docSnap.id;
-          // Purge and delete legacy fake benchmark documents
-          if (docId.startsWith('leader_') || (data.uid && String(data.uid).startsWith('leader_'))) {
+          // Purge and delete legacy fake benchmark documents or coder dummy entries
+          if (docId.startsWith('leader_') || (data.uid && String(data.uid).startsWith('leader_')) || docId === 'coder' || data.username === 'coder') {
             try {
               deleteDoc(doc(db, 'artifacts', appId, 'leaderboard', docId)).catch(() => {});
             } catch {}
@@ -592,11 +592,12 @@ export default function App() {
   // Sync user's public stats & profile to Leaderboard in Firestore
   useEffect(() => {
     if (!user) return;
-    const effectiveUsername = (customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
+    const fallbackUname = user.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || user.email?.split('@')[0] || `user_${user.uid.slice(0, 6)}`;
+    const effectiveUsername = (customUsername || fallbackUname).toLowerCase().replace(/[^a-z0-9_]/g, '');
     const userDocRef = doc(db, 'artifacts', appId, 'leaderboard', user.uid);
     setDoc(userDocRef, {
       uid: user.uid,
-      displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'Coder',
+      displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'User',
       username: effectiveUsername,
       bio: customBio || '',
       linkedin: customLinkedin || '',
@@ -639,17 +640,18 @@ export default function App() {
     const map = new Map();
     // Only real users fetched from Firestore
     cloudLeaderboard.forEach(item => {
-      if (item && item.uid) {
+      if (item && item.uid && item.uid !== 'coder' && item.username !== 'coder') {
         map.set(item.uid, item);
       }
     });
 
     // If current authenticated user is signed in, ensure their latest live stats are represented immediately
     if (user) {
-      const effectiveUsername = (customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
+      const fallbackUname = user.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || user.email?.split('@')[0] || `user_${user.uid.slice(0, 6)}`;
+      const effectiveUsername = (customUsername || fallbackUname).toLowerCase().replace(/[^a-z0-9_]/g, '');
       map.set(user.uid, {
         uid: user.uid,
-        displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'Coder',
+        displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'User',
         username: effectiveUsername,
         bio: customBio || '',
         linkedin: customLinkedin || '',
@@ -723,10 +725,11 @@ export default function App() {
 
     if (user) {
       try {
-        const cleanUsername = (username || customUsername || user.email?.split('@')[0] || 'coder').toLowerCase().replace(/[^a-z0-9_]/g, '');
+        const fallbackUname = user.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || user.email?.split('@')[0] || `user_${user.uid.slice(0, 6)}`;
+        const cleanUsername = (username || customUsername || fallbackUname).toLowerCase().replace(/[^a-z0-9_]/g, '');
         const userDocRef = doc(db, 'artifacts', appId, 'leaderboard', user.uid);
         await setDoc(userDocRef, {
-          displayName: displayName || customDisplayName || user.displayName || 'Coder',
+          displayName: displayName || customDisplayName || user.displayName || user.email?.split('@')[0] || 'User',
           username: cleanUsername,
           bio: bio || '',
           linkedin: linkedin || '',

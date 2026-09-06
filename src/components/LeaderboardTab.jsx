@@ -25,7 +25,7 @@ export default function LeaderboardTab({
 
   // Prepare full list including only real users
   const combinedUsers = useMemo(() => {
-    const list = [...leaderboardUsers];
+    const list = leaderboardUsers.filter(u => u && u.uid && u.uid !== 'coder' && u.username !== 'coder' && !String(u.uid).startsWith('leader_'));
 
     // If current user is authenticated, ensure their latest live stats are represented
     if (currentUser) {

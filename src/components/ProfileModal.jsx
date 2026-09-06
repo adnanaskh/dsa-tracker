@@ -149,10 +149,13 @@ export default function ProfileModal({
         });
       }
 
+      const fbName = profileData.displayName || profileData.email?.split('@')[0] || (profileData.uid ? `User_${profileData.uid.slice(0, 5)}` : 'User');
+      const fbUser = profileData.username || profileData.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || profileData.email?.split('@')[0] || (profileData.uid ? `user_${profileData.uid.slice(0, 5)}` : 'user');
+
       return {
         uid: profileData.uid,
-        displayName: profileData.displayName || 'Coder',
-        username: profileData.username || profileData.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || 'coder',
+        displayName: fbName,
+        username: fbUser,
         photoURL: profileData.photoURL || null,
         email: profileData.email || '',
         bio: profileData.bio || 'Cracking FAANG & top tech coding interviews with DSA Tracker.',
@@ -170,8 +173,8 @@ export default function ProfileModal({
       };
     }
 
-    const defaultUsername = customUsername || currentUser?.email?.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') || 'coder';
-    const defaultDisplayName = customDisplayName || currentUser?.displayName || (currentUser ? 'Coder' : 'Guest Coder');
+    const defaultUsername = customUsername || currentUser?.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || currentUser?.email?.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') || 'my_profile';
+    const defaultDisplayName = customDisplayName || currentUser?.displayName || currentUser?.email?.split('@')[0] || (currentUser ? 'User' : 'Guest');
 
     return {
       uid: currentUser?.uid || 'guest',

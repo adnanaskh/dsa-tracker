@@ -1036,16 +1036,6 @@ export default function CodePlaygroundModal({
                 </div>
                 
                 <div className="flex items-center gap-1.5">
-                  {/* Save Button */}
-                  <button
-                    onClick={() => handleSaveCode(code, true)}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-[11px] font-bold transition-colors cursor-pointer shadow-xs"
-                    title="Save Code (Ctrl + S)"
-                  >
-                    <Save className="w-3 h-3 text-blue-400" />
-                    <span>Save</span>
-                  </button>
-
                   {/* Font Size Adjuster */}
                   <div className="flex items-center gap-1 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-[11px]">
                     <Type className="w-3 h-3 text-slate-400" />

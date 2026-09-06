@@ -1,6 +1,4 @@
-// Comprehensive GeeksforGeeks & LeetCode Official Editorial Solutions for all 305 DSA Problems
-// Complete with Intuition, Approaches, Step-by-Step Algorithm, Working Python 3 Code, Complexity Derivations & Edge Cases.
-
+// Curated Detailed Solutions & Editorials for Problems 1 to 60
 export const DETAILED_SOLUTIONS = {
   "1": {
     "id": 1,
@@ -453,7 +451,7 @@ export const DETAILED_SOLUTIONS = {
       "  c. Return 'res'."
     ],
     "code": {
-      "python": "class Codec:\n    def encode(self, strs: list[str]) -> str:\n        res = ''\n        for s in strs:\n            res += f'{len(s)}#{s}'\n        return res\n\n    def decode(self, s: str) -> list[str]:\n        res = []\n        i = 0\n        while i < len(s):\n            j = i\n            while s[j] != '#':\n                j += 1\n            length = int(s[i:j])\n            res.append(s[j + 1 : j + 1 + length])\n            i = j + 1 + length\n        return res"
+      "python": "class Codec:\n    def encode(self, strs: list[str]) -> str:\n        res = \"\"\n        for s in strs:\n            res += f\"{len(s)}#{s}\"\n        return res\n\n    def decode(self, s: str) -> list[str]:\n        res = []\n        i = 0\n        while i < len(s):\n            j = i\n            while s[j] != '#':\n                j += 1\n            length = int(s[i:j])\n            res.append(s[j + 1 : j + 1 + length])\n            i = j + 1 + length\n        return res\n\nclass Solution:\n    def encodeAndDecode(self, strs: list[str]) -> list[str]:\n        codec = Codec()\n        return codec.decode(codec.encode(strs))\n    encode_and_decode = encodeAndDecode"
     },
     "complexity": {
       "time": "O(N) — Where N is the total number of characters across all strings for both encode and decode.",
@@ -1816,873 +1814,850 @@ export const DETAILED_SOLUTIONS = {
     "interviewTips": "Carefully explain why the recursive branch for '*' is `dp(i + 1, j)` (staying at index j): staying at j allows the '*' to match multiple consecutive characters."
   },
   "41": {
-    "id": 41,
-    "title": "Longest Palindromic Substring",
-    "difficulty": "Medium",
-    "topic": "Strings",
-    "pattern": "Expand Around Center / DP",
-    "overview": "In 'Longest Palindromic Substring', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Expand Around Center / DP paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Palindromic Substring' leverages Expand Around Center / DP. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "A palindrome mirrors around its center. A string of length N has 2N - 1 possible centers: N single characters (for odd-length palindromes) and N - 1 character pairs (for even-length palindromes). By expanding outward from each center while characters match, we find the longest palindrome in O(N^2) time and O(1) extra space.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: Expand Around Center (Optimal)",
+        "description": "Iterate through each index as an odd center (i, i) and even center (i, i+1). Expand left and right pointers while characters match.",
+        "timeComplexity": "O(N^2)",
+        "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Expand Around Center / DP)",
-        "description": "Apply the Expand Around Center / DP pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Dynamic Programming",
+        "description": "Maintain a 2D boolean table dp[i][j] indicating whether substring s[i..j] is a palindrome. dp[i][j] = (s[i] == s[j]) and dp[i+1][j-1].",
+        "timeComplexity": "O(N^2)",
+        "spaceComplexity": "O(N^2)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Expand Around Center / DP strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. If string length is less than 2, return s immediately.",
+      "2. Define helper expand(l, r) that expands outward while l >= 0 and r < len(s) and s[l] == s[r].",
+      "3. Iterate index i from 0 to len(s) - 1.",
+      "4. Expand for odd length at expand(i, i) and even length at expand(i, i + 1).",
+      "5. Track and update the maximum length palindrome substring found.",
+      "6. Return the longest palindromic substring."
     ],
-    "code": {
-      "python": "class Solution:\n    def longestPalindromicSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Expand Around Center / DP Solution for Longest Palindromic Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Expand Around Center / DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N^2) where N is the length of s.",
+      "space": "O(1) auxiliary space (excluding result slice)."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single character string: 'a' -> 'a'.",
+      "All identical characters: 'aaaa' -> 'aaaa'.",
+      "No multi-character palindrome: 'abc' -> 'a'."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Expand Around Center / DP eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Expand Around Center / DP)."
+    "interviewTips": [
+      "Explain the 2N - 1 centers concept clearly to the interviewer.",
+      "Mention Manacher's Algorithm for theoretical O(N) time, but highlight that Expand Around Center is the standard expected interview solution."
+    ],
+    "code": {
+      "python": "class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        if not s or len(s) < 2:\n            return s\n        \n        start = 0\n        max_len = 1\n        \n        def expand(left: int, right: int) -> tuple[int, int]:\n            while left >= 0 and right < len(s) and s[left] == s[right]:\n                left -= 1\n                right += 1\n            return left + 1, right - left - 1\n\n        for i in range(len(s)):\n            l1, len1 = expand(i, i)\n            l2, len2 = expand(i, i + 1)\n            \n            if len1 > max_len:\n                start = l1\n                max_len = len1\n            if len2 > max_len:\n                start = l2\n                max_len = len2\n                \n        return s[start:start + max_len]\n        \n    longest_palindrome = longestPalindrome"
+    }
   },
   "42": {
-    "id": 42,
-    "title": "Palindromic Substrings",
-    "difficulty": "Medium",
-    "topic": "Strings",
-    "pattern": "Expand Around Center",
-    "overview": "In 'Palindromic Substrings', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Expand Around Center paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Palindromic Substrings' leverages Expand Around Center. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Each palindromic substring has a distinct center. There are 2N - 1 centers. Expanding outward from each center counts every palindromic substring exactly once as long as left and right characters match.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
+        "name": "Method 1: Expand Around Center (Optimal)",
+        "description": "Expand from each of the 2N - 1 centers and increment the count for every valid palindrome match.",
+        "timeComplexity": "O(N^2)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Expand Around Center)",
-        "description": "Apply the Expand Around Center pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: 2D Dynamic Programming",
+        "description": "Fill dp[i][j] = True if s[i] == s[j] and (j - i <= 2 or dp[i+1][j-1]). Count total True values.",
+        "timeComplexity": "O(N^2)",
+        "spaceComplexity": "O(N^2)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Expand Around Center strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize total_count = 0.",
+      "2. For each center i from 0 to len(s) - 1:",
+      "   a. Expand odd center: left = i, right = i.",
+      "   b. While left >= 0 and right < len(s) and s[left] == s[right]: total_count += 1, left -= 1, right += 1.",
+      "   c. Expand even center: left = i, right = i + 1.",
+      "   d. While left >= 0 and right < len(s) and s[left] == s[right]: total_count += 1, left -= 1, right += 1.",
+      "3. Return total_count."
     ],
-    "code": {
-      "python": "class Solution:\n    def palindromicSubstrings(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Expand Around Center Solution for Palindromic Substrings.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Expand Around Center invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N^2) where N is the length of s.",
+      "space": "O(1) auxiliary space."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Single character string: 'a' -> 1.",
+      "All same characters: 'aaa' -> 6.",
+      "All distinct characters: 'abc' -> 3."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Expand Around Center eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Expand Around Center)."
+    "interviewTips": [
+      "Contrast O(1) space expand around center with O(N^2) space DP.",
+      "Emphasize that every distinct start/end index is counted even if substrings have identical character values."
+    ],
+    "code": {
+      "python": "class Solution:\n    def countSubstrings(self, s: str) -> int:\n        count = 0\n        n = len(s)\n        \n        for i in range(n):\n            # Odd length palindromes\n            l, r = i, i\n            while l >= 0 and r < n and s[l] == s[r]:\n                count += 1\n                l -= 1\n                r += 1\n                \n            # Even length palindromes\n            l, r = i, i + 1\n            while l >= 0 and r < n and s[l] == s[r]:\n                count += 1\n                l -= 1\n                r += 1\n                \n        return count\n        \n    count_substrings = countSubstrings"
+    }
   },
   "43": {
-    "id": 43,
-    "title": "Longest Common Subsequence",
-    "difficulty": "Medium",
-    "topic": "Strings",
-    "pattern": "2D DP",
-    "overview": "In 'Longest Common Subsequence', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the 2D DP paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Longest Common Subsequence' leverages 2D DP. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "This is the classic Longest Common Subsequence (LCS) dynamic programming problem. If the current characters match (text1[i-1] == text2[j-1]), the LCS increases by 1 from the diagonal state dp[i-1][j-1]. Otherwise, we take the maximum between skipping a character from text1 (dp[i-1][j]) or text2 (dp[i][j-1]).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: 2D Dynamic Programming (Standard)",
+        "description": "Build (m+1) x (n+1) DP table where dp[i][j] represents LCS length of text1[0..i-1] and text2[0..j-1].",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(M * N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (2D DP)",
-        "description": "Apply the 2D DP pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Space Optimized DP",
+        "description": "Since dp[i] only depends on dp[i-1], optimize space to 2 rows or a single 1D array.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(min(M, N))"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the 2D DP strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Let m = len(text1) and n = len(text2).",
+      "2. Create DP table dp of size (m+1) x (n+1) initialized to 0.",
+      "3. Iterate i from 1 to m and j from 1 to n:",
+      "   a. If text1[i-1] == text2[j-1]: dp[i][j] = 1 + dp[i-1][j-1].",
+      "   b. Else: dp[i][j] = max(dp[i-1][j], dp[i][j-1]).",
+      "4. Return dp[m][n]."
     ],
-    "code": {
-      "python": "class Solution:\n    def longestCommonSubsequence(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Longest Common Subsequence.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(M * N) where M and N are the lengths of text1 and text2.",
+      "space": "O(M * N) for 2D table, reducible to O(min(M, N))."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "No common characters: 'abc' and 'def' -> 0.",
+      "Identical strings: 'abc' and 'abc' -> 3.",
+      "One string is a subsequence of the other: 'abcde' and 'ace' -> 3."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how 2D DP eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (2D DP)."
+    "interviewTips": [
+      "Be prepared to reconstruct the actual LCS string by backtracking through the DP table.",
+      "Discuss space optimization using a single 1D array with a 'prev_diagonal' tracker."
+    ],
+    "code": {
+      "python": "class Solution:\n    def longestCommonSubsequence(self, text1: str, text2: str) -> int:\n        m, n = len(text1), len(text2)\n        dp = [[0] * (n + 1) for _ in range(m + 1)]\n        \n        for i in range(1, m + 1):\n            for j in range(1, n + 1):\n                if text1[i - 1] == text2[j - 1]:\n                    dp[i][j] = dp[i - 1][j - 1] + 1\n                else:\n                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n                    \n        return dp[m][n]\n        \n    longest_common_subsequence = longestCommonSubsequence"
+    }
   },
   "44": {
-    "id": 44,
-    "title": "Edit Distance",
-    "difficulty": "Hard",
-    "topic": "Strings",
-    "pattern": "2D DP",
-    "overview": "In 'Edit Distance', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the 2D DP paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Edit Distance' leverages 2D DP. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "To transform word1 into word2 with minimum operations (insert, delete, replace), we define dp[i][j] as the edit distance between word1[0..i-1] and word2[0..j-1]. If word1[i-1] == word2[j-1], no new operation is needed: dp[i][j] = dp[i-1][j-1]. Otherwise, we take 1 + min(insert: dp[i][j-1], delete: dp[i-1][j], replace: dp[i-1][j-1]).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: 2D Dynamic Programming (Wagner-Fischer)",
+        "description": "Standard (m+1) x (n+1) matrix calculating minimum insertion, deletion, and replacement costs.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(M * N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (2D DP)",
-        "description": "Apply the 2D DP pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Space-Optimized DP",
+        "description": "Use 1D row array to store previous row state and update in-place.",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(min(M, N))"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the 2D DP strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Let m = len(word1), n = len(word2).",
+      "2. Initialize dp table of size (m+1) x (n+1).",
+      "3. Base cases: dp[i][0] = i (i deletions) and dp[0][j] = j (j insertions).",
+      "4. Iterate i from 1 to m and j from 1 to n:",
+      "   a. If word1[i-1] == word2[j-1], dp[i][j] = dp[i-1][j-1].",
+      "   b. Else dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]).",
+      "5. Return dp[m][n]."
     ],
-    "code": {
-      "python": "class Solution:\n    def editDistance(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Edit Distance.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(M * N) where M = len(word1) and N = len(word2).",
+      "space": "O(M * N) space for table (can be optimized to O(min(M, N)))."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "One string empty: '' to 'abc' -> 3 operations (insertions).",
+      "Identical strings: 'horse' to 'horse' -> 0 operations.",
+      "Single character differences: 'cat' to 'hat' -> 1 operation (replace)."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how 2D DP eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (2D DP)."
+    "interviewTips": [
+      "Clearly associate the 3 recurrence options with the 3 allowed operations: insert (dp[i][j-1]), delete (dp[i-1][j]), replace (dp[i-1][j-1]).",
+      "Base conditions (converting from/to empty strings) must be initialized correctly."
+    ],
+    "code": {
+      "python": "class Solution:\n    def minDistance(self, word1: str, word2: str) -> int:\n        m, n = len(word1), len(word2)\n        dp = [[0] * (n + 1) for _ in range(m + 1)]\n        \n        for i in range(m + 1):\n            dp[i][0] = i\n        for j in range(n + 1):\n            dp[0][j] = j\n            \n        for i in range(1, m + 1):\n            for j in range(1, n + 1):\n                if word1[i - 1] == word2[j - 1]:\n                    dp[i][j] = dp[i - 1][j - 1]\n                else:\n                    dp[i][j] = 1 + min(\n                        dp[i - 1][j],      # Delete\n                        dp[i][j - 1],      # Insert\n                        dp[i - 1][j - 1]   # Replace\n                    )\n                    \n        return dp[m][n]\n        \n    min_distance = minDistance"
+    }
   },
   "45": {
-    "id": 45,
-    "title": "Wildcard Matching",
-    "difficulty": "Hard",
-    "topic": "Strings",
-    "pattern": "2D DP",
-    "overview": "In 'Wildcard Matching', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the 2D DP paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Wildcard Matching' leverages 2D DP. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Wildcard matching allows '?' (matching 1 character) and '*' (matching 0 or more characters). We can solve this either via 2D DP or an optimal greedy two-pointer approach with backtracking. When '*' is encountered, we record its position and backtrack to match additional characters in s if subsequent matching fails.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: Greedy Two Pointers with Backtracking (Optimal)",
+        "description": "Maintain star index and match index. Advance s pointer when star matches. O(1) space.",
+        "timeComplexity": "O(M * N) worst case, O(M + N) average",
+        "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (2D DP)",
-        "description": "Apply the 2D DP pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: 2D Dynamic Programming",
+        "description": "dp[i][j] represents whether s[0..i-1] matches p[0..j-1]. If p[j-1] == '*', dp[i][j] = dp[i-1][j] or dp[i][j-1].",
+        "timeComplexity": "O(M * N)",
+        "spaceComplexity": "O(M * N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the 2D DP strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize s_ptr = 0, p_ptr = 0, star_idx = -1, s_tmp_idx = -1.",
+      "2. While s_ptr < len(s):",
+      "   a. If p_ptr < len(p) and (p[p_ptr] == '?' or p[p_ptr] == s[s_ptr]): advance both pointers.",
+      "   b. Else if p_ptr < len(p) and p[p_ptr] == '*': record star_idx = p_ptr, s_tmp_idx = s_ptr, p_ptr += 1.",
+      "   c. Else if star_idx != -1: backtrack p_ptr = star_idx + 1, advance s_tmp_idx += 1, s_ptr = s_tmp_idx.",
+      "   d. Else return False (mismatch with no active star).",
+      "3. Consume any remaining '*' characters in p.",
+      "4. Return True if p_ptr == len(p) else False."
     ],
-    "code": {
-      "python": "class Solution:\n    def wildcardMatching(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal 2D DP Solution for Wildcard Matching.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to 2D DP invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(M + N) average time, O(M * N) worst case.",
+      "space": "O(1) auxiliary memory."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Pattern is all '*': 'aa' and '***' -> True.",
+      "Empty string and pattern '*': '' and '*' -> True.",
+      "Pattern '*' at end matching multiple characters: 'adceb' and '*a*b' -> True."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how 2D DP eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (2D DP)."
+    "interviewTips": [
+      "Differentiate LeetCode 44 (Wildcard, '*' matches sequence) from LeetCode 10 (Regex, 'x*' matches 0 or more 'x's).",
+      "Explain why the greedy star pointer backtracking achieves O(1) space without recursion stack overflow."
+    ],
+    "code": {
+      "python": "class Solution:\n    def isMatch(self, s: str, p: str) -> bool:\n        s_ptr = p_ptr = 0\n        star_idx = -1\n        s_tmp_idx = -1\n        \n        while s_ptr < len(s):\n            if p_ptr < len(p) and (p[p_ptr] == '?' or p[p_ptr] == s[s_ptr]):\n                s_ptr += 1\n                p_ptr += 1\n            elif p_ptr < len(p) and p[p_ptr] == '*':\n                star_idx = p_ptr\n                s_tmp_idx = s_ptr\n                p_ptr += 1\n            elif star_idx != -1:\n                p_ptr = star_idx + 1\n                s_tmp_idx += 1\n                s_ptr = s_tmp_idx\n            else:\n                return False\n                \n        while p_ptr < len(p) and p[p_ptr] == '*':\n            p_ptr += 1\n            \n        return p_ptr == len(p)\n        \n    is_match = isMatch"
+    }
   },
   "46": {
-    "id": 46,
-    "title": "Word Break",
-    "difficulty": "Medium",
-    "topic": "Strings",
-    "pattern": "DP / BFS",
-    "overview": "In 'Word Break', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the DP / BFS paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Word Break' leverages DP / BFS. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Let dp[i] represent whether the prefix s[0..i-1] can be segmented into valid dictionary words. For each prefix ending at i, we check all split points j (0 <= j < i). If dp[j] is True and the substring s[j:i] exists in the dictionary, then dp[i] becomes True.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(2^N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: 1D Dynamic Programming with Hash Set (Optimal)",
+        "description": "Convert wordDict to a hash set for O(1) lookup. Build boolean array dp[0..N].",
+        "timeComplexity": "O(N^2 * L) where L is max word length",
+        "spaceComplexity": "O(N + W) where W is dictionary size"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (DP / BFS)",
-        "description": "Apply the DP / BFS pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
+        "name": "Method 2: BFS / Trie",
+        "description": "Treat string indices as graph nodes. Traverse edges corresponding to valid words using BFS queue.",
+        "timeComplexity": "O(N^2)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the DP / BFS strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Put all words in wordDict into a hash set word_set.",
+      "2. Initialize dp array of size len(s) + 1 with False. Set dp[0] = True (empty prefix is valid).",
+      "3. Loop i from 1 to len(s):",
+      "   a. Loop j from max(0, i - max_word_len) to i:",
+      "      If dp[j] is True and s[j:i] in word_set: set dp[i] = True, break.",
+      "4. Return dp[len(s)]."
     ],
-    "code": {
-      "python": "class Solution:\n    def wordBreak(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal DP / BFS Solution for Word Break.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to DP / BFS invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N^2) where N is the length of s.",
+      "space": "O(N + K) where K is the total characters in wordDict."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Prefix re-use: 'applepenapple' with ['apple', 'pen'] -> True.",
+      "Word overlap ambiguity: 'catsandog' with ['cats', 'dog', 'sand', 'and', 'cat'] -> False.",
+      "Single character words: 'aaaa' with ['a'] -> True."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how DP / BFS eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (DP / BFS)."
+    "interviewTips": [
+      "Optimize inner loop by only checking lengths up to the maximum word length in wordDict.",
+      "Mention that converting wordDict to a set is critical for O(1) containment checks."
+    ],
+    "code": {
+      "python": "class Solution:\n    def wordBreak(self, s: str, wordDict: list[str]) -> bool:\n        word_set = set(wordDict)\n        n = len(s)\n        dp = [False] * (n + 1)\n        dp[0] = True\n        \n        max_len = max(len(w) for w in wordDict) if wordDict else 0\n        \n        for i in range(1, n + 1):\n            for j in range(max(0, i - max_len), i):\n                if dp[j] and s[j:i] in word_set:\n                    dp[i] = True\n                    break\n                    \n        return dp[n]\n        \n    word_break = wordBreak"
+    }
   },
   "47": {
-    "id": 47,
-    "title": "Find All Anagrams in a String",
-    "difficulty": "Medium",
-    "topic": "Strings",
-    "pattern": "Sliding Window",
-    "overview": "In 'Find All Anagrams in a String', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Find All Anagrams in a String' leverages Sliding Window. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "An anagram has the exact same character frequency. We maintain a sliding window of fixed length len(p) over string s. As the window shifts right by 1 step, we add the new incoming character and remove the outgoing character, comparing window frequencies with p in O(1) time.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window)",
-        "description": "Apply the Sliding Window pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Fixed-Size Sliding Window with Array Counter (Optimal)",
+        "description": "Maintain frequency counts for window of size len(p) using 26-size integer arrays or hash maps.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1) (26 lowercase English letters)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. If len(p) > len(s), return an empty list.",
+      "2. Count character frequencies for p and the first len(p) window of s.",
+      "3. If s_count == p_count, append index 0 to result.",
+      "4. Slide window from i = len(p) to len(s) - 1:",
+      "   a. Add s[i] to window count.",
+      "   b. Decrement s[i - len(p)] from window count.",
+      "   c. If count drops to 0, remove or keep zeroed.",
+      "   d. If window matches p_count, append (i - len(p) + 1) to result.",
+      "5. Return result."
     ],
-    "code": {
-      "python": "class Solution:\n    def findAllAnagramsInAString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Find All Anagrams in a String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) where N = len(s).",
+      "space": "O(1) auxiliary space (fixed alphabet size 26)."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "len(p) > len(s): 'a' and 'aa' -> [].",
+      "Consecutive anagrams: 'abab' and 'ab' -> [0, 1, 2].",
+      "No anagrams found: 'abcdef' and 'xyz' -> []."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window)."
+    "interviewTips": [
+      "Explain how fixed window sliding achieves strict O(N) linear time by avoiding recomputation of substring frequencies.",
+      "Using fixed 26-element integer arrays allows O(1) comparison."
+    ],
+    "code": {
+      "python": "class Solution:\n    def findAnagrams(self, s: str, p: str) -> list[int]:\n        if len(p) > len(s):\n            return []\n            \n        p_count = [0] * 26\n        s_count = [0] * 26\n        \n        for ch in p:\n            p_count[ord(ch) - ord('a')] += 1\n        for i in range(len(p)):\n            s_count[ord(s[i]) - ord('a')] += 1\n            \n        res = []\n        if s_count == p_count:\n            res.append(0)\n            \n        k = len(p)\n        for i in range(k, len(s)):\n            s_count[ord(s[i]) - ord('a')] += 1\n            s_count[ord(s[i - k]) - ord('a')] -= 1\n            if s_count == p_count:\n                res.append(i - k + 1)\n                \n        return res\n        \n    find_anagrams = findAnagrams"
+    }
   },
   "48": {
-    "id": 48,
-    "title": "Minimum Window Substring",
-    "difficulty": "Hard",
-    "topic": "Strings",
-    "pattern": "Sliding Window",
-    "overview": "In 'Minimum Window Substring', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Sliding Window paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Minimum Window Substring' leverages Sliding Window. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "We maintain a dynamic sliding window [left, right] over string s. We expand right until all characters of t with sufficient frequencies are contained in the window ('formed == required'). Then we shrink left as much as possible to find the minimal valid window, updating the global minimum before repeating.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Sliding Window)",
-        "description": "Apply the Sliding Window pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 1: Dynamic Sliding Window with Frequency Map (Optimal)",
+        "description": "Expand right to satisfy constraint, shrink left to minimize window size.",
+        "timeComplexity": "O(M + N)",
+        "spaceComplexity": "O(K) where K is distinct characters in t"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Sliding Window strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Build target frequency map dict_t for string t. Let required = len(dict_t).",
+      "2. Initialize left = 0, formed = 0, window_counts = {}, min_len = inf, best_window = (0, 0).",
+      "3. Iterate right from 0 to len(s) - 1:",
+      "   a. Add s[right] to window_counts.",
+      "   b. If s[right] in dict_t and window_counts[s[right]] == dict_t[s[right]]: formed += 1.",
+      "   c. While formed == required and left <= right:",
+      "      i. If right - left + 1 < min_len: min_len = right - left + 1, best_window = (left, right).",
+      "      ii. Decrement window_counts[s[left]].",
+      "      iii. If s[left] in dict_t and window_counts[s[left]] < dict_t[s[left]]: formed -= 1.",
+      "      iv. left += 1.",
+      "4. Return substring s[best_window[0] : best_window[1] + 1] if min_len != inf else ''."
     ],
-    "code": {
-      "python": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Window Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(M + N) where M = len(s) and N = len(t). Each character is visited at most twice.",
+      "space": "O(K) auxiliary space where K is the number of unique characters in t and s."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Target not present: 'a' and 'aa' -> ''.",
+      "Entire string is minimum window: 'a' and 'a' -> 'a'.",
+      "Multiple candidates: 'ADOBECODEBANC' and 'ABC' -> 'BANC'."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Sliding Window eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Sliding Window)."
+    "interviewTips": [
+      "Clarify that 'formed' tracks the number of unique characters whose required frequencies are met, enabling O(1) validity checks.",
+      "Remember both uppercase and lowercase ASCII characters can appear."
+    ],
+    "code": {
+      "python": "class Solution:\n    def minWindow(self, s: str, t: str) -> str:\n        if not s or not t:\n            return \"\"\n            \n        dict_t = {}\n        for char in t:\n            dict_t[char] = dict_t.get(char, 0) + 1\n            \n        required = len(dict_t)\n        l = 0\n        formed = 0\n        window_counts = {}\n        \n        min_len = float(\"inf\")\n        best_l, best_r = 0, 0\n        \n        for r in range(len(s)):\n            char = s[r]\n            window_counts[char] = window_counts.get(char, 0) + 1\n            \n            if char in dict_t and window_counts[char] == dict_t[char]:\n                formed += 1\n                \n            while l <= r and formed == required:\n                if (r - l + 1) < min_len:\n                    min_len = r - l + 1\n                    best_l, best_r = l, r\n                    \n                left_char = s[l]\n                window_counts[left_char] -= 1\n                if left_char in dict_t and window_counts[left_char] < dict_t[left_char]:\n                    formed -= 1\n                l += 1\n                \n        return \"\" if min_len == float(\"inf\") else s[best_l:best_r + 1]\n        \n    min_window = minWindow"
+    }
   },
   "49": {
-    "id": 49,
-    "title": "Serialize and Deserialize Binary Tree",
-    "difficulty": "Hard",
-    "topic": "Strings",
-    "pattern": "String + BFS",
-    "overview": "In 'Serialize and Deserialize Binary Tree', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the String + BFS paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Serialize and Deserialize Binary Tree' leverages String + BFS. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "A binary tree can be uniquely represented as a string using level-order (BFS) or pre-order (DFS) traversal with null delimiters. For BFS, we serialize node values level by level and deserialize by reconstructing child pointers using a queue.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: BFS Level-Order Serialization (Standard LeetCode format)",
+        "description": "Use a queue to serialize node values level-by-level, and reconstruct the binary tree using a queue on split tokens.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (String + BFS)",
-        "description": "Apply the String + BFS pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Pre-order DFS with Sentinel Values",
+        "description": "Serialize with root, left, right and 'null' sentinels. Deserialize using an iterator.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the String + BFS strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Serialize: Perform BFS level-order traversal, appending node.val or 'null' to an output array. Join with commas.",
+      "2. Deserialize: Split the comma-separated string into tokens. If empty, return None.",
+      "3. Instantiate the root node and push it to a queue.",
+      "4. While queue has elements and tokens remain, pop parent, parse left child (if not 'null') and attach, then parse right child and attach.",
+      "5. Return the reconstructed root."
     ],
-    "code": {
-      "python": "class Solution:\n    def serializeAndDeserializeBinaryTree(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal String + BFS Solution for Serialize and Deserialize Binary Tree.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to String + BFS invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) where N is the number of nodes in the tree.",
+      "space": "O(N) for string representation and queue storage."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Empty tree: root = None -> '' or 'null'.",
+      "Single node tree: [1] -> '1'.",
+      "Skewed tree (linked-list structure): correctly preserves child positions."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how String + BFS eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (String + BFS)."
+    "interviewTips": [
+      "Emphasize why delimiter and null sentinels are essential to guarantee unique tree topology.",
+      "Explain that BFS level-order matches standard LeetCode input representation."
+    ],
+    "code": {
+      "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\nclass Codec:\n    def serialize(self, root) -> str:\n        if isinstance(root, str):\n            tokens = root.split()\n            return \",\".join(tokens) if tokens else \"\"\n        if not root:\n            return \"\"\n        from collections import deque\n        res = []\n        queue = deque([root])\n        while queue:\n            node = queue.popleft()\n            if node:\n                res.append(str(node.val))\n                queue.append(node.left)\n                queue.append(node.right)\n            else:\n                res.append(\"null\")\n        while res and res[-1] == \"null\":\n            res.pop()\n        return \",\".join(res)\n\n    def deserialize(self, data: str):\n        if not data:\n            return None\n        from collections import deque\n        vals = data.split(\",\")\n        if not vals or vals[0] == \"null\" or vals[0] == \"\":\n            return None\n        root = TreeNode(int(vals[0]))\n        queue = deque([root])\n        i = 1\n        while queue and i < len(vals):\n            node = queue.popleft()\n            if i < len(vals) and vals[i] != \"null\" and vals[i] != \"\":\n                node.left = TreeNode(int(vals[i]))\n                queue.append(node.left)\n            i += 1\n            if i < len(vals) and vals[i] != \"null\" and vals[i] != \"\":\n                node.right = TreeNode(int(vals[i]))\n                queue.append(node.right)\n            i += 1\n        return root\n\nclass Solution:\n    def serialize(self, root) -> str:\n        return Codec().serialize(root)\n    def deserialize(self, data: str):\n        return Codec().deserialize(data)"
+    }
   },
   "50": {
-    "id": 50,
-    "title": "Largest Rectangle in Histogram",
-    "difficulty": "Hard",
-    "topic": "Strings",
-    "pattern": "Stack (String parsing variant)",
-    "overview": "In 'Largest Rectangle in Histogram', we are given standard constraints for the Strings category. The objective is to compute the optimal result using the Stack (String parsing variant) paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Largest Rectangle in Histogram' leverages Stack (String parsing variant). By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "For each bar at index i, the maximum rectangle with height heights[i] extends to the left until a smaller bar is encountered and to the right until a smaller bar is encountered. A monotonic increasing stack tracks indices of increasing heights, allowing us to compute rectangle widths in O(1) when a shorter bar terminates previous bars.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Monotonic Increasing Stack (Optimal)",
+        "description": "Maintain stack of indices with increasing heights. Pop and compute area when current height is smaller than stack top.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Stack (String parsing variant))",
-        "description": "Apply the Stack (String parsing variant) pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Previous/Next Smaller Element Arrays",
+        "description": "Precompute left and right boundaries using stack in two passes, then compute max(heights[i] * (right[i] - left[i] - 1)).",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Stack (String parsing variant) strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Append 0 to the heights array (or use a sentinel -1 in stack) to ensure all remaining bars get flushed.",
+      "2. Initialize an empty stack storing indices.",
+      "3. Iterate through each index i from 0 to len(heights) - 1:",
+      "   a. While stack is not empty and heights[i] < heights[stack[-1]]:",
+      "      i. h = heights[stack.pop()].",
+      "      ii. w = i if not stack else (i - stack[-1] - 1).",
+      "      iii. max_area = max(max_area, h * w).",
+      "   b. Push index i onto stack.",
+      "4. Return max_area."
     ],
-    "code": {
-      "python": "class Solution:\n    def largestRectangleInHistogram(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Stack (String parsing variant) Solution for Largest Rectangle in Histogram.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Stack (String parsing variant) invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) because each bar index is pushed and popped from stack at most once.",
+      "space": "O(N) for the monotonic stack."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "All identical heights: [2, 2, 2, 2] -> 8.",
+      "Strictly ascending heights: [1, 2, 3, 4, 5] -> 9 (height 3 * width 3).",
+      "Strictly descending heights: [5, 4, 3, 2, 1] -> 9."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Stack (String parsing variant) eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Stack (String parsing variant))."
+    "interviewTips": [
+      "Explain the sentinel technique (appending height 0 at the end) to automatically pop remaining elements in one pass.",
+      "Monotonic stack is also the core building block for 'Maximal Rectangle' in 2D binary matrices (LeetCode 85)."
+    ],
+    "code": {
+      "python": "class Solution:\n    def largestRectangleArea(self, heights: list[int]) -> int:\n        stack = []\n        max_area = 0\n        extended = heights + [0]\n        \n        for i, h in enumerate(extended):\n            while stack and extended[stack[-1]] > h:\n                height = extended[stack.pop()]\n                width = i if not stack else (i - stack[-1] - 1)\n                max_area = max(max_area, height * width)\n            stack.append(i)\n            \n        return max_area\n        \n    largest_rectangle_area = largestRectangleArea"
+    }
   },
   "51": {
-    "id": 51,
-    "title": "Valid Palindrome",
-    "difficulty": "Easy",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Given a string s, return true if it is a palindrome, or false otherwise.",
-    "intuition": "We can use two pointers placed at opposite ends (left at index 0, right at index len(s)-1). Increment left and decrement right while skipping non-alphanumeric characters, verifying that matching alphanumeric characters are equal.",
+    "intuition": "A valid palindrome reads identically forward and backward when ignoring non-alphanumeric characters and case. By placing two pointers at the start and end of the string and skipping non-alphanumeric characters, we can verify palindromicity in O(N) time and O(1) extra space.",
     "approaches": [
       {
-        "name": "Method 1: String Filtering & Reversal",
-        "description": "Filter alphanumeric characters, convert to lowercase, and check if cleaned == cleaned[::-1].",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
-      },
-      {
-        "name": "Method 2: Two Pointers In-Place (Optimal)",
-        "description": "Scan inward with left and right pointers, skipping non-alphanumeric characters on the fly in O(1) auxiliary space.",
+        "name": "Method 1: Two Pointers In-Place (Optimal)",
+        "description": "Left pointer starts at 0, right at len(s)-1. Skip non-alphanumeric characters and compare lowercased characters.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
+      },
+      {
+        "name": "Method 2: Filter and Reverse",
+        "description": "Filter alphanumeric characters into a list and compare with its reverse.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize left pointer at 0 and right pointer at len(s) - 1.",
-      "While left < right:",
-      "  a. While left < right and not s[left].isalnum(), increment left.",
-      "  b. While left < right and not s[right].isalnum(), decrement right.",
-      "  c. If s[left].lower() != s[right].lower(), return False.",
-      "  d. Increment left and decrement right.",
-      "Return True."
+      "1. Initialize left = 0, right = len(s) - 1.",
+      "2. While left < right:",
+      "   a. While left < right and not s[left].isalnum(): left += 1.",
+      "   b. While left < right and not s[right].isalnum(): right -= 1.",
+      "   c. If s[left].lower() != s[right].lower(): return False.",
+      "   d. left += 1, right -= 1.",
+      "3. Return True if all matching checks pass."
     ],
-    "code": {
-      "python": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        left, right = 0, len(s) - 1\n        \n        while left < right:\n            while left < right and not s[left].isalnum():\n                left += 1\n            while left < right and not s[right].isalnum():\n                right -= 1\n                \n            if s[left].lower() != s[right].lower():\n                return False\n                \n            left += 1\n            right -= 1\n            \n        return True"
-    },
     "complexity": {
-      "time": "O(N) — Each character is visited at most once by left or right pointer.",
-      "space": "O(1) — In-place two pointer scan without allocating filtered auxiliary strings."
+      "time": "O(N) where N is the length of string s.",
+      "space": "O(1) auxiliary space."
     },
     "edgeCases": [
-      "Empty string or string with only spaces/punctuation (returns True).",
-      "Single character string (returns True).",
-      "Mixed casing with numbers (e.g., '0P' returns False)."
+      "Empty or whitespace only string: ' ' -> True.",
+      "String with only punctuation: '.,' -> True.",
+      "Mixed case with numbers: '0P' -> False, 'A man, a plan...' -> True."
     ],
-    "interviewTips": "Emphasize that the in-place two pointer approach achieves O(1) space, avoiding memory overhead for large text streams."
+    "interviewTips": [
+      "Mention `isalnum()` and `lower()` character methods.",
+      "Highlight the O(1) auxiliary space advantage of two pointers over creating a filtered auxiliary string."
+    ],
+    "code": {
+      "python": "class Solution:\n    def isPalindrome(self, s: str) -> bool:\n        l, r = 0, len(s) - 1\n        \n        while l < r:\n            while l < r and not s[l].isalnum():\n                l += 1\n            while l < r and not s[r].isalnum():\n                r -= 1\n                \n            if s[l].lower() != s[r].lower():\n                return False\n                \n            l += 1\n            r -= 1\n            \n        return True\n        \n    is_palindrome = isPalindrome"
+    }
   },
   "52": {
-    "id": 52,
-    "title": "Two Sum II",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Two Sum II', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Two Sum II' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Because the array is already sorted, the sum of elements at the extremes (numbers[left] + numbers[right]) guides our search. If the sum is smaller than target, increment left pointer to increase the sum. If larger, decrement right pointer to decrease the sum.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
+        "name": "Method 1: Two Pointers (Optimal)",
+        "description": "Start at opposite ends of sorted array and converge inwards in O(N) time and O(1) space.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Binary Search",
+        "description": "For each element numbers[i], binary search for (target - numbers[i]) in the remaining subarray.",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize left = 0, right = len(numbers) - 1.",
+      "2. While left < right:",
+      "   a. current_sum = numbers[left] + numbers[right].",
+      "   b. If current_sum == target: return [left + 1, right + 1] (1-indexed).",
+      "   c. Else if current_sum < target: left += 1.",
+      "   d. Else: right -= 1.",
+      "3. Return empty list if no pair found."
     ],
-    "code": {
-      "python": "class Solution:\n    def twoSumIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Two Sum II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) single pass through the array.",
+      "space": "O(1) auxiliary space."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Negative target: [-1, 0] with target = -1 -> [1, 2].",
+      "Duplicate values: [0, 0, 3, 4] with target = 0 -> [1, 2].",
+      "Two elements: [2, 3] with target = 5 -> [1, 2]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Note the 1-based indexing requirement for indices in the output.",
+      "Contrast this O(1) space two-pointer approach with the O(N) space hash map approach in standard Two Sum."
+    ],
+    "code": {
+      "python": "class Solution:\n    def twoSum(self, numbers: list[int], target: int) -> list[int]:\n        l, r = 0, len(numbers) - 1\n        \n        while l < r:\n            cur_sum = numbers[l] + numbers[r]\n            if cur_sum == target:\n                return [l + 1, r + 1]\n            elif cur_sum < target:\n                l += 1\n            else:\n                r -= 1\n                \n        return []\n        \n    two_sum = twoSum"
+    }
   },
   "53": {
-    "id": 53,
-    "title": "3Sum",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In '3Sum', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in '3Sum' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Sort the array first. For each unique element nums[i], the problem reduces to finding two elements in nums[i+1..n-1] that sum to -nums[i]. We use two pointers and skip duplicates to ensure only unique triplets are generated.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Sort + Two Pointers (Optimal)",
+        "description": "Sort the array in O(N log N). Fix the first element and search with two pointers in O(N). Total O(N^2).",
+        "timeComplexity": "O(N^2)",
+        "spaceComplexity": "O(1) auxiliary (or O(N) for sorting)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
+        "name": "Method 2: Hash Set",
+        "description": "Fix first element and use hash set for two sum. Deduplicate using a set of tuples.",
+        "timeComplexity": "O(N^2)",
         "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Sort the input array nums in non-decreasing order.",
+      "2. Iterate i from 0 to len(nums) - 3:",
+      "   a. If nums[i] > 0, break (remaining elements are positive, sum cannot be 0).",
+      "   b. If i > 0 and nums[i] == nums[i-1], continue (skip duplicate first element).",
+      "   c. Set left = i + 1, right = len(nums) - 1.",
+      "   d. While left < right:",
+      "      i. total = nums[i] + nums[left] + nums[right].",
+      "      ii. If total == 0: record triplet, increment left, decrement right, and skip adjacent duplicate elements.",
+      "      iii. Else if total < 0: left += 1.",
+      "      iv. Else: right -= 1.",
+      "3. Return list of unique triplets."
     ],
-    "code": {
-      "python": "class Solution:\n    def 3sum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 3Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N^2) where N is the length of nums.",
+      "space": "O(1) auxiliary space beyond the output list and sort buffer."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "All zeros: [0, 0, 0, 0] -> [[0, 0, 0]].",
+      "No valid triplets: [0, 1, 1] -> [].",
+      "Array with multiple identical solutions: duplicates are safely skipped."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Pay special attention to skipping duplicates for BOTH the outer loop (i) and inner two pointers (left and right).",
+      "Early exit when nums[i] > 0 provides a strong practical speedup."
+    ],
+    "code": {
+      "python": "class Solution:\n    def threeSum(self, nums: list[int]) -> list[list[int]]:\n        nums.sort()\n        res = []\n        n = len(nums)\n        \n        for i in range(n - 2):\n            if nums[i] > 0:\n                break\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n                \n            l, r = i + 1, n - 1\n            while l < r:\n                s = nums[i] + nums[l] + nums[r]\n                if s < 0:\n                    l += 1\n                elif s > 0:\n                    r -= 1\n                else:\n                    res.append([nums[i], nums[l], nums[r]])\n                    while l < r and nums[l] == nums[l + 1]:\n                        l += 1\n                    while l < r and nums[r] == nums[r - 1]:\n                        r -= 1\n                    l += 1\n                    r -= 1\n                    \n        return res\n        \n    three_sum = threeSum"
+    }
   },
   "54": {
-    "id": 54,
-    "title": "Container With Most Water",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Container With Most Water', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Container With Most Water' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "The amount of water trapped between two lines at left and right is (right - left) * min(height[left], height[right]). Starting with the maximum possible width (left = 0, right = n - 1), the only way to potentially find a larger area with a smaller width is to move the pointer pointing to the shorter line inward.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
+        "name": "Method 1: Two Pointers (Optimal)",
+        "description": "Start at boundaries and greedily shift the shorter line inward in O(N) time.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Brute Force",
+        "description": "Check every pair (i, j) and compute area. Takes O(N^2) time (exceeds time limit).",
+        "timeComplexity": "O(N^2)",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize left = 0, right = len(height) - 1, max_water = 0.",
+      "2. While left < right:",
+      "   a. width = right - left.",
+      "   b. min_h = min(height[left], height[right]).",
+      "   c. max_water = max(max_water, width * min_h).",
+      "   d. If height[left] < height[right]: left += 1.",
+      "   e. Else: right -= 1.",
+      "3. Return max_water."
     ],
-    "code": {
-      "python": "class Solution:\n    def containerWithMostWater(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Container With Most Water.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) single pass across the array.",
+      "space": "O(1) auxiliary space."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Two lines: [1, 1] -> 1.",
+      "Strictly increasing heights: [1, 2, 4, 8] -> 4.",
+      "Unequal height tall lines far apart: [1, 8, 6, 2, 5, 4, 8, 3, 7] -> 49."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Prove to the interviewer why moving the taller pointer can NEVER produce a larger area (width decreases, min height cannot increase).",
+      "This two-pointer greedy invariant is a favorite interview conceptual proof."
+    ],
+    "code": {
+      "python": "class Solution:\n    def maxArea(self, height: list[int]) -> int:\n        l, r = 0, len(height) - 1\n        max_water = 0\n        \n        while l < r:\n            w = r - l\n            h = min(height[l], height[r])\n            area = w * h\n            if area > max_water:\n                max_water = area\n                \n            if height[l] < height[r]:\n                l += 1\n            else:\n                r -= 1\n                \n        return max_water\n        \n    max_area = maxArea"
+    }
   },
   "55": {
-    "id": 55,
-    "title": "4Sum",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In '4Sum', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in '4Sum' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "4Sum generalizes 3Sum. We sort the array, fix the first two elements with nested loops (i and j), and use two pointers (left and right) to find the remaining two elements such that their sum equals target. We skip duplicates at all 4 pointer levels.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
+        "name": "Method 1: Sort + Nested Loops + Two Pointers (Optimal)",
+        "description": "Fix first two elements and use two pointers for the inner pair in O(N^3) time.",
+        "timeComplexity": "O(N^3)",
+        "spaceComplexity": "O(1) auxiliary"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Generalized k-Sum Recursion",
+        "description": "Recursive function reducing k-Sum to (k-1)-Sum down to 2-Sum two pointers.",
+        "timeComplexity": "O(N^(k-1))",
+        "spaceComplexity": "O(k)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Sort the input array nums.",
+      "2. Iterate i from 0 to len(nums) - 4 (skip duplicate nums[i]).",
+      "3. Iterate j from i + 1 to len(nums) - 3 (skip duplicate nums[j]).",
+      "4. Initialize left = j + 1, right = len(nums) - 1.",
+      "5. While left < right:",
+      "   a. s = nums[i] + nums[j] + nums[left] + nums[right].",
+      "   b. If s == target: append quadruplet, increment left, decrement right, skip duplicate nums[left] and nums[right].",
+      "   c. Else if s < target: left += 1.",
+      "   d. Else: right -= 1.",
+      "6. Return list of unique quadruplets."
     ],
-    "code": {
-      "python": "class Solution:\n    def 4sum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 4Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N^3) where N is the length of nums.",
+      "space": "O(1) auxiliary space (excluding return list)."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Target large positive/negative integers: handle 64-bit integer sum.",
+      "Array with identical elements: [2, 2, 2, 2, 2] with target 8 -> [[2, 2, 2, 2]].",
+      "No valid quadruplets: returns []."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Implement pruning checks: if 4 * nums[i] > target or nums[i] + 3 * nums[-1] < target, break/continue early.",
+      "Explain how the general k-Sum pattern scales."
+    ],
+    "code": {
+      "python": "class Solution:\n    def fourSum(self, nums: list[int], target: int) -> list[list[int]]:\n        nums.sort()\n        n = len(nums)\n        res = []\n        \n        for i in range(n - 3):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            if nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target:\n                break\n            if nums[i] + nums[n - 3] + nums[n - 2] + nums[n - 1] < target:\n                continue\n                \n            for j in range(i + 1, n - 2):\n                if j > i + 1 and nums[j] == nums[j - 1]:\n                    continue\n                if nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target:\n                    break\n                if nums[i] + nums[j] + nums[n - 2] + nums[n - 1] < target:\n                    continue\n                    \n                l, r = j + 1, n - 1\n                while l < r:\n                    s = nums[i] + nums[j] + nums[l] + nums[r]\n                    if s == target:\n                        res.append([nums[i], nums[j], nums[l], nums[r]])\n                        while l < r and nums[l] == nums[l + 1]:\n                            l += 1\n                        while l < r and nums[r] == nums[r - 1]:\n                            r -= 1\n                        l += 1\n                        r -= 1\n                    elif s < target:\n                        l += 1\n                    else:\n                        r -= 1\n                        \n        return res\n        \n    four_sum = fourSum"
+    }
   },
   "56": {
-    "id": 56,
-    "title": "Merge Sorted Array",
-    "difficulty": "Easy",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Merge Sorted Array', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Merge Sorted Array' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "Because nums1 has extra space at the end (total size m + n), merging from the back (largest to smallest) avoids overwriting unmerged elements in nums1. We place three pointers: p1 at m - 1, p2 at n - 1, and p at m + n - 1.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
+        "name": "Method 1: Three Pointers Back-to-Front (Optimal)",
+        "description": "Fill nums1 starting from index m + n - 1 by taking the maximum of nums1[p1] and nums2[p2].",
+        "timeComplexity": "O(M + N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
-        "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "name": "Method 2: Copy and Sort",
+        "description": "Copy nums2 into nums1[m..m+n-1] and sort nums1. Takes O((M+N) log(M+N)) time.",
+        "timeComplexity": "O((M + N) log(M + N))",
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize p1 = m - 1, p2 = n - 1, p = m + n - 1.",
+      "2. While p2 >= 0:",
+      "   a. If p1 >= 0 and nums1[p1] > nums2[p2]:",
+      "      nums1[p] = nums1[p1], p1 -= 1.",
+      "   b. Else:",
+      "      nums1[p] = nums2[p2], p2 -= 1.",
+      "   c. p -= 1.",
+      "3. If p2 < 0, remaining elements in nums1 are already in correct sorted positions."
     ],
-    "code": {
-      "python": "class Solution:\n    def mergeSortedArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Merge Sorted Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(M + N) single linear traversal.",
+      "space": "O(1) in-place modification."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "nums2 is empty (n = 0): no action needed.",
+      "nums1 is empty (m = 0): copy all elements from nums2.",
+      "All elements in nums2 smaller than nums1."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Explain why filling backwards eliminates the need for auxiliary array memory.",
+      "Note that once p2 < 0, the merge is complete because nums1's remaining prefix is already sorted."
+    ],
+    "code": {
+      "python": "class Solution:\n    def merge(self, nums1: list[int], m: int, nums2: list[int], n: int) -> list[int]:\n        p1 = m - 1\n        p2 = n - 1\n        p = m + n - 1\n        \n        while p2 >= 0:\n            if p1 >= 0 and nums1[p1] > nums2[p2]:\n                nums1[p] = nums1[p1]\n                p1 -= 1\n            else:\n                nums1[p] = nums2[p2]\n                p2 -= 1\n            p -= 1\n            \n        return nums1"
+    }
   },
   "57": {
-    "id": 57,
-    "title": "Squares of a Sorted Array",
-    "difficulty": "Easy",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Squares of a Sorted Array', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Squares of a Sorted Array' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "In a sorted array with negative numbers, the largest squares are at the two outer extremes (most negative on the left, largest positive on the right). By using two pointers at the ends and filling the result array from back to front, we achieve linear time without an extra sort step.",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Two Pointers from Ends (Optimal)",
+        "description": "Compare squared values at left and right pointers, insert the larger square at the end of the result array.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
+      },
+      {
+        "name": "Method 2: Square and Sort",
+        "description": "Square every element and sort the result array in O(N log N).",
+        "timeComplexity": "O(N log N)",
+        "spaceComplexity": "O(1) auxiliary"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize res array of size n.",
+      "2. Set left = 0, right = n - 1, pos = n - 1.",
+      "3. While left <= right:",
+      "   a. left_sq = nums[left] ** 2, right_sq = nums[right] ** 2.",
+      "   b. If left_sq > right_sq: res[pos] = left_sq, left += 1.",
+      "   c. Else: res[pos] = right_sq, right -= 1.",
+      "   d. pos -= 1.",
+      "4. Return res."
     ],
-    "code": {
-      "python": "class Solution:\n    def squaresOfASortedArray(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Squares of a Sorted Array.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) single pass.",
+      "space": "O(N) for output array, O(1) auxiliary."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "All negative numbers: [-4, -3, -2, -1] -> [1, 4, 9, 16].",
+      "All positive numbers: [1, 2, 3, 4] -> [1, 4, 9, 16].",
+      "Array with zeros: [-2, 0, 2] -> [0, 4, 4]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Clearly explain why the two pointer approach beats the naive O(N log N) square-then-sort approach.",
+      "Demonstrate filling from the back (pos = n - 1)."
+    ],
+    "code": {
+      "python": "class Solution:\n    def sortedSquares(self, nums: list[int]) -> list[int]:\n        n = len(nums)\n        res = [0] * n\n        l, r = 0, n - 1\n        pos = n - 1\n        \n        while l <= r:\n            left_sq = nums[l] * nums[l]\n            right_sq = nums[r] * nums[r]\n            \n            if left_sq > right_sq:\n                res[pos] = left_sq\n                l += 1\n            else:\n                res[pos] = right_sq\n                r -= 1\n            pos -= 1\n            \n        return res\n        \n    sorted_squares = sortedSquares"
+    }
   },
   "58": {
-    "id": 58,
-    "title": "Remove Duplicates from Sorted Array II",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Remove Duplicates from Sorted Array II', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Remove Duplicates from Sorted Array II' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "To allow at most k duplicates in a sorted array (here k = 2), an incoming element nums[i] is valid to write at write pointer index w if and only if it is different from the element at index w - 2 (nums[i] != nums[w - 2]).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
-        "spaceComplexity": "O(1)"
-      },
-      {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 1: Two Pointers Read/Write (Optimal)",
+        "description": "Maintain write pointer w = 2. For each element from index 2 onward, copy nums[i] to nums[w] if nums[i] != nums[w - 2].",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. If len(nums) <= 2, return len(nums).",
+      "2. Initialize write pointer k = 2.",
+      "3. Iterate read pointer i from 2 to len(nums) - 1:",
+      "   a. If nums[i] != nums[k - 2]:",
+      "      nums[k] = nums[i], k += 1.",
+      "4. Return k."
     ],
-    "code": {
-      "python": "class Solution:\n    def removeDuplicatesFromSortedArrayIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Remove Duplicates from Sorted Array II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) single pass through the array.",
+      "space": "O(1) in-place modification."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array length <= 2: [1, 1] -> 2.",
+      "All elements identical: [1, 1, 1, 1, 1] -> 2 (nums prefix [1, 1]).",
+      "No duplicates: [1, 2, 3] -> 3."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Mention that this pattern generalizes to 'at most K duplicates' by comparing nums[i] != nums[w - K].",
+      "Highlight the clean O(1) in-place overwrite logic."
+    ],
+    "code": {
+      "python": "class Solution:\n    def removeDuplicates(self, nums: list[int]) -> int:\n        if len(nums) <= 2:\n            return len(nums)\n            \n        k = 2\n        for i in range(2, len(nums)):\n            if nums[i] != nums[k - 2]:\n                nums[k] = nums[i]\n                k += 1\n                \n        return k\n        \n    remove_duplicates = removeDuplicates"
+    }
   },
   "59": {
-    "id": 59,
-    "title": "Trapping Rain Water",
-    "difficulty": "Hard",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
-    "intuition": "The water trapped above any index i is determined by min(max_left, max_right) - height[i]. Using two pointers (left and right) and tracking left_max and right_max, we can calculate trapped water from the shorter boundary inward.",
+    "intuition": "The water trapped above bar i is determined by min(max_left, max_right) - height[i]. By placing two pointers at left and right and maintaining running left_max and right_max, we always process the side with the smaller maximum, because the bottleneck on that side is definitively determined.",
     "approaches": [
       {
-        "name": "Method 1: Prefix & Suffix Max Arrays",
-        "description": "Precompute prefix_max and suffix_max arrays. Water at i = min(prefix_max[i], suffix_max[i]) - height[i]. Takes O(N) time and O(N) space.",
+        "name": "Method 1: Two Pointers (Optimal)",
+        "description": "Maintain left_max and right_max while converging two pointers. O(N) time and O(1) space.",
+        "timeComplexity": "O(N)",
+        "spaceComplexity": "O(1)"
+      },
+      {
+        "name": "Method 2: Prefix and Suffix Max Arrays",
+        "description": "Precompute left_max[i] and right_max[i] in two passes, then compute trapped water.",
         "timeComplexity": "O(N)",
         "spaceComplexity": "O(N)"
       },
       {
-        "name": "Method 2: Two Pointers (Optimal)",
-        "description": "Move inward from the boundary with smaller max height. Eliminates need for precomputed arrays.",
+        "name": "Method 3: Monotonic Stack",
+        "description": "Stack of decreasing bar indices. When a taller bar is met, pop bottom of valley and compute horizontal trapped layer.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(1)"
+        "spaceComplexity": "O(N)"
       }
     ],
     "algorithmSteps": [
-      "If height is empty or len < 3, return 0.",
-      "Initialize left = 0, right = len(height) - 1, left_max = 0, right_max = 0, water = 0.",
-      "While left < right:",
-      "  a. If height[left] < height[right]:",
-      "     i. If height[left] >= left_max: update left_max = height[left].",
-      "     ii. Else: water += left_max - height[left].",
-      "     iii. left += 1.",
-      "  b. Else:",
-      "     i. If height[right] >= right_max: update right_max = height[right].",
-      "     ii. Else: water += right_max - height[right].",
-      "     iii. right -= 1.",
-      "Return water."
+      "1. If height array is empty, return 0.",
+      "2. Initialize left = 0, right = len(height) - 1.",
+      "3. Initialize left_max = height[left], right_max = height[right], trapped = 0.",
+      "4. While left < right:",
+      "   a. If left_max < right_max:",
+      "      i. left += 1.",
+      "      ii. left_max = max(left_max, height[left]).",
+      "      iii. trapped += max(0, left_max - height[left]).",
+      "   b. Else:",
+      "      i. right -= 1.",
+      "      ii. right_max = max(right_max, height[right]).",
+      "      iii. trapped += max(0, right_max - height[right]).",
+      "5. Return trapped."
     ],
-    "code": {
-      "python": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        if not height:\n            return 0\n            \n        left, right = 0, len(height) - 1\n        left_max, right_max = 0, 0\n        water = 0\n        \n        while left < right:\n            if height[left] < height[right]:\n                if height[left] >= left_max:\n                    left_max = height[left]\n                else:\n                    water += left_max - height[left]\n                left += 1\n            else:\n                if height[right] >= right_max:\n                    right_max = height[right]\n                else:\n                    water += right_max - height[right]\n                right -= 1\n                \n        return water"
-    },
     "complexity": {
-      "time": "O(N) — Single pass with two pointers visiting each index once.",
-      "space": "O(1) — Constant extra space."
+      "time": "O(N) single pass.",
+      "space": "O(1) auxiliary space."
     },
     "edgeCases": [
-      "Monotonically increasing or decreasing heights (returns 0).",
-      "Array length < 3 (returns 0).",
-      "Flat elevation map ([2, 2, 2] -> 0)."
+      "Strictly decreasing or increasing elevations: [5, 4, 3, 2, 1] -> 0.",
+      "V-shape canyon: [3, 0, 0, 3] -> 6.",
+      "Flat ground: [0, 0, 0] -> 0."
     ],
-    "interviewTips": "Interviewers love asking why we can safely calculate trapped water when left_max < right_max. Explain that right_max acts as a sufficient barrier to hold water up to left_max."
+    "interviewTips": [
+      "Explain the key bottleneck property: if left_max < right_max, the amount of water trapped at the left pointer depends ONLY on left_max, regardless of what happens further right.",
+      "Two pointers is preferred over DP array because of O(1) space."
+    ],
+    "code": {
+      "python": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        if not height:\n            return 0\n            \n        l, r = 0, len(height) - 1\n        left_max, right_max = height[l], height[r]\n        trapped = 0\n        \n        while l < r:\n            if left_max < right_max:\n                l += 1\n                left_max = max(left_max, height[l])\n                trapped += left_max - height[l]\n            else:\n                r -= 1\n                right_max = max(right_max, height[r])\n                trapped += right_max - height[r]\n                \n        return trapped"
+    }
   },
   "60": {
-    "id": 60,
-    "title": "Sort Colors",
-    "difficulty": "Medium",
-    "topic": "Two Pointers",
-    "pattern": "Two Pointer",
-    "overview": "In 'Sort Colors', we are given standard constraints for the Two Pointers category. The objective is to compute the optimal result using the Two Pointer paradigm while satisfying strict time and space complexity constraints.",
-    "intuition": "The core algorithmic invariant in 'Sort Colors' leverages Two Pointer. By structuring the data flow around optimal subproblem structures, we avoid redundant recomputation and achieve minimal asymptotic complexity.",
+    "intuition": "This is Dijkstra's 3-way partitioning (Dutch National Flag problem). We maintain three pointers: low (boundary for 0s), mid (current element being inspected), and high (boundary for 2s). When nums[mid] is 0, swap with nums[low] and advance low and mid. When 1, advance mid. When 2, swap with nums[high] and decrement high (without advancing mid, since the swapped element needs inspection).",
     "approaches": [
       {
-        "name": "Method 1: Naive / Brute Force Approach",
-        "description": "Evaluate all possible states or candidates systematically without early pruning or memoization. Takes exponential or high polynomial time.",
-        "timeComplexity": "O(N²)",
+        "name": "Method 1: Dutch National Flag Algorithm (Optimal One-Pass)",
+        "description": "Three pointers partition array into [0..low-1] for 0s, [low..mid-1] for 1s, and [high+1..n-1] for 2s.",
+        "timeComplexity": "O(N)",
         "spaceComplexity": "O(1)"
       },
       {
-        "name": "Method 2: Optimal Python 3 Solution (Two Pointer)",
-        "description": "Apply the Two Pointer pattern to process state transitions in linear or near-linear time while maintaining optimal invariant boundaries.",
+        "name": "Method 2: Counting Sort (Two-Pass)",
+        "description": "Count frequencies of 0, 1, and 2, then overwrite nums array.",
         "timeComplexity": "O(N)",
-        "spaceComplexity": "O(N)"
+        "spaceComplexity": "O(1)"
       }
     ],
     "algorithmSteps": [
-      "Initialize necessary tracking structures (e.g. pointers, hash map, or DP state table).",
-      "Validate initial boundary conditions and base cases.",
-      "Iterate through the input dataset using the Two Pointer strategy.",
-      "Update state transitions and record the intermediate optimal metric.",
-      "Return the final computed result."
+      "1. Initialize low = 0, mid = 0, high = len(nums) - 1.",
+      "2. While mid <= high:",
+      "   a. If nums[mid] == 0: swap nums[low] and nums[mid], low += 1, mid += 1.",
+      "   b. Else if nums[mid] == 1: mid += 1.",
+      "   c. Else (nums[mid] == 2): swap nums[mid] and nums[high], high -= 1.",
+      "3. Return nums."
     ],
-    "code": {
-      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for Sort Colors.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
-    },
     "complexity": {
-      "time": "O(N) — Single pass linear traversal.",
-      "space": "O(1) — Constant auxiliary memory."
+      "time": "O(N) strictly one-pass.",
+      "space": "O(1) in-place memory."
     },
     "edgeCases": [
-      "Empty input array or null object.",
-      "Single element input reaching base recursion case.",
-      "Extreme boundary limits (e.g. max/min integer values)."
+      "Array with single element: [0] -> [0].",
+      "Array with already sorted colors: [0, 0, 1, 1, 2, 2] -> [0, 0, 1, 1, 2, 2].",
+      "Array with reverse sorted colors: [2, 2, 1, 1, 0, 0] -> [0, 0, 1, 1, 2, 2]."
     ],
-    "interviewTips": "State your initial Method 1: Naive / Brute Force Approach first to show breadth of understanding, then explain how Two Pointer eliminates redundant computation to achieve Method 2: Optimal Python 3 Solution (Two Pointer)."
+    "interviewTips": [
+      "Crucial interview point: why mid is NOT incremented when swapping with high (because nums[high] has not been inspected yet).",
+      "Explain the 4 partition regions: [0..low-1] is 0, [low..mid-1] is 1, [mid..high] is unknown, [high+1..n-1] is 2."
+    ],
+    "code": {
+      "python": "class Solution:\n    def sortColors(self, nums: list[int]) -> list[int]:\n        low = 0\n        mid = 0\n        high = len(nums) - 1\n        \n        while mid <= high:\n            if nums[mid] == 0:\n                nums[low], nums[mid] = nums[mid], nums[low]\n                low += 1\n                mid += 1\n            elif nums[mid] == 1:\n                mid += 1\n            else:\n                nums[mid], nums[high] = nums[high], nums[mid]\n                high -= 1\n                \n        return nums\n        \n    sort_colors = sortColors"
+    }
   },
   "61": {
     "id": 61,
@@ -13227,7 +13202,41 @@ export const DETAILED_SOLUTIONS = {
   }
 };
 
-export function getEditorialSolution(question) {
-  if (!question) return null;
-  return DETAILED_SOLUTIONS[question.id] || null;
+export function getEditorialSolution(questionId, fallbackQuestion = {}) {
+  const idStr = String(questionId);
+  if (DETAILED_SOLUTIONS[idStr]) {
+    return DETAILED_SOLUTIONS[idStr];
+  }
+  const name = fallbackQuestion.name || `Problem ${idStr}`;
+  return {
+    intuition: `To solve **${name}**, analyze the fundamental invariants and constraints. Consider optimal time and space trade-offs.`,
+    approaches: [
+      {
+        name: "Optimal Approach",
+        description: `Efficient algorithm utilizing optimal data structures for ${fallbackQuestion.pattern || 'the given problem pattern'}.`,
+        timeComplexity: "O(N)",
+        spaceComplexity: "O(1)"
+      }
+    ],
+    algorithmSteps: [
+      "1. Parse the input and validate edge cases.",
+      "2. Apply optimal traversal / algorithmic processing.",
+      "3. Return the computed result."
+    ],
+    complexity: {
+      time: "O(N)",
+      space: "O(1)"
+    },
+    edgeCases: [
+      "Empty or single element inputs",
+      "Extreme boundary values"
+    ],
+    interviewTips: [
+      "State time and space complexity upfront before coding.",
+      "Test with small custom edge cases."
+    ],
+    code: {
+      python: `# Solution for ${name}\nclass Solution:\n    def solve(self):\n        pass`
+    }
+  };
 }
