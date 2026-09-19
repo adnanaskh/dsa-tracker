@@ -1,4 +1,4 @@
-// Curated Detailed Solutions & Editorials for Problems 1 to 60
+// Comprehensive LeetCode-Grade Solutions for All 305 Problems
 export const DETAILED_SOLUTIONS = {
   "1": {
     "id": 1,
@@ -2689,7 +2689,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def intersectionOfTwoArraysIi(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer / Hash Solution for Intersection of Two Arrays II.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer / Hash invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def intersect(self, nums1: list[int], nums2: list[int]) -> list[int]:\n        from collections import Counter\n        c1 = Counter(nums1)\n        res = []\n        for x in nums2:\n            if c1[x] > 0:\n                res.append(x)\n                c1[x] -= 1\n        return sorted(res)\n    intersectionOfTwoArraysIi = intersect"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -2732,7 +2732,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def boatsToSavePeople(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer + Greedy Solution for Boats to Save People.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer + Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def numRescueBoats(self, people: list[int], limit: int) -> int:\n        people.sort()\n        left, right = 0, len(people) - 1\n        boats = 0\n        while left <= right:\n            if people[left] + people[right] <= limit:\n                left += 1\n            right -= 1\n            boats += 1\n        return boats\n    boatsToSavePeople = numRescueBoats"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -2775,7 +2775,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def minimumSizeSubarraySum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Size Subarray Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def minSubArrayLen(self, target: int, nums: list[int]) -> int:\n        left = 0\n        curr_sum = 0\n        min_len = float('inf')\n        for right in range(len(nums)):\n            curr_sum += nums[right]\n            while curr_sum >= target:\n                min_len = min(min_len, right - left + 1)\n                curr_sum -= nums[left]\n                left += 1\n        return 0 if min_len == float('inf') else min_len\n    minimumSizeSubarraySum = minSubArrayLen"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -2818,7 +2818,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def 3sumClosest(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Two Pointer Solution for 3Sum Closest.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Two Pointer invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def threeSumClosest(self, nums: list[int], target: int) -> int:\n        nums.sort()\n        closest = nums[0] + nums[1] + nums[2]\n        for i in range(len(nums) - 2):\n            if i > 0 and nums[i] == nums[i - 1]:\n                continue\n            l, r = i + 1, len(nums) - 1\n            while l < r:\n                curr = nums[i] + nums[l] + nums[r]\n                if abs(curr - target) < abs(closest - target):\n                    closest = curr\n                if curr < target:\n                    l += 1\n                elif curr > target:\n                    r -= 1\n                else:\n                    return curr\n        return closest\n    three_sum_closest = threeSumClosest"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -2861,7 +2861,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def subarrayProductLessThanK(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Subarray Product Less Than K.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def numSubarrayProductLessThanK(self, nums: list[int], k: int) -> int:\n        if k <= 1:\n            return 0\n        prod = 1\n        left = 0\n        count = 0\n        for right, val in enumerate(nums):\n            prod *= val\n            while prod >= k and left <= right:\n                prod //= nums[left]\n                left += 1\n            count += right - left + 1\n        return count\n    subarrayProductLessThanK = numSubarrayProductLessThanK"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -2904,7 +2904,7 @@ export const DETAILED_SOLUTIONS = {
       "Return max_profit."
     ],
     "code": {
-      "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        \n        for price in prices:\n            if price < min_price:\n                min_price = price\n            else:\n                max_profit = max(max_profit, price - min_price)\n                \n        return max_profit"
+      "python": "class Solution:\n    def maxProfit(self, prices: list[int]) -> int:\n        min_price = float('inf')\n        max_profit = 0\n        for p in prices:\n            if p < min_price:\n                min_price = p\n            elif p - min_price > max_profit:\n                max_profit = p - min_price\n        return max_profit\n    bestTimeToBuyAndSellStock = maxProfit"
     },
     "complexity": {
       "time": "O(N) — Single linear pass through the prices array.",
@@ -2949,7 +2949,7 @@ export const DETAILED_SOLUTIONS = {
       "Return max_len."
     ],
     "code": {
-      "python": "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        char_map = {}  # char -> last seen index\n        left = 0\n        max_len = 0\n        \n        for right, ch in enumerate(s):\n            if ch in char_map and char_map[ch] >= left:\n                left = char_map[ch] + 1\n            char_map[ch] = right\n            max_len = max(max_len, right - left + 1)\n            \n        return max_len"
+      "python": "class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        char_map = {}\n        left = 0\n        max_len = 0\n        for right, ch in enumerate(s):\n            if ch in char_map and char_map[ch] >= left:\n                left = char_map[ch] + 1\n            char_map[ch] = right\n            max_len = max(max_len, right - left + 1)\n        return max_len\n    longestSubstringWithoutRepeatingCharacters = lengthOfLongestSubstring"
     },
     "complexity": {
       "time": "O(N) — Right pointer scans the string once; left pointer only moves forward.",
@@ -2992,7 +2992,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def longestRepeatingCharacterReplacement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Repeating Character Replacement.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def characterReplacement(self, s: str, k: int) -> int:\n        count = {}\n        max_freq = 0\n        left = 0\n        max_len = 0\n        for right in range(len(s)):\n            count[s[right]] = count.get(s[right], 0) + 1\n            max_freq = max(max_freq, count[s[right]])\n            while (right - left + 1) - max_freq > k:\n                count[s[left]] -= 1\n                left += 1\n            max_len = max(max_len, right - left + 1)\n        return max_len\n    longestRepeatingCharacterReplacement = characterReplacement"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3035,7 +3035,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def permutationInString(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Permutation in String.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def checkInclusion(self, s1: str, s2: str) -> bool:\n        if len(s1) > len(s2):\n            return False\n        c1 = [0] * 26\n        c2 = [0] * 26\n        for i in range(len(s1)):\n            c1[ord(s1[i]) - ord('a')] += 1\n            c2[ord(s2[i]) - ord('a')] += 1\n        if c1 == c2:\n            return True\n        for i in range(len(s1), len(s2)):\n            c2[ord(s2[i]) - ord('a')] += 1\n            c2[ord(s2[i - len(s1)]) - ord('a')] -= 1\n            if c1 == c2:\n                return True\n        return False\n    permutationInString = checkInclusion"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3078,7 +3078,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Minimum Window Substring.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def minWindow(self, s: str, t: str) -> str:\n        if not t or not s:\n            return \"\"\n        from collections import Counter\n        dict_t = Counter(t)\n        required = len(dict_t)\n        l, r = 0, 0\n        formed = 0\n        window_counts = {}\n        ans = float(\"inf\"), None, None\n        while r < len(s):\n            char = s[r]\n            window_counts[char] = window_counts.get(char, 0) + 1\n            if char in dict_t and window_counts[char] == dict_t[char]:\n                formed += 1\n            while l <= r and formed == required:\n                char = s[l]\n                if r - l + 1 < ans[0]:\n                    ans = (r - l + 1, l, r)\n                window_counts[char] -= 1\n                if char in dict_t and window_counts[char] < dict_t[char]:\n                    formed -= 1\n                l += 1\n            r += 1\n        return \"\" if ans[0] == float(\"inf\") else s[ans[1] : ans[2] + 1]\n    minimumWindowSubstring = minWindow"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3121,7 +3121,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def slidingWindowMaximum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Deque / Monotonic Queue Solution for Sliding Window Maximum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Deque / Monotonic Queue invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def maxSlidingWindow(self, nums: list[int], k: int) -> list[int]:\n        from collections import deque\n        dq = deque()\n        res = []\n        for i in range(len(nums)):\n            while dq and dq[0] < i - k + 1:\n                dq.popleft()\n            while dq and nums[dq[-1]] < nums[i]:\n                dq.pop()\n            dq.append(i)\n            if i >= k - 1:\n                res.append(nums[dq[0]])\n        return res\n    slidingWindowMaximum = maxSlidingWindow"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3164,7 +3164,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def maximumAverageSubarrayI(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Maximum Average Subarray I.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def findMaxAverage(self, nums: list[int], k: int) -> float:\n        curr_sum = sum(nums[:k])\n        max_sum = curr_sum\n        for i in range(k, len(nums)):\n            curr_sum += nums[i] - nums[i - k]\n            max_sum = max(max_sum, curr_sum)\n        return max_sum / k\n    maximumAverageSubarrayI = findMaxAverage"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3207,7 +3207,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def fruitIntoBaskets(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Fruit Into Baskets.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def totalFruit(self, fruits: list[int]) -> int:\n        count = {}\n        left = 0\n        max_fruits = 0\n        for right in range(len(fruits)):\n            count[fruits[right]] = count.get(fruits[right], 0) + 1\n            while len(count) > 2:\n                count[fruits[left]] -= 1\n                if count[fruits[left]] == 0:\n                    del count[fruits[left]]\n                left += 1\n            max_fruits = max(max_fruits, right - left + 1)\n        return max_fruits\n    fruitIntoBaskets = totalFruit"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3250,7 +3250,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def longestSubarrayOf1sAfterDeletingOneElement(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Longest Subarray of 1s After Deleting One Element.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestSubarray(self, nums: list[int]) -> int:\n        left = 0\n        zero_count = 0\n        max_len = 0\n        for right in range(len(nums)):\n            if nums[right] == 0:\n                zero_count += 1\n            while zero_count > 1:\n                if nums[left] == 0:\n                    zero_count -= 1\n                left += 1\n            max_len = max(max_len, right - left)\n        return max_len\n    longestSubarrayOf1sAfterDeletingOneElement = longestSubarray"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3293,7 +3293,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def subarraysWithKDifferentIntegers(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Subarrays with K Different Integers.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def subarraysWithKDistinct(self, nums: list[int], k: int) -> int:\n        def atMost(k_val):\n            from collections import defaultdict\n            count = defaultdict(int)\n            left = 0\n            res = 0\n            for right in range(len(nums)):\n                if count[nums[right]] == 0:\n                    k_val -= 1\n                count[nums[right]] += 1\n                while k_val < 0:\n                    count[nums[left]] -= 1\n                    if count[nums[left]] == 0:\n                        k_val += 1\n                    left += 1\n                res += right - left + 1\n            return res\n        return atMost(k) - atMost(k - 1)\n    subarraysWithKDifferentIntegers = subarraysWithKDistinct"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3336,7 +3336,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def maxConsecutiveOnesIii(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Max Consecutive Ones III.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def longestOnes(self, nums: list[int], k: int) -> int:\n        left = 0\n        zero_count = 0\n        max_len = 0\n        for right in range(len(nums)):\n            if nums[right] == 0:\n                zero_count += 1\n            while zero_count > k:\n                if nums[left] == 0:\n                    zero_count -= 1\n                left += 1\n            max_len = max(max_len, right - left + 1)\n        return max_len\n    maxConsecutiveOnesIii = longestOnes"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3379,7 +3379,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def countNumberOfNiceSubarrays(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Count Number of Nice Subarrays.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def numberOfSubarrays(self, nums: list[int], k: int) -> int:\n        def atMost(k_val):\n            if k_val < 0:\n                return 0\n            left = 0\n            res = 0\n            odd_count = 0\n            for right in range(len(nums)):\n                if nums[right] % 2 == 1:\n                    odd_count += 1\n                while odd_count > k_val:\n                    if nums[left] % 2 == 1:\n                        odd_count -= 1\n                    left += 1\n                res += right - left + 1\n            return res\n        return atMost(k) - atMost(k - 1)\n    countNumberOfNiceSubarrays = numberOfSubarrays"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3422,7 +3422,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def binarySubarraysWithSum(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window + Prefix Solution for Binary Subarrays With Sum.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window + Prefix invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def numSubarraysWithSum(self, nums: list[int], goal: int) -> int:\n        from collections import defaultdict\n        prefix_count = defaultdict(int)\n        prefix_count[0] = 1\n        curr_sum = 0\n        res = 0\n        for x in nums:\n            curr_sum += x\n            res += prefix_count[curr_sum - goal]\n            prefix_count[curr_sum] += 1\n        return res\n    binarySubarraysWithSum = numSubarraysWithSum"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3465,7 +3465,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def numberOfSubstringsContainingAllThreeCharacters(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window Solution for Number of Substrings Containing All Three Characters.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def numberOfSubstrings(self, s: str) -> int:\n        last = {'a': -1, 'b': -1, 'c': -1}\n        res = 0\n        for i, ch in enumerate(s):\n            last[ch] = i\n            res += 1 + min(last['a'], last['b'], last['c'])\n        return res\n    numberOfSubstringsContainingAllThreeCharacters = numberOfSubstrings"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -3508,7 +3508,7 @@ export const DETAILED_SOLUTIONS = {
       "Return the final computed result."
     ],
     "code": {
-      "python": "class Solution:\n    def minimumNumberOfKConsecutiveBitFlips(self, nums: list[int]) -> any:\n        \"\"\"\n        Optimal Sliding Window + Greedy Solution for Minimum Number of K Consecutive Bit Flips.\n        Time Complexity: O(N)\n        Space Complexity: O(1)\n        \"\"\"\n        left, right = 0, len(nums) - 1\n        res = 0\n        \n        while left <= right:\n            # Process boundaries according to Sliding Window + Greedy invariants\n            res += nums[left]\n            left += 1\n            \n        return res"
+      "python": "class Solution:\n    def minKBitFlips(self, nums: list[int], k: int) -> int:\n        n = len(nums)\n        flipped = 0\n        res = 0\n        is_flipped = [0] * n\n        for i in range(n):\n            if i >= k:\n                flipped ^= is_flipped[i - k]\n            if nums[i] == flipped:\n                if i + k > n:\n                    return -1\n                is_flipped[i] = 1\n                flipped ^= 1\n                res += 1\n        return res\n    minimumNumberOfKConsecutiveBitFlips = minKBitFlips"
     },
     "complexity": {
       "time": "O(N) — Single pass linear traversal.",
@@ -13202,41 +13202,8 @@ export const DETAILED_SOLUTIONS = {
   }
 };
 
-export function getEditorialSolution(questionId, fallbackQuestion = {}) {
-  const idStr = String(questionId);
-  if (DETAILED_SOLUTIONS[idStr]) {
-    return DETAILED_SOLUTIONS[idStr];
-  }
-  const name = fallbackQuestion.name || `Problem ${idStr}`;
-  return {
-    intuition: `To solve **${name}**, analyze the fundamental invariants and constraints. Consider optimal time and space trade-offs.`,
-    approaches: [
-      {
-        name: "Optimal Approach",
-        description: `Efficient algorithm utilizing optimal data structures for ${fallbackQuestion.pattern || 'the given problem pattern'}.`,
-        timeComplexity: "O(N)",
-        spaceComplexity: "O(1)"
-      }
-    ],
-    algorithmSteps: [
-      "1. Parse the input and validate edge cases.",
-      "2. Apply optimal traversal / algorithmic processing.",
-      "3. Return the computed result."
-    ],
-    complexity: {
-      time: "O(N)",
-      space: "O(1)"
-    },
-    edgeCases: [
-      "Empty or single element inputs",
-      "Extreme boundary values"
-    ],
-    interviewTips: [
-      "State time and space complexity upfront before coding.",
-      "Test with small custom edge cases."
-    ],
-    code: {
-      python: `# Solution for ${name}\nclass Solution:\n    def solve(self):\n        pass`
-    }
-  };
+export function getEditorialSolution(questionId) {
+  const strId = String(questionId);
+  return DETAILED_SOLUTIONS[strId] || null;
 }
+

@@ -502,46 +502,50 @@ export default function CodePlaygroundModal({
   const effectiveLeftWidth = isLeftCollapsed ? 0 : leftWidthPercent;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-1 sm:p-2 md:p-3'} bg-black/85 backdrop-blur-xs overflow-hidden`}>
-      <div className={`w-full ${isFullscreen ? 'h-screen rounded-none' : 'max-w-[98vw] h-[98vh] rounded-2xl'} bg-white dark:bg-slate-900 shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden flex flex-col animate-in fade-in zoom-in-95`}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center ${isFullscreen ? 'p-0' : 'p-1 sm:p-2 md:p-3'} bg-black/85 overflow-hidden`}>
+      <div className={`w-full ${isFullscreen ? 'h-screen rounded-none' : 'max-w-[98vw] h-[98vh] rounded-md'} bg-[#18181b] border border-zinc-800 overflow-hidden flex flex-col`}>
         
         {/* Top Header Bar */}
-        <div className="px-3 py-2 sm:px-4 sm:py-2.5 border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 flex items-center justify-between gap-2.5 shrink-0">
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-wrap">
-            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300">
+        <div className="px-3 py-2 sm:px-4 sm:py-2.5 border-b border-zinc-800 bg-[#18181b] flex items-center justify-between gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 flex-wrap font-mono text-xs">
+            <span className="font-bold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-300">
               #{question.id}
             </span>
-            <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${difficultyColors[question.difficulty] || difficultyColors.Medium}`}>
+            <span className={`px-2 py-0.5 rounded border bg-transparent font-medium ${
+              question.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
+              question.difficulty === 'Hard' ? 'border-rose-500/40 text-rose-400' :
+              'border-amber-500/40 text-amber-400'
+            }`}>
               {question.difficulty}
             </span>
-            <h2 className="text-xs sm:text-sm md:text-base font-extrabold text-gray-900 dark:text-white truncate">
+            <h2 className="text-xs sm:text-sm md:text-base font-bold text-zinc-100 truncate font-sans">
               {question.name}
             </h2>
-            <span className="hidden md:inline-flex text-xs font-medium px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900">
+            <span className="hidden md:inline-flex text-[11px] px-1.5 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
               {question.topic}
             </span>
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Split Presets */}
-            <div className="hidden xl:flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-gray-200/80 dark:bg-slate-800 text-[11px] font-bold text-gray-600 dark:text-gray-300">
+            <div className="hidden xl:flex items-center gap-1 px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-400">
               <button
                 onClick={() => { setLeftWidthPercent(30); setIsLeftCollapsed(false); }}
-                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 30 && !isLeftCollapsed ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'hover:text-gray-900'}`}
+                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 30 && !isLeftCollapsed ? 'bg-zinc-800 text-zinc-100 font-semibold border border-zinc-700' : 'hover:text-zinc-200'}`}
                 title="Code Focus (30% Description / 70% Code)"
               >
                 30/70
               </button>
               <button
                 onClick={() => { setLeftWidthPercent(50); setIsLeftCollapsed(false); }}
-                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 50 && !isLeftCollapsed ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'hover:text-gray-900'}`}
+                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 50 && !isLeftCollapsed ? 'bg-zinc-800 text-zinc-100 font-semibold border border-zinc-700' : 'hover:text-zinc-200'}`}
                 title="Balanced (50% Description / 50% Code)"
               >
                 50/50
               </button>
               <button
                 onClick={() => { setLeftWidthPercent(70); setIsLeftCollapsed(false); }}
-                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 70 && !isLeftCollapsed ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs' : 'hover:text-gray-900'}`}
+                className={`px-1.5 py-0.5 rounded ${leftWidthPercent === 70 && !isLeftCollapsed ? 'bg-zinc-800 text-zinc-100 font-semibold border border-zinc-700' : 'hover:text-zinc-200'}`}
                 title="Reading Focus (70% Description / 30% Code)"
               >
                 70/30
@@ -1452,10 +1456,10 @@ export default function CodePlaygroundModal({
         </div>
 
         {/* Modal Bottom Controls Bar */}
-        <div className="px-3 py-2 sm:px-4 sm:py-2.5 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900 flex items-center justify-between gap-3 text-xs shrink-0">
+        <div className="px-3 py-2 sm:px-4 sm:py-2.5 border-t border-zinc-800 bg-[#18181b] flex items-center justify-between gap-3 text-xs shrink-0 font-sans">
           <div className="flex items-center gap-2">
-            <span className="text-gray-500 dark:text-gray-400 hidden sm:inline">
-              💡 Write your code from scratch (<code className="text-purple-600 dark:text-purple-400 font-mono font-bold">import</code> to <code className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">print()</code>). Press <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + Enter</kbd> to Run or <kbd className="px-1.5 py-0.5 bg-gray-200 dark:bg-slate-800 rounded font-mono text-[10px]">Ctrl + S</kbd> to Save.
+            <span className="text-zinc-400 hidden sm:inline text-[11px]">
+              Shortcuts: <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded font-mono text-[10px]">Ctrl + Enter</kbd> Run • <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 rounded font-mono text-[10px]">Ctrl + S</kbd> Save
             </span>
           </div>
 
@@ -1464,10 +1468,10 @@ export default function CodePlaygroundModal({
             <button
               type="button"
               onClick={() => handleSaveCode(code, true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-gray-100 dark:hover:bg-slate-700 text-gray-700 dark:text-slate-200 font-bold transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium transition-colors cursor-pointer"
               title="Save Code (Ctrl + S)"
             >
-              <Save className="w-3.5 h-3.5 text-blue-500" />
+              <Save className="w-3.5 h-3.5 text-indigo-400" />
               <span>Save</span>
             </button>
 
@@ -1476,9 +1480,9 @@ export default function CodePlaygroundModal({
               type="button"
               disabled={isEvaluating}
               onClick={handleRunCode}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700 text-gray-900 dark:text-white font-bold transition-all disabled:opacity-50 cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-medium transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {isRunning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+              {isRunning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current text-indigo-400" />}
               <span>Run Code</span>
             </button>
 
@@ -1487,7 +1491,7 @@ export default function CodePlaygroundModal({
               type="button"
               disabled={isEvaluating}
               onClick={handleSubmitCode}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold transition-all disabled:opacity-50 cursor-pointer shadow-md active:scale-95"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded border border-emerald-500/40 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
               <span>Submit</span>

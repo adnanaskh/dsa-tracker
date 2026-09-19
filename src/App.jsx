@@ -1120,24 +1120,24 @@ export default function App() {
   }, [revisionLogs]);
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] dark:bg-slate-950 font-sans text-gray-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen bg-zinc-100 dark:bg-[#09090b] font-sans text-zinc-900 dark:text-zinc-100 antialiased transition-colors duration-200">
       {/* Top Header */}
-      <header className="bg-[#1e293b] dark:bg-slate-900 text-white border-b border-slate-800 px-4 sm:px-6 py-3.5 sticky top-0 z-30 shadow-md">
+      <header className="bg-zinc-900 dark:bg-[#09090b] text-white border-b border-zinc-800 px-4 sm:px-6 py-3 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center font-bold text-slate-950 text-lg shadow-sm">
+            <div className="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center font-mono font-bold text-white text-sm">
               &lt;/&gt;
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight">
+                <h1 className="text-base sm:text-lg font-bold tracking-tight text-zinc-100">
                   DSA TRACKER
                 </h1>
-                <span className="hidden sm:inline-block text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <span className="hidden sm:inline-block text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-transparent text-indigo-400 border border-indigo-500/40">
                   60 DAYS • 305 PROBLEMS
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">
+              <p className="text-xs text-zinc-400 hidden sm:block">
                 Curated 305 LeetCode problems & solution vault with spaced repetition revision
               </p>
             </div>
@@ -1148,12 +1148,12 @@ export default function App() {
             {/* Command Palette Trigger */}
             <button
               onClick={() => setIsCommandPaletteOpen(true)}
-              className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
               title="Search and commands (Ctrl+K)"
             >
-              <Search className="w-3.5 h-3.5 text-slate-400" />
+              <Search className="w-3.5 h-3.5 text-zinc-400" />
               <span>Search...</span>
-              <kbd className="font-mono text-[10px] bg-slate-900 px-1.5 py-0.5 rounded text-slate-400 border border-slate-700">
+              <kbd className="font-mono text-[10px] bg-zinc-950 px-1.5 py-0.5 rounded text-zinc-400 border border-zinc-800">
                 Ctrl K
               </kbd>
             </button>
@@ -1161,7 +1161,7 @@ export default function App() {
             {/* Random Question Button */}
             <button
               onClick={handlePickRandomQuestion}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
               title="Pick a random unsolved problem"
             >
               <Shuffle className="w-3.5 h-3.5 text-emerald-400" />
@@ -1171,17 +1171,17 @@ export default function App() {
             {/* Export & Backup */}
             <button
               onClick={() => setIsExportModalOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
               title="Backup & Export Data"
             >
-              <Download className="w-3.5 h-3.5 text-blue-400" />
+              <Download className="w-3.5 h-3.5 text-indigo-400" />
               <span className="hidden sm:inline font-medium">Backup</span>
             </button>
 
             {/* Dark Mode Toggle */}
             <button
               onClick={() => setIsDark(!isDark)}
-              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              className="p-2 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 transition-colors cursor-pointer"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
@@ -1193,49 +1193,49 @@ export default function App() {
                 setViewingPublicProfile(null);
                 setIsProfileModalOpen(true);
               }}
-              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-800 transition-colors cursor-pointer"
               title="View Profile, Achievements & Stats"
             >
-              <div className="w-5 h-5 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-400 font-bold flex items-center justify-center text-[10px] overflow-hidden">
+              <div className="w-5 h-5 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-400 font-bold flex items-center justify-center text-[10px] overflow-hidden">
                 {user?.photoURL ? (
                   <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
                 ) : user ? (
                   (customDisplayName || user?.displayName || 'U')[0].toUpperCase()
                 ) : (
-                  <User className="w-3 h-3 text-blue-400" />
+                  <User className="w-3 h-3 text-indigo-400" />
                 )}
               </div>
-              <span className="hidden sm:inline font-bold text-xs max-w-[85px] truncate">
+              <span className="hidden sm:inline font-medium text-xs max-w-[85px] truncate">
                 {customDisplayName || user?.displayName?.split(' ')[0] || (user ? 'Profile' : 'Profile')}
               </span>
-              <span className="px-1.5 py-0.2 rounded bg-amber-400 text-slate-950 font-black text-[10px]">
+              <span className="px-1.5 py-0.2 rounded bg-zinc-800 text-indigo-300 border border-zinc-700 font-mono text-[10px]">
                 {user ? `#${estimatedRank}` : `${userStats.solved} Solved`}
               </span>
             </button>
 
             {/* Auth Block */}
             {user ? (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-emerald-400 font-semibold">
+              <div className="flex items-center gap-2 pl-2 border-l border-zinc-800">
+                <div className="hidden sm:flex items-center gap-1 text-[11px] text-emerald-400 font-medium font-mono">
                   <Cloud className="w-3.5 h-3.5" />
                   <span>Synced</span>
                 </div>
                 <button
                   onClick={handleSignOut}
-                  className="px-2.5 py-1 rounded bg-rose-900/80 hover:bg-rose-800 text-white font-semibold border border-rose-700 transition-colors"
+                  className="px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-rose-950 text-rose-400 hover:text-rose-300 font-medium border border-zinc-800 hover:border-rose-800 transition-colors cursor-pointer"
                 >
                   Sign Out
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-700">
-                <div className="hidden sm:flex items-center gap-1 text-[11px] text-amber-400 font-semibold" title="Progress saved in this browser">
+              <div className="flex items-center gap-2 pl-2 border-l border-zinc-800">
+                <div className="hidden sm:flex items-center gap-1 text-[11px] text-amber-400 font-medium font-mono" title="Progress saved in this browser">
                   <CloudOff className="w-3.5 h-3.5" />
                   <span>Guest</span>
                 </div>
                 <button
                   onClick={handleGoogleSignIn}
-                  className="flex items-center gap-1.5 bg-white text-slate-900 hover:bg-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm transition-all text-xs"
+                  className="flex items-center gap-1.5 bg-zinc-100 hover:bg-white text-zinc-950 px-3 py-1.5 rounded-md font-medium transition-colors text-xs cursor-pointer"
                 >
                   <svg width="14" height="14" viewBox="0 0 48 48">
                     <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -1253,12 +1253,12 @@ export default function App() {
 
       {/* Guest Mode Informational Banner (Dismissible) */}
       {!user && !dismissedGuestBanner && (
-        <div className="bg-amber-50 dark:bg-amber-950/70 border-b border-amber-200 dark:border-amber-900/60 px-4 py-2.5 text-xs text-amber-900 dark:text-amber-200 flex items-center justify-between gap-2">
+        <div className="bg-zinc-900 border-b border-zinc-800 px-4 py-2.5 text-xs text-zinc-300 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 max-w-5xl mx-auto">
-            <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <Lock className="w-4 h-4 text-amber-400 shrink-0" />
             <span>
-              <strong>Questions Explorer Mode:</strong> You are viewing all 305 curated problems.
-              <button onClick={() => requireAuth('unlock all features & save progress')} className="underline font-bold ml-1 hover:text-amber-700 dark:hover:text-amber-300">
+              <strong className="text-zinc-100">Questions Explorer Mode:</strong> You are viewing all 305 curated problems.
+              <button onClick={() => requireAuth('unlock all features & save progress')} className="underline font-medium text-indigo-400 ml-1 hover:text-indigo-300 cursor-pointer">
                 Sign in with Google
               </button> to unlock Dashboard analytics, the Global Leaderboard, 60-Day Planner, Spaced Repetition, and save your solutions.
             </span>
@@ -1268,7 +1268,7 @@ export default function App() {
               setDismissedGuestBanner(true);
               localStorage.setItem(LS_KEYS.DISMISSED_BANNER, 'true');
             }}
-            className="text-amber-500 hover:text-amber-700 dark:hover:text-amber-300 p-1"
+            className="text-zinc-500 hover:text-zinc-300 p-1 cursor-pointer"
             title="Dismiss notice"
           >
             <X className="w-4 h-4" />
@@ -1277,14 +1277,14 @@ export default function App() {
       )}
 
       {/* Navigation Tabs */}
-      <nav className="bg-[#243347] dark:bg-slate-900 border-b border-gray-300 dark:border-slate-800 px-4 sm:px-6 pt-2">
+      <nav className="bg-[#18181b] border-b border-zinc-800 px-4 sm:px-6 pt-1.5">
         <div className="max-w-7xl mx-auto flex flex-wrap gap-1">
           {[
             { id: 'questions', icon: ListTodo, label: 'Problems', badge: user ? `${Object.values(questionsProgress).filter(q => q.status === '✅ Done').length}/305` : '305 Problems', locked: false },
             { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', locked: !user },
-            { id: 'leaderboard', icon: Trophy, label: 'Leaderboard', badge: user ? `#${estimatedRank}` : null, badgeColor: 'bg-amber-400 text-slate-950 font-black', locked: !user },
+            { id: 'leaderboard', icon: Trophy, label: 'Leaderboard', badge: user ? `#${estimatedRank}` : null, badgeColor: 'bg-zinc-800 border border-amber-500/40 text-amber-400', locked: !user },
             { id: 'planner', icon: Calendar, label: 'Study Plan', locked: !user },
-            { id: 'revision', icon: RotateCcw, label: 'Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-rose-500 text-white', locked: !user },
+            { id: 'revision', icon: RotateCcw, label: 'Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-zinc-800 border border-rose-500/40 text-rose-400', locked: !user },
             { id: 'patterns', icon: BookOpen, label: 'Patterns', locked: !user },
             { id: 'weekly', icon: BarChart3, label: 'Analytics', locked: !user },
           ].map(tab => {
@@ -1293,10 +1293,10 @@ export default function App() {
               <button
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-t-md transition-all ${
+                className={`flex items-center gap-2 px-3.5 py-2 text-xs sm:text-sm font-medium rounded-t-md transition-colors cursor-pointer border-b-2 ${
                   isActive 
-                    ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-emerald-400 shadow-xs border-t-2 border-blue-600 dark:border-emerald-400' 
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                    ? 'bg-[#09090b] text-indigo-400 border-indigo-500 font-semibold' 
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border-transparent'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -1305,7 +1305,7 @@ export default function App() {
                   <Lock className="w-3 h-3 text-amber-400/80" />
                 )}
                 {tab.badge && (
-                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${tab.badgeColor || 'bg-slate-700 dark:bg-slate-700 text-slate-300'}`}>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${tab.badgeColor || 'bg-zinc-800 border border-zinc-700 text-zinc-400'}`}>
                     {tab.badge}
                   </span>
                 )}
@@ -1317,12 +1317,12 @@ export default function App() {
 
       {/* Main Content Container */}
       <main className="max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-800 rounded-xl p-4 sm:p-6 shadow-sm min-h-[75vh]">
+        <div className="bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 rounded-md p-4 sm:p-6 min-h-[75vh]">
           {activeTab === 'questions' && (
             <QuestionsTab 
               questionsProgress={questionsProgress} 
               solutions={solutions} 
-              revisionLogs={revisionLogs}
+              revisionLogs={revisionLogs} 
               onSave={(id, data) => saveData('questionsProgress', id, data)} 
               onRevisionSave={(id, data) => saveData('revisionLogs', id, data)} 
               onSolutionSave={(id, data) => saveData('solutions', id, data)} 
@@ -1393,17 +1393,17 @@ export default function App() {
       </main>
 
       {/* Navigation Footer */}
-      <footer className="mt-12 border-t border-gray-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xs py-10 px-4 sm:px-6">
+      <footer className="mt-12 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#18181b] py-8 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-mono text-emerald-500 font-black text-lg">&lt;/&gt;</span>
-                <span className="font-extrabold text-base tracking-tight text-gray-900 dark:text-white">
+                <span className="font-mono text-indigo-400 font-bold text-base">&lt;/&gt;</span>
+                <span className="font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
                   DSA Tracker & 60-Day Roadmap
                 </span>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 max-w-lg leading-relaxed">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
                 A structured practice roadmap featuring 305 curated problems across all major algorithmic patterns, equipped with spaced repetition revision, solution code storage, and activity tracking.
               </p>
               <div className="mt-4">
@@ -1411,7 +1411,7 @@ export default function App() {
                   href="https://www.linkedin.com/in/adnanrahmad"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0a66c2] hover:bg-[#004182] text-white font-bold text-xs transition-colors shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0a66c2] hover:bg-[#004182] text-white font-medium text-xs transition-colors"
                 >
                   <LinkedinIcon className="w-3.5 h-3.5 fill-current" />
                   <span>Connect on LinkedIn</span>
@@ -1481,28 +1481,28 @@ export default function App() {
 
       {/* Auth Prompt Modal for Locked Features */}
       {isAuthPromptOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 p-6 animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-md bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 p-6 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                <Lock className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center">
+                <Lock className="w-4 h-4" />
               </div>
               <button
                 onClick={() => setIsAuthPromptOpen(false)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+                className="text-zinc-400 hover:text-zinc-200 p-1 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1.5">
+            <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-1.5">
               Sign In to Unlock
             </h3>
-            <p className="text-xs text-gray-600 dark:text-gray-300 mb-5 leading-relaxed">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-5 leading-relaxed">
               Please sign in with Google to {authPromptFeature || 'unlock this feature'}. Signing in unlocks:
             </p>
 
-            <ul className="text-xs space-y-2 mb-6 text-gray-700 dark:text-gray-300">
+            <ul className="text-xs space-y-2 mb-6 text-zinc-700 dark:text-zinc-300">
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span><strong>Saving your solved questions</strong> & custom notes</span>
@@ -1531,9 +1531,9 @@ export default function App() {
                   setIsAuthPromptOpen(false);
                   await handleGoogleSignIn();
                 }}
-                className="w-full flex items-center justify-center gap-3 bg-white border-2 border-slate-800 dark:border-slate-600 px-5 py-2.5 rounded-xl font-bold text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm shadow-sm cursor-pointer"
+                className="w-full flex items-center justify-center gap-3 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 px-4 py-2.5 rounded-md font-medium text-white transition-colors text-xs cursor-pointer"
               >
-                <svg width="18" height="18" viewBox="0 0 48 48">
+                <svg width="16" height="16" viewBox="0 0 48 48">
                   <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                   <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
                   <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
@@ -1544,7 +1544,7 @@ export default function App() {
 
               <button
                 onClick={() => setIsAuthPromptOpen(false)}
-                className="w-full py-2 text-xs font-semibold text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                className="w-full py-2 text-xs font-medium text-zinc-500 hover:text-zinc-300 cursor-pointer"
               >
                 Continue browsing questions
               </button>
@@ -1736,38 +1736,38 @@ export default function App() {
 
       {/* Random Question Roulette Modal */}
       {randomQuestionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 p-6 animate-in fade-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-md bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 p-6 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-900 border border-emerald-500/40 text-emerald-400">
                 🎯 Random Challenge
               </span>
               <button 
                 onClick={() => setRandomQuestionModal(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="text-zinc-400 hover:text-zinc-200 p-1 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-2">
               {randomQuestionModal.name}
             </h3>
 
             <div className="flex flex-wrap gap-2 mb-4 text-xs font-medium">
-              <span className="px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-[11px]">
                 Day {randomQuestionModal.day}
               </span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 text-[11px]">
                 {randomQuestionModal.topic}
               </span>
-              <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-[11px]">
                 {randomQuestionModal.pattern}
               </span>
-              <span className={`px-2 py-0.5 rounded font-bold ${
-                randomQuestionModal.difficulty === 'Easy' ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50' :
-                randomQuestionModal.difficulty === 'Medium' ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/50' :
-                'text-rose-600 bg-rose-50 dark:bg-rose-950/50'
+              <span className={`px-2 py-0.5 rounded font-mono text-[11px] font-medium border ${
+                randomQuestionModal.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400 bg-transparent' :
+                randomQuestionModal.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400 bg-transparent' :
+                'border-rose-500/40 text-rose-400 bg-transparent'
               }`}>
                 {randomQuestionModal.difficulty}
               </span>
@@ -1780,7 +1780,7 @@ export default function App() {
                   setRandomQuestionModal(null);
                   handleOpenPlayground(q);
                 }}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
+                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors cursor-pointer"
               >
                 <Play className="w-3.5 h-3.5 fill-white" />
                 Solve in IDE
@@ -1789,14 +1789,14 @@ export default function App() {
                 href={randomQuestionModal.link}
                 target="_blank"
                 rel="noreferrer"
-                className="px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold text-xs flex items-center justify-center gap-1 transition-colors"
+                className="px-3 py-2 rounded-md border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-medium text-xs flex items-center justify-center gap-1 transition-colors"
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 LeetCode
               </a>
               <button
                 onClick={handlePickRandomQuestion}
-                className="px-3 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-semibold text-xs transition-colors cursor-pointer"
+                className="px-3 py-2 rounded-md bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
               >
                 Reroll
               </button>
@@ -1862,75 +1862,75 @@ function DashboardTab({ questionsProgress, revisionLogs, dueQuestions, onNavigat
     <div className="space-y-6">
       {/* Due for Spaced Review Banner */}
       {dueQuestions.length > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-md bg-[#18181b] border border-amber-500/30 text-amber-300">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-amber-500 text-slate-950 font-bold">
-              <RotateCcw className="w-5 h-5" />
+            <div className="p-2 rounded-md bg-zinc-900 border border-amber-500/40 text-amber-400">
+              <RotateCcw className="w-4 h-4" />
             </div>
             <div>
-              <div className="font-bold text-sm">
-                Spaced Repetition: {dueQuestions.length} Problem{dueQuestions.length === 1 ? '' : 's'} Due for Review Today!
+              <div className="font-semibold text-xs text-amber-200">
+                Spaced Repetition: {dueQuestions.length} Problem{dueQuestions.length === 1 ? '' : 's'} Due for Review Today
               </div>
-              <div className="text-xs text-amber-700 dark:text-amber-300">
+              <div className="text-[11px] text-zinc-400 mt-0.5">
                 Consistent review strengthens neural pathways and prevents forgetting previous patterns.
               </div>
             </div>
           </div>
           <button
             onClick={() => onNavigateTab('revision')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-500 hover:bg-amber-400 text-zinc-950 font-medium text-xs transition-colors shrink-0 cursor-pointer"
           >
             Review Now
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
       {/* Top Stat Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-800 p-4 rounded-xl">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-md">
+          <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Total Solved
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
-            {stats.done} <span className="text-sm font-normal text-gray-400">/ 305</span>
+          <div className="text-2xl font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+            {stats.done} <span className="text-xs font-normal text-zinc-500">/ 305</span>
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 mt-1">
             {stats.pct}% Complete
           </div>
         </div>
 
-        <div className="bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-800 p-4 rounded-xl">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div className="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-md">
+          <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Remaining
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-gray-800 dark:text-slate-200 mt-1">
+          <div className="text-2xl font-mono font-bold text-zinc-800 dark:text-zinc-200 mt-1">
             {stats.remaining}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
             Target: 5 per day
           </div>
         </div>
 
-        <div className="bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-800 p-4 rounded-xl">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div className="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-md">
+          <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Flagged Revisit
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 mt-1">
+          <div className="text-2xl font-mono font-bold text-amber-500 dark:text-amber-400 mt-1">
             {stats.revisit}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <div className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
             In revision queue
           </div>
         </div>
 
-        <div className="bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-800 p-4 rounded-xl flex flex-col justify-between">
-          <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+        <div className="bg-zinc-50 dark:bg-[#18181b] border border-zinc-200 dark:border-zinc-800 p-4 rounded-md flex flex-col justify-between">
+          <div className="text-[11px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Quick Practice
           </div>
           <button
             onClick={onPickRandom}
-            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors shadow-xs"
+            className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs transition-colors cursor-pointer mt-2"
           >
             <Shuffle className="w-3.5 h-3.5" />
             Pick Problem
@@ -1939,47 +1939,47 @@ function DashboardTab({ questionsProgress, revisionLogs, dueQuestions, onNavigat
       </div>
 
       {/* Difficulty Breakdown */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-950/60 bg-emerald-50/50 dark:bg-emerald-950/20">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-3.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b]">
           <div className="flex justify-between items-center mb-2">
-            <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm">Easy</span>
-            <span className="font-mono text-xs font-bold text-emerald-800 dark:text-emerald-300">
+            <span className="font-medium text-emerald-500 dark:text-emerald-400 text-xs">Easy</span>
+            <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
               {stats.easyDone} / {stats.easyTotal}
             </span>
           </div>
-          <div className="w-full bg-emerald-200 dark:bg-emerald-950 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-zinc-200 dark:bg-zinc-950 h-1.5 rounded-sm overflow-hidden">
             <div 
-              className="bg-emerald-600 dark:bg-emerald-400 h-full rounded-full transition-all duration-500" 
+              className="bg-emerald-500 h-full rounded-sm transition-all duration-300" 
               style={{ width: `${Math.round((stats.easyDone / Math.max(1, stats.easyTotal)) * 100)}%` }}
             />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-950/60 bg-amber-50/50 dark:bg-amber-950/20">
+        <div className="p-3.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b]">
           <div className="flex justify-between items-center mb-2">
-            <span className="font-bold text-amber-700 dark:text-amber-400 text-sm">Medium</span>
-            <span className="font-mono text-xs font-bold text-amber-800 dark:text-amber-300">
+            <span className="font-medium text-amber-500 dark:text-amber-400 text-xs">Medium</span>
+            <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
               {stats.medDone} / {stats.medTotal}
             </span>
           </div>
-          <div className="w-full bg-amber-200 dark:bg-amber-950 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-zinc-200 dark:bg-zinc-950 h-1.5 rounded-sm overflow-hidden">
             <div 
-              className="bg-amber-500 dark:bg-amber-400 h-full rounded-full transition-all duration-500" 
+              className="bg-amber-500 h-full rounded-sm transition-all duration-300" 
               style={{ width: `${Math.round((stats.medDone / Math.max(1, stats.medTotal)) * 100)}%` }}
             />
           </div>
         </div>
 
-        <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-950/60 bg-rose-50/50 dark:bg-rose-950/20">
+        <div className="p-3.5 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b]">
           <div className="flex justify-between items-center mb-2">
-            <span className="font-bold text-rose-700 dark:text-rose-400 text-sm">Hard</span>
-            <span className="font-mono text-xs font-bold text-rose-800 dark:text-rose-300">
+            <span className="font-medium text-rose-500 dark:text-rose-400 text-xs">Hard</span>
+            <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
               {stats.hardDone} / {stats.hardTotal}
             </span>
           </div>
-          <div className="w-full bg-rose-200 dark:bg-rose-950 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-zinc-200 dark:bg-zinc-950 h-1.5 rounded-sm overflow-hidden">
             <div 
-              className="bg-rose-600 dark:bg-rose-500 h-full rounded-full transition-all duration-500" 
+              className="bg-rose-500 h-full rounded-sm transition-all duration-300" 
               style={{ width: `${Math.round((stats.hardDone / Math.max(1, stats.hardTotal)) * 100)}%` }}
             />
           </div>
@@ -1994,10 +1994,10 @@ function DashboardTab({ questionsProgress, revisionLogs, dueQuestions, onNavigat
 
       {/* Topic by Topic Progress Grid */}
       <div>
-        <h3 className="text-base font-bold text-gray-900 dark:text-white mb-3">
+        <h3 className="text-xs font-mono uppercase tracking-wider text-zinc-400 mb-3">
           Topic Breakdown ({TOPICS.length} Topics)
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {TOPICS.map(topic => {
             const topicQuestions = INITIAL_QUESTIONS.filter(q => q.topic === topic.name);
             const doneCount = topicQuestions.filter(q => (questionsProgress[q.id] || {}).status === '✅ Done').length;
@@ -2007,18 +2007,18 @@ function DashboardTab({ questionsProgress, revisionLogs, dueQuestions, onNavigat
               <div 
                 key={topic.name}
                 onClick={() => onNavigateTab('questions')}
-                className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/70 dark:bg-slate-800/40 hover:border-blue-300 dark:hover:border-slate-700 cursor-pointer transition-all"
+                className="p-3 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b] hover:border-zinc-400 dark:hover:border-zinc-700 cursor-pointer transition-colors"
               >
-                <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-                  <span className="text-gray-800 dark:text-slate-200">{topic.name}</span>
-                  <span className="font-mono text-gray-500 dark:text-gray-400">
+                <div className="flex items-center justify-between text-xs font-medium mb-1.5">
+                  <span className="text-zinc-800 dark:text-zinc-200 truncate">{topic.name}</span>
+                  <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400 shrink-0 ml-2">
                     {doneCount}/{topic.total} ({topicPct}%)
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-zinc-200 dark:bg-zinc-950 h-1 rounded-sm overflow-hidden">
                   <div 
-                    className={`h-full rounded-full transition-all duration-300 ${
-                      topicPct === 100 ? 'bg-emerald-500' : topicPct > 0 ? 'bg-blue-600 dark:bg-blue-500' : 'bg-transparent'
+                    className={`h-full rounded-sm transition-all duration-300 ${
+                      topicPct === 100 ? 'bg-emerald-500' : topicPct > 0 ? 'bg-indigo-500' : 'bg-transparent'
                     }`}
                     style={{ width: `${topicPct}%` }}
                   />
@@ -2207,28 +2207,28 @@ function QuestionsTab({
   return (
     <div>
       {/* Header & Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-800 pb-4 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <ListTodo className="w-5 h-5 text-blue-600 dark:text-emerald-400" />
+          <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <ListTodo className="w-4 h-4 text-indigo-400" />
             Problemset
           </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Showing {filteredQuestions.length} of 305 curated problems
           </p>
         </div>
 
         {/* Filter Toolbar */}
-        <div className="flex flex-wrap items-center gap-2.5 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           {/* Search box */}
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search problem, pattern, day..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white placeholder-gray-400 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="pl-8 pr-3 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 text-xs focus:outline-none focus:border-indigo-500"
             />
           </div>
 
@@ -2236,7 +2236,7 @@ function QuestionsTab({
           <select
             value={filterTopic}
             onChange={e => setFilterTopic(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-white text-xs font-medium focus:outline-none"
+            className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs focus:outline-none focus:border-indigo-500"
           >
             {allTopics.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
@@ -2245,7 +2245,7 @@ function QuestionsTab({
           <select
             value={filterDifficulty}
             onChange={e => setFilterDifficulty(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-white text-xs font-medium focus:outline-none"
+            className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs focus:outline-none focus:border-indigo-500"
           >
             {['All', 'Easy', 'Medium', 'Hard'].map(d => <option key={d} value={d}>{d}</option>)}
           </select>
@@ -2254,7 +2254,7 @@ function QuestionsTab({
           <select
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-white text-xs font-medium focus:outline-none"
+            className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs focus:outline-none focus:border-indigo-500"
           >
             {['All', 'Done', 'In Progress', 'Todo', 'Revisit'].map(s => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -2262,10 +2262,10 @@ function QuestionsTab({
       </div>
 
       {/* Questions Table */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-800">
+      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
-            <tr className="bg-gray-100 dark:bg-slate-800/90 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-slate-800">
+            <tr className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 font-mono text-[11px] uppercase border-b border-zinc-200 dark:border-zinc-800">
               <th className="py-2.5 px-3 text-center w-12">#</th>
               <th className="py-2.5 px-3 text-center w-16">DAY</th>
               <th className="py-2.5 px-3">TOPIC</th>
@@ -2278,58 +2278,58 @@ function QuestionsTab({
               <th className="py-2.5 px-3 text-center">EDITORIAL</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-slate-800/60">
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {filteredQuestions.map(q => {
               const prog = questionsProgress[q.id] || {};
               const isDone = prog.status === '✅ Done';
               const isRevisit = prog.revisit === '🔄 Revisit';
 
               const diffBadge = {
-                Easy: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900',
-                Medium: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900',
-                Hard: 'text-rose-700 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900',
+                Easy: 'border border-emerald-500/40 text-emerald-400 bg-transparent font-medium',
+                Medium: 'border border-amber-500/40 text-amber-400 bg-transparent font-medium',
+                Hard: 'border border-rose-500/40 text-rose-400 bg-transparent font-medium',
               }[q.difficulty];
 
               return (
                 <tr 
                   key={q.id}
-                  className={`hover:bg-blue-50/40 dark:hover:bg-slate-800/40 transition-colors ${
-                    isDone ? 'bg-emerald-50/20 dark:bg-emerald-950/10' : ''
+                  className={`hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors ${
+                    isDone ? 'bg-emerald-950/10' : ''
                   }`}
                 >
-                  <td className="py-2.5 px-3 text-center font-mono text-gray-400">{q.id}</td>
-                  <td className="py-2.5 px-3 text-center font-bold text-gray-700 dark:text-gray-300">
+                  <td className="py-2.5 px-3 text-center font-mono text-zinc-500">{q.id}</td>
+                  <td className="py-2.5 px-3 text-center font-mono text-zinc-600 dark:text-zinc-300">
                     Day {q.day}
                   </td>
-                  <td className="py-2.5 px-3 font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-zinc-600 dark:text-zinc-300 whitespace-nowrap">
                     {q.topic}
                   </td>
-                  <td className="py-2.5 px-3 font-semibold text-gray-900 dark:text-white">
+                  <td className="py-2.5 px-3 font-medium text-zinc-900 dark:text-zinc-100">
                     <a
                       href={q.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="hover:text-blue-600 dark:hover:text-emerald-400 inline-flex items-center gap-1"
+                      className="hover:text-indigo-400 inline-flex items-center gap-1"
                     >
                       {q.name}
-                      <ExternalLink className="w-3 h-3 text-gray-400 shrink-0" />
+                      <ExternalLink className="w-3 h-3 text-zinc-500 shrink-0" />
                     </a>
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
-                    <span className={`px-2 py-0.5 rounded border text-[11px] font-bold ${diffBadge}`}>
+                    <span className={`px-2 py-0.5 rounded font-mono text-[11px] ${diffBadge}`}>
                       {q.difficulty}
                     </span>
                   </td>
-                  <td className="py-2.5 px-3 text-gray-500 dark:text-gray-400 text-[11px] whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-zinc-500 dark:text-zinc-400 text-[11px] whitespace-nowrap">
                     {q.pattern}
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => handleQuickToggleStatus(q)}
-                      className={`px-2.5 py-1 rounded text-[11px] font-bold transition-all active:scale-95 cursor-pointer shadow-2xs ${
-                        isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 hover:bg-emerald-200' :
-                        prog.status === '🟡 In Progress' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 hover:bg-amber-200' :
-                        'bg-gray-100 text-gray-600 dark:bg-slate-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-slate-700'
+                      className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer border ${
+                        isDone ? 'bg-zinc-900 border-emerald-500/40 text-emerald-400 hover:bg-zinc-800' :
+                        prog.status === '🟡 In Progress' ? 'bg-zinc-900 border-amber-500/40 text-amber-400 hover:bg-zinc-800' :
+                        'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
                       }`}
                       title="Click to toggle status: Todo ➔ In Progress ➔ Done"
                     >
@@ -2339,10 +2339,10 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => handleQuickToggleRevisit(q)}
-                      className={`px-2 py-1 rounded text-[11px] font-bold transition-all active:scale-95 cursor-pointer ${
+                      className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer border ${
                         isRevisit 
-                          ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 shadow-xs' 
-                          : 'text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800'
+                          ? 'bg-zinc-900 border-amber-500/40 text-amber-400 hover:bg-zinc-800' 
+                          : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-800'
                       }`}
                       title="Click to toggle Spaced Repetition revisit flag"
                     >
@@ -2352,20 +2352,20 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => onOpenPlayground(q)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 text-emerald-400 font-mono text-[11px] border border-zinc-800 hover:border-emerald-500/40 transition-colors cursor-pointer"
                       title="Open Python 3 in-browser code editor and test suite"
                     >
-                      <Play className="w-3 h-3 text-emerald-500 fill-emerald-500" />
+                      <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
                       <span>Solve</span>
                     </button>
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => onOpenEditorial(q)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800 transition-all active:scale-95 shadow-2xs cursor-pointer"
-                      title="Read complete GFG-style editorial with Python, Java, C++, JS code"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 text-indigo-400 font-mono text-[11px] border border-zinc-800 hover:border-indigo-500/40 transition-colors cursor-pointer"
+                      title="Read complete editorial with Python, Java, C++, JS code"
                     >
-                      <BookOpen className="w-3 h-3 text-purple-500" />
+                      <BookOpen className="w-3 h-3 text-indigo-400" />
                       <span>Editorial</span>
                     </button>
                   </td>
@@ -2378,32 +2378,32 @@ function QuestionsTab({
 
       {/* Edit Question Modal */}
       {editingQuestion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 p-6 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-md bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 p-6 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between mb-4 border-b border-zinc-200 dark:border-zinc-800 pb-3">
               <div>
-                <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   {editingQuestion.name}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Day {editingQuestion.day} • {editingQuestion.topic}
                 </p>
               </div>
               <button
                 onClick={() => setEditingQuestion(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="text-zinc-400 hover:text-zinc-200 p-1 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Status</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Status</label>
                 <select
                   value={editForm.status}
                   onChange={e => setEditForm({ ...editForm, status: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                  className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 >
                   <option value="❌ Todo">❌ Todo</option>
                   <option value="🟡 In Progress">🟡 In Progress</option>
@@ -2412,11 +2412,11 @@ function QuestionsTab({
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Revisit Flag (SRS)</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Revisit Flag (SRS)</label>
                 <select
                   value={editForm.revisit}
                   onChange={e => setEditForm({ ...editForm, revisit: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                  className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 >
                   <option value="No">No</option>
                   <option value="🔄 Revisit">🔄 Revisit (Add to Spaced Repetition)</option>
@@ -2424,38 +2424,38 @@ function QuestionsTab({
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Time Spent (Minutes)</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Time Spent (Minutes)</label>
                 <input
                   type="number"
                   placeholder="e.g. 25"
                   value={editForm.timeSpent}
                   onChange={e => setEditForm({ ...editForm, timeSpent: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                  className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Notes / Key Intuition</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Notes / Key Intuition</label>
                 <textarea
                   rows={3}
                   placeholder="Key observations, edge cases, time/space complexity..."
                   value={editForm.notes}
                   onChange={e => setEditForm({ ...editForm, notes: e.target.value })}
-                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                  className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6 pt-3 border-t border-gray-200 dark:border-slate-800">
+            <div className="flex justify-end gap-2 mt-6 pt-3 border-t border-zinc-200 dark:border-zinc-800">
               <button
                 onClick={() => setEditingQuestion(null)}
-                className="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                className="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveEdit}
-                className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700"
+                className="px-3.5 py-1.5 rounded-md text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
               >
                 Save Changes
               </button>
@@ -2466,14 +2466,14 @@ function QuestionsTab({
 
       {/* View Solution Modal (Featuring CodeViewer with syntax highlighting) */}
       {viewingSolutionQ && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-3xl bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-3xl bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800">
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   Solution: {viewingSolutionQ.name}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   {viewingSolutionQ.topic} • {viewingSolutionQ.pattern}
                 </p>
               </div>
@@ -2485,21 +2485,21 @@ function QuestionsTab({
                       setViewingSolutionQ(null);
                     }
                   }}
-                  className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50"
+                  className="p-1.5 rounded-md text-rose-400 hover:bg-rose-950/50 cursor-pointer"
                   title="Delete solution"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewingSolutionQ(null)}
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  className="p-1.5 rounded-md text-zinc-400 hover:text-zinc-200 cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 overflow-y-auto">
+            <div className="p-4 overflow-y-auto">
               <CodeViewer 
                 code={viewingSolutionQ.solution?.code || ''}
                 language={viewingSolutionQ.solution?.language || 'java'}
@@ -2507,13 +2507,13 @@ function QuestionsTab({
               />
             </div>
 
-            <div className="px-6 py-3 bg-gray-50 dark:bg-slate-800/60 border-t border-gray-200 dark:border-slate-800 flex justify-between items-center text-xs">
-              <span className="text-gray-500">
+            <div className="px-5 py-3 bg-zinc-50 dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-800 flex justify-between items-center text-xs">
+              <span className="text-zinc-500 font-mono text-[11px]">
                 Uploaded: {viewingSolutionQ.solution?.uploadedAt ? new Date(viewingSolutionQ.solution.uploadedAt).toLocaleDateString() : 'N/A'}
               </span>
               <button
                 onClick={() => setViewingSolutionQ(null)}
-                className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-slate-700 text-gray-800 dark:text-gray-200 font-semibold"
+                className="px-3 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium cursor-pointer"
               >
                 Close
               </button>
@@ -2524,20 +2524,20 @@ function QuestionsTab({
 
       {/* Upload Solution Modal */}
       {uploadingQ && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 p-6 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between mb-4 border-b border-gray-200 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 p-6 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between mb-4 border-b border-zinc-200 dark:border-zinc-800 pb-3">
               <div>
-                <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   Upload Solution: {uploadingQ.name}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   Save your verified solution code for fast review before interviews
                 </p>
               </div>
               <button
                 onClick={() => setUploadingQ(null)}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                className="text-zinc-400 hover:text-zinc-200 p-1 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -2545,11 +2545,11 @@ function QuestionsTab({
 
             <div className="space-y-4 text-xs">
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Language</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Language</label>
                 <select
                   value={uploadLanguage}
                   onChange={e => setUploadLanguage(e.target.value)}
-                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+                  className="w-full p-2 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 >
                   <option value="java">☕ Java</option>
                   <option value="python">🐍 Python</option>
@@ -2562,27 +2562,27 @@ function QuestionsTab({
               </div>
 
               <div>
-                <label className="block font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">Code Solution</label>
+                <label className="block font-medium text-zinc-700 dark:text-zinc-300 uppercase font-mono text-[11px] mb-1">Code Solution</label>
                 <textarea
                   rows={12}
                   placeholder="// Paste your clean LeetCode solution here..."
                   value={uploadCode}
                   onChange={e => setUploadCode(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-950 font-mono text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full p-3 rounded-md border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 font-mono text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6 pt-3 border-t border-gray-200 dark:border-slate-800">
+            <div className="flex justify-end gap-2 mt-6 pt-3 border-t border-zinc-200 dark:border-zinc-800">
               <button
                 onClick={() => setUploadingQ(null)}
-                className="px-4 py-2 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800"
+                className="px-3 py-1.5 rounded-md text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUploadSolution}
-                className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700"
+                className="px-3.5 py-1.5 rounded-md text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
               >
                 Save Solution
               </button>
@@ -2613,23 +2613,23 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-800 pb-4 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-blue-600 dark:text-emerald-400" />
+          <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-indigo-400" />
             60-Day Structured Curriculum
           </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Day 1 to 60 sequential roadmap. Target: ~5 problems per day
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <label className="font-semibold text-gray-600 dark:text-gray-400">Jump to Day:</label>
+          <label className="font-mono text-zinc-500 dark:text-zinc-400 text-[11px]">JUMP TO DAY:</label>
           <select
             value={filterDay}
             onChange={e => setFilterDay(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-white font-medium"
+            className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs focus:outline-none focus:border-indigo-500"
           >
             <option value="All">All 60 Days</option>
             {DAILY_PLAN.map(p => (
@@ -2639,7 +2639,7 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {filteredDays.map(p => {
           const prog = plannerProgress[p.day] || {};
           const solvedCount = p.questions.filter(q => (questionsProgress[q.id] || {}).status === '✅ Done').length;
@@ -2650,34 +2650,34 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
           return (
             <div
               key={p.day}
-              className={`p-4 rounded-xl border transition-all ${
+              className={`p-3.5 rounded-md border transition-colors ${
                 isComplete 
-                  ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/20' 
-                  : 'border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/40'
+                  ? 'border-emerald-500/40 bg-emerald-950/10' 
+                  : 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b]'
               }`}
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-sm text-gray-900 dark:text-white">
+                  <span className="font-mono font-bold text-xs text-zinc-900 dark:text-zinc-100">
                     Day {p.day}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-medium">
+                  <span className="text-[11px] px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">
                     {p.topic}
                   </span>
                 </div>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded ${
-                  isComplete ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' :
-                  solvedCount > 0 ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300' :
-                  'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-gray-400'
+                <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
+                  isComplete ? 'border-emerald-500/40 text-emerald-400 bg-transparent' :
+                  solvedCount > 0 ? 'border-amber-500/40 text-amber-400 bg-transparent' :
+                  'border-zinc-700 text-zinc-400 bg-transparent'
                 }`}>
                   {solvedCount}/{target} ({pct}%)
                 </span>
               </div>
 
               {/* Progress bar */}
-              <div className="w-full bg-gray-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden mb-3">
+              <div className="w-full bg-zinc-200 dark:bg-zinc-950 h-1 rounded-sm overflow-hidden mb-3">
                 <div 
-                  className={`h-full rounded-full transition-all duration-300 ${isComplete ? 'bg-emerald-500' : 'bg-blue-600'}`}
+                  className={`h-full rounded-sm transition-all duration-300 ${isComplete ? 'bg-emerald-500' : 'bg-indigo-500'}`}
                   style={{ width: `${pct}%` }}
                 />
               </div>
@@ -2691,33 +2691,33 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
                   return (
                     <div key={q.id} className="flex items-center justify-between text-xs py-0.5">
                       <div className="flex items-center gap-1.5 truncate">
-                        <span className="w-4 text-center text-gray-400 shrink-0">#{q.id}</span>
+                        <span className="w-4 text-center font-mono text-zinc-500 shrink-0 text-[11px]">#{q.id}</span>
                         <button
                           onClick={() => onOpenPlayground(q)}
-                          className={`truncate hover:underline text-left cursor-pointer ${
-                            done ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-slate-200 font-medium'
+                          className={`truncate hover:text-indigo-400 text-left cursor-pointer ${
+                            done ? 'line-through text-zinc-500' : 'text-zinc-800 dark:text-zinc-200'
                           }`}
-                          title="Solve in IDE (auto-tracks In Progress/Done)"
+                          title="Solve in IDE"
                         >
                           {q.name}
                         </button>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
                         {inProg && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-semibold">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border border-amber-500/40 text-amber-400">
                             In Progress
                           </span>
                         )}
                         <button
                           onClick={() => onOpenPlayground(q)}
-                          className="p-1 rounded text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 cursor-pointer"
+                          className="p-1 rounded text-emerald-400 hover:bg-zinc-800 cursor-pointer"
                           title="Solve in Code Playground"
                         >
-                          <Play className="w-3 h-3 fill-emerald-600" />
+                          <Play className="w-3 h-3 fill-emerald-400" />
                         </button>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
-                          q.difficulty === 'Easy' ? 'text-emerald-600' :
-                          q.difficulty === 'Medium' ? 'text-amber-600' : 'text-rose-600'
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+                          q.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
+                          q.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400' : 'border-rose-500/40 text-rose-400'
                         }`}>
                           {q.difficulty}
                         </span>
@@ -2728,13 +2728,13 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
               </div>
 
               {/* Daily reflection note */}
-              <div className="pt-2 border-t border-gray-200 dark:border-slate-800">
+              <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800">
                 <input
                   type="text"
                   placeholder="Daily reflection notes..."
                   value={prog.notes || ''}
                   onChange={e => handleUpdate(p.day, 'notes', e.target.value)}
-                  className="w-full px-2.5 py-1 text-xs rounded border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-200 focus:outline-none"
+                  className="w-full px-2.5 py-1 text-xs rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>
@@ -2776,7 +2776,6 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
 
   // Handle Review Attempt completion
   const handleCompleteReview = (key, currentItem, quality) => {
-    // quality: 'again' | 'good' | 'mastered'
     const currentStage = currentItem.intervalStage || 0;
     let nextStage = currentStage;
     let nextIntervalDays = 1;
@@ -2813,24 +2812,24 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <RotateCcw className="w-5 h-5 text-amber-500" />
+          <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <RotateCcw className="w-4 h-4 text-amber-400" />
             Spaced Repetition System (SRS)
           </h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Scientifically scheduled reviews: 1 day ➔ 3 days ➔ 7 days ➔ 14 days ➔ 30 days
           </p>
         </div>
 
         {/* Filter */}
         <div className="flex items-center gap-2 text-xs">
-          <label className="font-semibold text-gray-600 dark:text-gray-400">Filter:</label>
+          <label className="font-mono text-zinc-500 dark:text-zinc-400 text-[11px]">FILTER:</label>
           <select
             value={selectedMastery}
             onChange={e => setSelectedMastery(e.target.value)}
-            className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-800 dark:text-white font-medium"
+            className="px-2.5 py-1.5 rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs focus:outline-none focus:border-indigo-500"
           >
             <option value="All">All ({logEntries.length})</option>
             <option value="Due">🔔 Due Today ({dueQuestions.length})</option>
@@ -2843,63 +2842,63 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
 
       {/* Due Today Queue Card */}
       {dueQuestions.length > 0 && (
-        <div className="p-4 rounded-xl border border-amber-300 dark:border-amber-900/60 bg-amber-500/10">
+        <div className="p-4 rounded-md border border-amber-500/30 bg-[#18181b]">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="font-bold text-sm text-amber-900 dark:text-amber-200 flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+            <h3 className="font-semibold text-xs text-amber-300 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               Due for Review Today ({dueQuestions.length})
             </h3>
-            <span className="text-xs text-amber-700 dark:text-amber-300">
+            <span className="text-[11px] text-zinc-400">
               Complete these to reinforce memory
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             {dueQuestions.map(item => {
               const matchedQ = INITIAL_QUESTIONS.find(q => q.id === item.questionId || q.name === item.questionName);
               return (
                 <div
                   key={item.key}
-                  className="p-3 rounded-lg bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 shadow-xs flex flex-col justify-between"
+                  className="p-3 rounded-md bg-zinc-900 border border-zinc-800 flex flex-col justify-between"
                 >
                   <div className="mb-2">
                     <div className="flex items-center justify-between text-xs">
                       <button
                         onClick={() => matchedQ && onOpenPlayground(matchedQ)}
-                        className="font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 inline-flex items-center gap-1 cursor-pointer text-left"
+                        className="font-medium text-zinc-200 hover:text-indigo-400 inline-flex items-center gap-1 cursor-pointer text-left"
                         title="Solve in Code Playground"
                       >
                         {item.questionName}
-                        <Play className="w-3 h-3 text-emerald-500 fill-emerald-500" />
+                        <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
                       </button>
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+                      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-amber-500/40 text-amber-400">
                         Stage {(item.intervalStage || 0) + 1} ({SRS_INTERVALS[item.intervalStage || 0]}d)
                       </span>
                     </div>
-                    <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                    <div className="text-[11px] text-zinc-400 mt-1">
                       {item.topic} • {item.difficulty}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-slate-800 text-[11px]">
-                    <span className="text-gray-400 font-semibold mr-auto">Review result:</span>
+                  <div className="flex items-center gap-2 pt-2 border-t border-zinc-800 text-[11px]">
+                    <span className="text-zinc-500 font-mono text-[10px] mr-auto">RESULT:</span>
                     <button
                       onClick={() => handleCompleteReview(item.key, item, 'again')}
-                      className="px-2 py-1 rounded bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 text-rose-700 dark:text-rose-300 font-medium cursor-pointer"
+                      className="px-2 py-0.5 rounded-md bg-zinc-800 hover:bg-rose-950 border border-zinc-700 hover:border-rose-800 text-rose-400 font-mono text-[11px] cursor-pointer"
                       title="Reset to 1-day interval"
                     >
                       Struggled
                     </button>
                     <button
                       onClick={() => handleCompleteReview(item.key, item, 'good')}
-                      className="px-2 py-1 rounded bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 text-blue-700 dark:text-blue-300 font-medium cursor-pointer"
+                      className="px-2 py-0.5 rounded-md bg-zinc-800 hover:bg-indigo-950 border border-zinc-700 hover:border-indigo-800 text-indigo-400 font-mono text-[11px] cursor-pointer"
                       title="Advance to next interval"
                     >
                       Recalled
                     </button>
                     <button
                       onClick={() => handleCompleteReview(item.key, item, 'mastered')}
-                      className="px-2 py-1 rounded bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 font-medium cursor-pointer"
+                      className="px-2 py-0.5 rounded-md bg-zinc-800 hover:bg-emerald-950 border border-zinc-700 hover:border-emerald-800 text-emerald-400 font-mono text-[11px] cursor-pointer"
                       title="Mark completely mastered"
                     >
                       Mastered
@@ -2913,10 +2912,10 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
       )}
 
       {/* Main Revision Table */}
-      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-800">
+      <div className="overflow-x-auto rounded-md border border-zinc-200 dark:border-zinc-800">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
-            <tr className="bg-gray-100 dark:bg-slate-800/90 text-gray-600 dark:text-gray-300 font-semibold border-b border-gray-200 dark:border-slate-800">
+            <tr className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 font-mono text-[11px] uppercase border-b border-zinc-200 dark:border-zinc-800">
               <th className="py-2.5 px-3">QUESTION NAME</th>
               <th className="py-2.5 px-3">TOPIC</th>
               <th className="py-2.5 px-3 text-center">DIFFICULTY</th>
@@ -2926,11 +2925,11 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
               <th className="py-2.5 px-3 text-center w-14">ACTION</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-slate-800/60">
+          <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {filteredLogs.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-gray-400">
-                  No questions in revision queue. Click 🔄 Revisit on any question in the Questions tab to add!
+                <td colSpan={7} className="text-center py-8 text-zinc-500 font-mono text-xs">
+                  No questions in revision queue. Click + Revisit on any question in the Questions tab to add.
                 </td>
               </tr>
             ) : (
@@ -2939,41 +2938,44 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                 const isDue = nextDate && nextDate <= todayStr;
 
                 return (
-                  <tr key={item.key} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-2.5 px-3 font-semibold text-gray-900 dark:text-white">
+                  <tr key={item.key} className="hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors">
+                    <td className="py-2.5 px-3 font-medium text-zinc-900 dark:text-zinc-100">
                       <a
                         href={item.link}
                         target="_blank"
                         rel="noreferrer"
-                        className="hover:underline inline-flex items-center gap-1"
+                        className="hover:text-indigo-400 inline-flex items-center gap-1"
                       >
                         {item.questionName}
-                        <ExternalLink className="w-3 h-3 text-gray-400 shrink-0" />
+                        <ExternalLink className="w-3 h-3 text-zinc-500 shrink-0" />
                       </a>
                     </td>
-                    <td className="py-2.5 px-3 text-gray-500">{item.topic}</td>
-                    <td className="py-2.5 px-3 text-center font-bold">
-                      <span className={item.difficulty === 'Easy' ? 'text-emerald-600' : item.difficulty === 'Medium' ? 'text-amber-600' : 'text-rose-600'}>
+                    <td className="py-2.5 px-3 text-zinc-500">{item.topic}</td>
+                    <td className="py-2.5 px-3 text-center">
+                      <span className={`px-2 py-0.5 rounded font-mono text-[11px] border ${
+                        item.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
+                        item.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400' : 'border-rose-500/40 text-rose-400'
+                      }`}>
                         {item.difficulty}
                       </span>
                     </td>
-                    <td className="py-2.5 px-3 text-center font-mono text-[11px]">
+                    <td className="py-2.5 px-3 text-center font-mono text-[11px] text-zinc-400">
                       Stage {(item.intervalStage || 0) + 1} ({SRS_INTERVALS[item.intervalStage || 0]}d)
                     </td>
-                    <td className="py-2.5 px-3 text-center font-mono">
+                    <td className="py-2.5 px-3 text-center font-mono text-[11px]">
                       {isDue ? (
-                        <span className="px-2 py-0.5 rounded font-bold bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                        <span className="px-2 py-0.5 rounded border border-rose-500/40 text-rose-400">
                           Due Today
                         </span>
                       ) : (
-                        <span className="text-gray-500">{nextDate || 'N/A'}</span>
+                        <span className="text-zinc-500">{nextDate || 'N/A'}</span>
                       )}
                     </td>
                     <td className="py-2.5 px-3 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
-                        item.mastered === 'Mastered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' :
-                        item.mastered === 'Getting Better' ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' :
-                        'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                      <span className={`px-2 py-0.5 rounded font-mono text-[11px] border ${
+                        item.mastered === 'Mastered' ? 'border-emerald-500/40 text-emerald-400' :
+                        item.mastered === 'Getting Better' ? 'border-indigo-500/40 text-indigo-400' :
+                        'border-amber-500/40 text-amber-400'
                       }`}>
                         {item.mastered || 'Needs Work'}
                       </span>
@@ -2985,7 +2987,7 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                             onDelete(item.key);
                           }
                         }}
-                        className="p-1 rounded text-gray-400 hover:text-rose-600 transition-colors"
+                        className="p-1 rounded text-zinc-500 hover:text-rose-400 transition-colors cursor-pointer"
                         title="Remove from revision"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -3008,51 +3010,51 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
 function PatternsTab() {
   return (
     <div>
-      <div className="border-b border-gray-200 dark:border-slate-800 pb-4 mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-blue-600 dark:text-emerald-400" />
+      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-6">
+        <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <BookOpen className="w-4 h-4 text-indigo-400" />
           DSA Pattern Mastery Reference
         </h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Core mental models to identify and solve any LeetCode problem in technical interviews
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {PATTERNS.map((p, idx) => (
           <div
             key={idx}
-            className="p-5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/40 shadow-xs flex flex-col justify-between"
+            className="p-4 rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b] flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-base font-bold text-gray-900 dark:text-white">
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                   {p.pattern}
                 </h3>
                 <div className="flex items-center gap-2 font-mono text-[11px]">
-                  <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold">
+                  <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-indigo-300">
                     Time: {p.time}
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-semibold">
+                  <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">
                     Space: {p.space}
                   </span>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 leading-relaxed">
+              <p className="text-xs text-zinc-600 dark:text-zinc-300 mb-3 leading-relaxed">
                 {p.usage}
               </p>
 
               {p.keyTip && (
-                <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-emerald-900 dark:text-emerald-300 text-xs mb-3">
-                  <strong>💡 Pro Tip:</strong> {p.keyTip}
+                <div className="p-2.5 rounded-md bg-zinc-900 border border-emerald-500/30 text-emerald-300 text-xs mb-3">
+                  <strong className="text-emerald-400">Pro Tip:</strong> {p.keyTip}
                 </div>
               )}
             </div>
 
-            <div className="pt-3 border-t border-gray-200 dark:border-slate-800/60 text-xs">
-              <span className="font-semibold text-gray-500 dark:text-gray-400">Classic Problems: </span>
-              <span className="text-gray-800 dark:text-slate-200 font-medium">{p.problems}</span>
+            <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800 text-xs">
+              <span className="font-mono text-[11px] text-zinc-500 dark:text-zinc-400 uppercase">Classic Problems: </span>
+              <span className="text-zinc-800 dark:text-zinc-200 font-medium">{p.problems}</span>
             </div>
           </div>
         ))}
@@ -3072,17 +3074,17 @@ function WeeklyTab({ weeklyReviews, questionsProgress, onSave }) {
 
   return (
     <div>
-      <div className="border-b border-gray-200 dark:border-slate-800 pb-4 mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-blue-600 dark:text-emerald-400" />
+      <div className="border-b border-zinc-200 dark:border-zinc-800 pb-4 mb-6">
+        <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-indigo-400" />
           Weekly Auto-Summary & Reflection
         </h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
           Track weekly consistency, target completion, and note key areas to reinforce
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {WEEKLY_PLAN.map(plan => {
           const rev = weeklyReviews[plan.week] || {};
           const solved = plan.questionIds.filter(id => (questionsProgress[id] || {}).status === '✅ Done').length;
@@ -3092,65 +3094,65 @@ function WeeklyTab({ weeklyReviews, questionsProgress, onSave }) {
           return (
             <div
               key={plan.week}
-              className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs"
+              className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-[#18181b] overflow-hidden"
             >
-              <div className="bg-gray-100 dark:bg-slate-800/80 px-5 py-3 flex items-center justify-between border-b border-gray-200 dark:border-slate-800">
+              <div className="bg-zinc-100 dark:bg-zinc-900 px-4 py-2.5 flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800">
                 <div className="flex items-center gap-3">
-                  <span className="font-extrabold text-sm text-gray-900 dark:text-white">
+                  <span className="font-mono font-bold text-xs text-zinc-900 dark:text-zinc-100">
                     {plan.week}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
                     {plan.days}
                   </span>
                 </div>
-                <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
-                  pct === 100 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' :
-                  pct > 0 ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' :
-                  'bg-gray-200 text-gray-600 dark:bg-slate-700 dark:text-gray-400'
+                <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
+                  pct === 100 ? 'border-emerald-500/40 text-emerald-400' :
+                  pct > 0 ? 'border-indigo-500/40 text-indigo-400' :
+                  'border-zinc-700 text-zinc-400'
                 }`}>
                   {pct}% Completed
                 </span>
               </div>
 
               {/* Stats Bar */}
-              <div className="grid grid-cols-4 p-4 border-b border-gray-100 dark:border-slate-800 text-center">
+              <div className="grid grid-cols-4 p-3 border-b border-zinc-200 dark:border-zinc-800 text-center font-mono">
                 <div>
-                  <div className="text-[11px] text-gray-400 uppercase font-semibold">Target</div>
-                  <div className="text-lg font-bold text-gray-800 dark:text-slate-200">{plan.targetCount}</div>
+                  <div className="text-[10px] text-zinc-500 uppercase">Target</div>
+                  <div className="text-base font-bold text-zinc-800 dark:text-zinc-200">{plan.targetCount}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-gray-400 uppercase font-semibold">Solved</div>
-                  <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{solved}</div>
+                  <div className="text-[10px] text-zinc-500 uppercase">Solved</div>
+                  <div className="text-base font-bold text-emerald-600 dark:text-emerald-400">{solved}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-gray-400 uppercase font-semibold">Remaining</div>
-                  <div className="text-lg font-bold text-amber-600 dark:text-amber-400">{plan.targetCount - solved}</div>
+                  <div className="text-[10px] text-zinc-500 uppercase">Remaining</div>
+                  <div className="text-base font-bold text-amber-500 dark:text-amber-400">{plan.targetCount - solved}</div>
                 </div>
                 <div>
-                  <div className="text-[11px] text-gray-400 uppercase font-semibold">Flagged</div>
-                  <div className="text-lg font-bold text-rose-600 dark:text-rose-400">{flagged}</div>
+                  <div className="text-[10px] text-zinc-500 uppercase">Flagged</div>
+                  <div className="text-base font-bold text-rose-500 dark:text-rose-400">{flagged}</div>
                 </div>
               </div>
 
               {/* Topics */}
-              <div className="px-5 py-2.5 bg-gray-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-800 flex flex-wrap items-center gap-1.5 text-xs">
-                <span className="font-semibold text-gray-400 mr-2">Topics:</span>
+              <div className="px-4 py-2 bg-zinc-100/50 dark:bg-zinc-900/50 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center gap-1.5 text-xs">
+                <span className="font-mono text-[11px] text-zinc-500 uppercase mr-2">Topics:</span>
                 {plan.topics.map(t => (
-                  <span key={t} className="px-2 py-0.5 rounded bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-[11px] font-medium">
+                  <span key={t} className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300 text-[11px]">
                     {t}
                   </span>
                 ))}
               </div>
 
               {/* Notes input */}
-              <div className="p-4 flex items-center gap-3">
-                <label className="text-xs font-bold text-gray-500 uppercase whitespace-nowrap">Your Reflection:</label>
+              <div className="p-3 flex items-center gap-3">
+                <label className="text-[11px] font-mono text-zinc-500 uppercase whitespace-nowrap">Your Reflection:</label>
                 <input
                   type="text"
                   placeholder="Key takeaways, difficult algorithms to revisit, interview confidence..."
                   value={rev.notes || ''}
                   onChange={e => handleUpdate(plan.week, 'notes', e.target.value)}
-                  className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-gray-900 dark:text-white focus:outline-none"
+                  className="flex-1 px-2.5 py-1 text-xs rounded-md border border-zinc-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>

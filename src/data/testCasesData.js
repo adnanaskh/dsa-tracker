@@ -5071,239 +5071,963 @@ export const PROBLEM_TEST_CASES = {
     ]
   },
   "61": {
-    "methodName": "intersectionOfTwoArraysIi",
-    "starterCode": "class Solution:\n    def intersectionOfTwoArraysIi(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "intersect",
     "sampleCases": [
       {
+        "stdin": "4\n1 2 2 1\n2\n2 2",
+        "expectedStdout": "2 2",
+        "input": [
+          [
+            1,
+            2,
+            2,
+            1
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "expected": [
+          2,
+          2
+        ]
+      },
+      {
+        "stdin": "3\n4 9 5\n5\n9 4 9 8 4",
+        "expectedStdout": "4 9",
+        "input": [
+          [
+            4,
+            9,
+            5
+          ],
+          [
+            9,
+            4,
+            9,
+            8,
+            4
+          ]
+        ],
+        "expected": [
+          4,
+          9
+        ]
+      },
+      {
+        "stdin": "3\n1 2 3\n3\n4 5 6",
+        "expectedStdout": "",
         "input": [
           [
             1,
             2,
             3
-          ]
-        ],
-        "expected": 3
-      },
-      {
-        "input": [
+          ],
           [
             4,
             5,
             6
           ]
+        ],
+        "expected": []
+      }
+    ],
+    "hiddenCases": [
+      {
+        "stdin": "1\n1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "stdin": "4\n1 1 1 1\n2\n1 1",
+        "expectedStdout": "1 1",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "expected": [
+          1,
+          1
+        ]
+      },
+      {
+        "stdin": "3\n3 1 2\n2\n1 1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            3,
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "expected": [
+          1
+        ]
+      },
+      {
+        "stdin": "2\n2 1\n2\n1 2",
+        "expectedStdout": "1 2",
+        "input": [
+          [
+            2,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": [
+          1,
+          2
+        ]
+      },
+      {
+        "stdin": "6\n1 2 2 3 4 4\n4\n2 2 4 5",
+        "expectedStdout": "2 2 4",
+        "input": [
+          [
+            1,
+            2,
+            2,
+            3,
+            4,
+            4
+          ],
+          [
+            2,
+            2,
+            4,
+            5
+          ]
+        ],
+        "expected": [
+          2,
+          2,
+          4
+        ]
+      },
+      {
+        "stdin": "3\n9 3 7\n6\n3 7 9 3 7 9",
+        "expectedStdout": "3 7 9",
+        "input": [
+          [
+            9,
+            3,
+            7
+          ],
+          [
+            3,
+            7,
+            9,
+            3,
+            7,
+            9
+          ]
+        ],
+        "expected": [
+          3,
+          7,
+          9
+        ]
+      },
+      {
+        "stdin": "3\n100 200 300\n3\n300 200 100",
+        "expectedStdout": "100 200 300",
+        "input": [
+          [
+            100,
+            200,
+            300
+          ],
+          [
+            300,
+            200,
+            100
+          ]
+        ],
+        "expected": [
+          100,
+          200,
+          300
+        ]
+      }
+    ]
+  },
+  "62": {
+    "methodName": "numRescueBoats",
+    "sampleCases": [
+      {
+        "stdin": "2\n1 2\n3",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1,
+            2
+          ],
+          3
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "4\n3 2 2 1\n3",
+        "expectedStdout": "3",
+        "input": [
+          [
+            3,
+            2,
+            2,
+            1
+          ],
+          3
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "4\n3 5 3 4\n5",
+        "expectedStdout": "4",
+        "input": [
+          [
+            3,
+            5,
+            3,
+            4
+          ],
+          5
+        ],
+        "expected": 4
+      }
+    ],
+    "hiddenCases": [
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "5\n1 2 3 4 5\n5",
+        "expectedStdout": "3",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          5
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "4\n5 1 4 2\n6",
+        "expectedStdout": "2",
+        "input": [
+          [
+            5,
+            1,
+            4,
+            2
+          ],
+          6
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "4\n2 2 2 2\n4",
+        "expectedStdout": "2",
+        "input": [
+          [
+            2,
+            2,
+            2,
+            2
+          ],
+          4
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "2\n2 4\n5",
+        "expectedStdout": "2",
+        "input": [
+          [
+            2,
+            4
+          ],
+          5
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "5\n3 8 7 1 4\n9",
+        "expectedStdout": "3",
+        "input": [
+          [
+            3,
+            8,
+            7,
+            1,
+            4
+          ],
+          9
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "4\n3 3 4 5\n5",
+        "expectedStdout": "4",
+        "input": [
+          [
+            3,
+            3,
+            4,
+            5
+          ],
+          5
+        ],
+        "expected": 4
+      }
+    ]
+  },
+  "63": {
+    "methodName": "minSubArrayLen",
+    "sampleCases": [
+      {
+        "stdin": "7\n6\n2 3 1 2 4 3",
+        "expectedStdout": "2",
+        "input": [
+          7,
+          [
+            2,
+            3,
+            1,
+            2,
+            4,
+            3
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "4\n3\n1 4 4",
+        "expectedStdout": "1",
+        "input": [
+          4,
+          [
+            1,
+            4,
+            4
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "11\n8\n1 1 1 1 1 1 1 1",
+        "expectedStdout": "0",
+        "input": [
+          11,
+          [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "hiddenCases": [
+      {
+        "stdin": "10\n5\n1 2 3 4 5",
+        "expectedStdout": "3",
+        "input": [
+          10,
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "5\n6\n2 3 1 1 1 1",
+        "expectedStdout": "2",
+        "input": [
+          5,
+          [
+            2,
+            3,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "15\n5\n1 2 3 4 5",
+        "expectedStdout": "5",
+        "input": [
+          15,
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "100\n10\n5 1 3 5 10 7 4 9 2 8",
+        "expectedStdout": "0",
+        "input": [
+          100,
+          [
+            5,
+            1,
+            3,
+            5,
+            10,
+            7,
+            4,
+            9,
+            2,
+            8
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "6\n6\n10 1 2 3 4 5",
+        "expectedStdout": "1",
+        "input": [
+          6,
+          [
+            10,
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "15\n10\n5 1 3 5 10 7 4 9 2 8",
+        "expectedStdout": "2",
+        "input": [
+          15,
+          [
+            5,
+            1,
+            3,
+            5,
+            10,
+            7,
+            4,
+            9,
+            2,
+            8
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          1,
+          [
+            1
+          ]
+        ],
+        "expected": 1
+      }
+    ]
+  },
+  "64": {
+    "methodName": "threeSumClosest",
+    "sampleCases": [
+      {
+        "stdin": "4\n-1 2 1 -4\n1",
+        "expectedStdout": "2",
+        "input": [
+          [
+            -1,
+            2,
+            1,
+            -4
+          ],
+          1
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "3\n0 0 0\n1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            0,
+            0,
+            0
+          ],
+          1
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "4\n1 1 1 0\n-100",
+        "expectedStdout": "2",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            0
+          ],
+          -100
+        ],
+        "expected": 2
+      }
+    ],
+    "hiddenCases": [
+      {
+        "stdin": "3\n0 1 2\n0",
+        "expectedStdout": "3",
+        "input": [
+          [
+            0,
+            1,
+            2
+          ],
+          0
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "4\n1 1 1 1\n0",
+        "expectedStdout": "3",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          0
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "5\n-3 -2 -5 3 -4\n-1",
+        "expectedStdout": "-2",
+        "input": [
+          [
+            -3,
+            -2,
+            -5,
+            3,
+            -4
+          ],
+          -1
+        ],
+        "expected": -2
+      },
+      {
+        "stdin": "8\n1 2 4 8 16 32 64 128\n82",
+        "expectedStdout": "82",
+        "input": [
+          [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128
+          ],
+          82
+        ],
+        "expected": 82
+      },
+      {
+        "stdin": "7\n4 0 5 -5 3 30 -9\n-2",
+        "expectedStdout": "-2",
+        "input": [
+          [
+            4,
+            0,
+            5,
+            -5,
+            3,
+            30,
+            -9
+          ],
+          -2
+        ],
+        "expected": -2
+      },
+      {
+        "stdin": "5\n-1 0 1 1 55\n3",
+        "expectedStdout": "2",
+        "input": [
+          [
+            -1,
+            0,
+            1,
+            1,
+            55
+          ],
+          3
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "5\n1 2 5 10 11\n12",
+        "expectedStdout": "13",
+        "input": [
+          [
+            1,
+            2,
+            5,
+            10,
+            11
+          ],
+          12
+        ],
+        "expected": 13
+      }
+    ]
+  },
+  "65": {
+    "methodName": "numSubarrayProductLessThanK",
+    "sampleCases": [
+      {
+        "stdin": "4\n10 5 2 6\n100",
+        "expectedStdout": "8",
+        "input": [
+          [
+            10,
+            5,
+            2,
+            6
+          ],
+          100
+        ],
+        "expected": 8
+      },
+      {
+        "stdin": "3\n1 2 3\n0",
+        "expectedStdout": "0",
+        "input": [
+          [
+            1,
+            2,
+            3
+          ],
+          0
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "3\n1 1 1\n2",
+        "expectedStdout": "6",
+        "input": [
+          [
+            1,
+            1,
+            1
+          ],
+          2
         ],
         "expected": 6
       }
     ],
     "hiddenCases": [
       {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
-      }
-    ]
-  },
-  "62": {
-    "methodName": "boatsToSavePeople",
-    "starterCode": "class Solution:\n    def boatsToSavePeople(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
-    "sampleCases": [
-      {
+        "stdin": "3\n1 2 3\n1",
+        "expectedStdout": "0",
         "input": [
           [
             1,
             2,
             3
-          ]
-        ],
-        "expected": 1
-      },
-      {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
-      }
-    ],
-    "hiddenCases": [
-      {
-        "input": [
-          [
-            0
-          ]
+          ],
+          1
         ],
         "expected": 0
-      }
-    ]
-  },
-  "63": {
-    "methodName": "minimumSizeSubarraySum",
-    "starterCode": "class Solution:\n    def minimumSizeSubarraySum(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
-    "sampleCases": [
+      },
       {
+        "stdin": "4\n1 2 3 4\n10",
+        "expectedStdout": "7",
         "input": [
           [
             1,
             2,
-            3
-          ]
+            3,
+            4
+          ],
+          10
         ],
-        "expected": 1
+        "expected": 7
       },
       {
+        "stdin": "13\n10 9 10 4 3 8 3 3 6 2 10 10 9 3\n19",
+        "expectedStdout": "18",
         "input": [
           [
+            10,
+            9,
+            10,
             4,
-            5,
-            6
-          ]
+            3,
+            8,
+            3,
+            3,
+            6,
+            2,
+            10,
+            10,
+            9,
+            3
+          ],
+          19
         ],
-        "expected": 2
-      }
-    ],
-    "hiddenCases": [
+        "expected": 18
+      },
       {
+        "stdin": "1\n5\n5",
+        "expectedStdout": "0",
         "input": [
           [
-            0
-          ]
+            5
+          ],
+          5
         ],
         "expected": 0
-      }
-    ]
-  },
-  "64": {
-    "methodName": "3sumClosest",
-    "starterCode": "class Solution:\n    def 3sumClosest(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
-    "sampleCases": [
+      },
       {
+        "stdin": "1\n5\n6",
+        "expectedStdout": "1",
         "input": [
           [
-            1,
-            2,
-            3
-          ]
+            5
+          ],
+          6
         ],
         "expected": 1
       },
       {
+        "stdin": "3\n2 3 4\n25",
+        "expectedStdout": "6",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
-      }
-    ],
-    "hiddenCases": [
-      {
-        "input": [
-          [
-            0
-          ]
-        ],
-        "expected": 0
-      }
-    ]
-  },
-  "65": {
-    "methodName": "subarrayProductLessThanK",
-    "starterCode": "class Solution:\n    def subarrayProductLessThanK(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
-    "sampleCases": [
-      {
-        "input": [
-          [
-            1,
             2,
-            3
-          ]
+            3,
+            4
+          ],
+          25
         ],
-        "expected": 1
+        "expected": 6
       },
       {
+        "stdin": "3\n100 200 300\n50",
+        "expectedStdout": "0",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
-        ],
-        "expected": 2
-      }
-    ],
-    "hiddenCases": [
-      {
-        "input": [
-          [
-            0
-          ]
+            100,
+            200,
+            300
+          ],
+          50
         ],
         "expected": 0
       }
     ]
   },
   "66": {
-    "methodName": "trap",
-    "starterCode": "class Solution:\n    def trap(self, height: list[int]) -> int:\n        # Write your code here\n        pass",
+    "methodName": "maxProfit",
     "sampleCases": [
       {
+        "stdin": "6\n7 1 5 3 6 4",
+        "expectedStdout": "5",
         "input": [
           [
-            0,
+            7,
             1,
-            0,
-            2,
-            1,
-            0,
-            1,
+            5,
             3,
-            2,
-            1,
-            2,
+            6,
+            4
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "5\n7 6 4 3 1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            7,
+            6,
+            4,
+            3,
             1
           ]
         ],
-        "expected": 6
+        "expected": 0
       },
       {
+        "stdin": "3\n2 4 1",
+        "expectedStdout": "2",
         "input": [
           [
+            2,
             4,
-            2,
-            0,
-            3,
-            2,
-            5
+            1
           ]
         ],
-        "expected": 9
+        "expected": 2
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "1\n1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "2\n1 2",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1,
+            2
+          ]
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "7\n2 1 2 1 0 1 2",
+        "expectedStdout": "2",
         "input": [
           [
             2,
+            1,
+            2,
+            1,
             0,
+            1,
             2
           ]
         ],
         "expected": 2
       },
       {
+        "stdin": "6\n3 2 6 5 0 3",
+        "expectedStdout": "4",
         "input": [
           [
             3,
-            3,
+            2,
+            6,
+            5,
+            0,
             3
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "5\n1 2 3 4 5",
+        "expectedStdout": "4",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "5\n5 4 3 2 100",
+        "expectedStdout": "98",
+        "input": [
+          [
+            5,
+            4,
+            3,
+            2,
+            100
+          ]
+        ],
+        "expected": 98
+      },
+      {
+        "stdin": "10\n10 9 8 7 6 5 4 3 2 1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            10,
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
           ]
         ],
         "expected": 0
@@ -5311,277 +6035,937 @@ export const PROBLEM_TEST_CASES = {
     ]
   },
   "67": {
-    "methodName": "longestSubstringWithoutRepeatingCharacters",
-    "starterCode": "class Solution:\n    def longestSubstringWithoutRepeatingCharacters(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "lengthOfLongestSubstring",
     "sampleCases": [
       {
+        "stdin": "abcabcbb",
+        "expectedStdout": "3",
         "input": [
-          [
-            1,
-            2,
-            3
-          ]
+          "abcabcbb"
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "bbbbb",
+        "expectedStdout": "1",
+        "input": [
+          "bbbbb"
         ],
         "expected": 1
       },
       {
+        "stdin": "pwwkew",
+        "expectedStdout": "3",
         "input": [
-          [
-            4,
-            5,
-            6
-          ]
+          "pwwkew"
         ],
-        "expected": 2
+        "expected": 3
+      },
+      {
+        "stdin": "",
+        "expectedStdout": "0",
+        "input": [
+          ""
+        ],
+        "expected": 0
       }
     ],
     "hiddenCases": [
       {
+        "stdin": " ",
+        "expectedStdout": "1",
         "input": [
-          [
-            0
-          ]
+          " "
         ],
-        "expected": 0
+        "expected": 1
+      },
+      {
+        "stdin": "au",
+        "expectedStdout": "2",
+        "input": [
+          "au"
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "dvdf",
+        "expectedStdout": "3",
+        "input": [
+          "dvdf"
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "abba",
+        "expectedStdout": "2",
+        "input": [
+          "abba"
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "tmmzuxt",
+        "expectedStdout": "5",
+        "input": [
+          "tmmzuxt"
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "abcdefghijklmnopqrstuvwxyz",
+        "expectedStdout": "26",
+        "input": [
+          "abcdefghijklmnopqrstuvwxyz"
+        ],
+        "expected": 26
+      },
+      {
+        "stdin": "aab",
+        "expectedStdout": "2",
+        "input": [
+          "aab"
+        ],
+        "expected": 2
       }
     ]
   },
   "68": {
-    "methodName": "longestRepeatingCharacterReplacement",
-    "starterCode": "class Solution:\n    def longestRepeatingCharacterReplacement(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "characterReplacement",
     "sampleCases": [
       {
+        "stdin": "ABAB\n2",
+        "expectedStdout": "4",
         "input": [
-          [
-            1,
-            2,
-            3
-          ]
+          "ABAB",
+          2
         ],
-        "expected": 1
+        "expected": 4
       },
       {
+        "stdin": "AABABBA\n1",
+        "expectedStdout": "4",
         "input": [
-          [
-            4,
-            5,
-            6
-          ]
+          "AABABBA",
+          1
         ],
-        "expected": 2
+        "expected": 4
+      },
+      {
+        "stdin": "AAAA\n2",
+        "expectedStdout": "4",
+        "input": [
+          "AAAA",
+          2
+        ],
+        "expected": 4
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "ABBB\n2",
+        "expectedStdout": "4",
         "input": [
-          [
-            0
-          ]
+          "ABBB",
+          2
         ],
-        "expected": 0
+        "expected": 4
+      },
+      {
+        "stdin": "ABCDE\n1",
+        "expectedStdout": "2",
+        "input": [
+          "ABCDE",
+          1
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "A\n0",
+        "expectedStdout": "1",
+        "input": [
+          "A",
+          0
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "BAAA\n0",
+        "expectedStdout": "3",
+        "input": [
+          "BAAA",
+          0
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "ABAA\n0",
+        "expectedStdout": "2",
+        "input": [
+          "ABAA",
+          0
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "ABBBBCDEF\n2",
+        "expectedStdout": "6",
+        "input": [
+          "ABBBBCDEF",
+          2
+        ],
+        "expected": 6
+      },
+      {
+        "stdin": "ABCDE\n2",
+        "expectedStdout": "3",
+        "input": [
+          "ABCDE",
+          2
+        ],
+        "expected": 3
       }
     ]
   },
   "69": {
-    "methodName": "permutationInString",
-    "starterCode": "class Solution:\n    def permutationInString(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "checkInclusion",
     "sampleCases": [
       {
+        "stdin": "ab\neidbaooo",
+        "expectedStdout": "true",
         "input": [
-          [
-            1,
-            2,
-            3
-          ]
+          "ab",
+          "eidbaooo"
         ],
-        "expected": 1
+        "expected": true
       },
       {
+        "stdin": "ab\neidboaoo",
+        "expectedStdout": "false",
         "input": [
-          [
-            4,
-            5,
-            6
-          ]
+          "ab",
+          "eidboaoo"
         ],
-        "expected": 2
+        "expected": false
+      },
+      {
+        "stdin": "adc\ndcda",
+        "expectedStdout": "true",
+        "input": [
+          "adc",
+          "dcda"
+        ],
+        "expected": true
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "a\na",
+        "expectedStdout": "true",
         "input": [
-          [
-            0
-          ]
+          "a",
+          "a"
         ],
-        "expected": 0
+        "expected": true
+      },
+      {
+        "stdin": "a\nb",
+        "expectedStdout": "false",
+        "input": [
+          "a",
+          "b"
+        ],
+        "expected": false
+      },
+      {
+        "stdin": "hello\nooolleoooleh",
+        "expectedStdout": "false",
+        "input": [
+          "hello",
+          "ooolleoooleh"
+        ],
+        "expected": false
+      },
+      {
+        "stdin": "ab\na",
+        "expectedStdout": "false",
+        "input": [
+          "ab",
+          "a"
+        ],
+        "expected": false
+      },
+      {
+        "stdin": "aba\nba",
+        "expectedStdout": "false",
+        "input": [
+          "aba",
+          "ba"
+        ],
+        "expected": false
+      },
+      {
+        "stdin": "abc\nbbbca",
+        "expectedStdout": "true",
+        "input": [
+          "abc",
+          "bbbca"
+        ],
+        "expected": true
+      },
+      {
+        "stdin": "trinitrophenylmethylnitramine\ndinitrophenylhydrazine",
+        "expectedStdout": "false",
+        "input": [
+          "trinitrophenylmethylnitramine",
+          "dinitrophenylhydrazine"
+        ],
+        "expected": false
       }
     ]
   },
   "70": {
-    "methodName": "minimumWindowSubstring",
-    "starterCode": "class Solution:\n    def minimumWindowSubstring(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "minWindow",
     "sampleCases": [
       {
+        "stdin": "ADOBECODEBANC\nABC",
+        "expectedStdout": "BANC",
         "input": [
-          [
-            1,
-            2,
-            3
-          ]
+          "ADOBECODEBANC",
+          "ABC"
         ],
-        "expected": 1
+        "expected": "BANC"
       },
       {
+        "stdin": "a\na",
+        "expectedStdout": "a",
         "input": [
-          [
-            4,
-            5,
-            6
-          ]
+          "a",
+          "a"
         ],
-        "expected": 2
+        "expected": "a"
+      },
+      {
+        "stdin": "a\naa",
+        "expectedStdout": "",
+        "input": [
+          "a",
+          "aa"
+        ],
+        "expected": ""
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "aa\naa",
+        "expectedStdout": "aa",
         "input": [
-          [
-            0
-          ]
+          "aa",
+          "aa"
         ],
-        "expected": 0
+        "expected": "aa"
+      },
+      {
+        "stdin": "ab\nb",
+        "expectedStdout": "b",
+        "input": [
+          "ab",
+          "b"
+        ],
+        "expected": "b"
+      },
+      {
+        "stdin": "bba\nab",
+        "expectedStdout": "ba",
+        "input": [
+          "bba",
+          "ab"
+        ],
+        "expected": "ba"
+      },
+      {
+        "stdin": "cabwefgewcwaefgcf\ncae",
+        "expectedStdout": "cwae",
+        "input": [
+          "cabwefgewcwaefgcf",
+          "cae"
+        ],
+        "expected": "cwae"
+      },
+      {
+        "stdin": "bdab\nab",
+        "expectedStdout": "ab",
+        "input": [
+          "bdab",
+          "ab"
+        ],
+        "expected": "ab"
+      },
+      {
+        "stdin": "aaaaaaaaaaaabbbbbcdd\nabcdd",
+        "expectedStdout": "abbbbbcdd",
+        "input": [
+          "aaaaaaaaaaaabbbbbcdd",
+          "abcdd"
+        ],
+        "expected": "abbbbbcdd"
+      },
+      {
+        "stdin": "a\nb",
+        "expectedStdout": "",
+        "input": [
+          "a",
+          "b"
+        ],
+        "expected": ""
       }
     ]
   },
   "71": {
-    "methodName": "slidingWindowMaximum",
-    "starterCode": "class Solution:\n    def slidingWindowMaximum(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "maxSlidingWindow",
     "sampleCases": [
       {
+        "stdin": "8\n1 3 -1 -3 5 3 6 7\n3",
+        "expectedStdout": "3 3 5 5 6 7",
         "input": [
           [
             1,
-            2,
-            3
-          ]
+            3,
+            -1,
+            -3,
+            5,
+            3,
+            6,
+            7
+          ],
+          3
         ],
-        "expected": 1
+        "expected": [
+          3,
+          3,
+          5,
+          5,
+          6,
+          7
+        ]
       },
       {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            1
+          ],
+          1
         ],
-        "expected": 2
+        "expected": [
+          1
+        ]
+      },
+      {
+        "stdin": "2\n1 -1\n1",
+        "expectedStdout": "1 -1",
+        "input": [
+          [
+            1,
+            -1
+          ],
+          1
+        ],
+        "expected": [
+          1,
+          -1
+        ]
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "2\n9 11\n2",
+        "expectedStdout": "11",
         "input": [
           [
-            0
-          ]
+            9,
+            11
+          ],
+          2
         ],
-        "expected": 0
+        "expected": [
+          11
+        ]
+      },
+      {
+        "stdin": "2\n4 -2\n2",
+        "expectedStdout": "4",
+        "input": [
+          [
+            4,
+            -2
+          ],
+          2
+        ],
+        "expected": [
+          4
+        ]
+      },
+      {
+        "stdin": "3\n7 2 4\n2",
+        "expectedStdout": "7 4",
+        "input": [
+          [
+            7,
+            2,
+            4
+          ],
+          2
+        ],
+        "expected": [
+          7,
+          4
+        ]
+      },
+      {
+        "stdin": "6\n1 3 1 2 0 5\n3",
+        "expectedStdout": "3 3 2 5",
+        "input": [
+          [
+            1,
+            3,
+            1,
+            2,
+            0,
+            5
+          ],
+          3
+        ],
+        "expected": [
+          3,
+          3,
+          2,
+          5
+        ]
+      },
+      {
+        "stdin": "9\n9 8 7 6 5 4 3 2 1\n4",
+        "expectedStdout": "9 8 7 6 5 4",
+        "input": [
+          [
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1
+          ],
+          4
+        ],
+        "expected": [
+          9,
+          8,
+          7,
+          6,
+          5,
+          4
+        ]
+      },
+      {
+        "stdin": "8\n1 2 3 4 5 6 7 8\n3",
+        "expectedStdout": "3 4 5 6 7 8",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          3
+        ],
+        "expected": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "stdin": "8\n-7 -8 7 5 7 1 6 0\n4",
+        "expectedStdout": "7 7 7 7 7",
+        "input": [
+          [
+            -7,
+            -8,
+            7,
+            5,
+            7,
+            1,
+            6,
+            0
+          ],
+          4
+        ],
+        "expected": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
       }
     ]
   },
   "72": {
-    "methodName": "maximumAverageSubarrayI",
-    "starterCode": "class Solution:\n    def maximumAverageSubarrayI(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "findMaxAverage",
     "sampleCases": [
       {
+        "stdin": "6\n1 12 -5 -6 50 3\n4",
+        "expectedStdout": "12.75",
         "input": [
           [
             1,
-            2,
+            12,
+            -5,
+            -6,
+            50,
             3
-          ]
+          ],
+          4
         ],
-        "expected": 1
+        "expected": 12.75
       },
       {
+        "stdin": "1\n5\n1",
+        "expectedStdout": "5",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            5
+          ],
+          1
         ],
-        "expected": 2
+        "expected": 5
+      },
+      {
+        "stdin": "5\n0 4 0 3 2\n1",
+        "expectedStdout": "4",
+        "input": [
+          [
+            0,
+            4,
+            0,
+            3,
+            2
+          ],
+          1
+        ],
+        "expected": 4
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "5\n0 1 1 3 3\n4",
+        "expectedStdout": "2",
         "input": [
           [
-            0
-          ]
+            0,
+            1,
+            1,
+            3,
+            3
+          ],
+          4
         ],
-        "expected": 0
+        "expected": 2
+      },
+      {
+        "stdin": "1\n-1\n1",
+        "expectedStdout": "-1",
+        "input": [
+          [
+            -1
+          ],
+          1
+        ],
+        "expected": -1
+      },
+      {
+        "stdin": "5\n4 2 1 3 3\n2",
+        "expectedStdout": "3",
+        "input": [
+          [
+            4,
+            2,
+            1,
+            3,
+            3
+          ],
+          2
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "10\n7 4 5 8 8 3 9 8 7 6\n7",
+        "expectedStdout": "7",
+        "input": [
+          [
+            7,
+            4,
+            5,
+            8,
+            8,
+            3,
+            9,
+            8,
+            7,
+            6
+          ],
+          7
+        ],
+        "expected": 7
+      },
+      {
+        "stdin": "5\n3 3 4 3 0\n3",
+        "expectedStdout": "3.3333333333333335",
+        "input": [
+          [
+            3,
+            3,
+            4,
+            3,
+            0
+          ],
+          3
+        ],
+        "expected": 3.3333333333333335
+      },
+      {
+        "stdin": "10\n8 0 1 7 8 6 5 5 6 7\n5",
+        "expectedStdout": "6.2",
+        "input": [
+          [
+            8,
+            0,
+            1,
+            7,
+            8,
+            6,
+            5,
+            5,
+            6,
+            7
+          ],
+          5
+        ],
+        "expected": 6.2
+      },
+      {
+        "stdin": "5\n1 2 3 4 5\n5",
+        "expectedStdout": "3",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          5
+        ],
+        "expected": 3
       }
     ]
   },
   "73": {
-    "methodName": "fruitIntoBaskets",
-    "starterCode": "class Solution:\n    def fruitIntoBaskets(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "totalFruit",
     "sampleCases": [
       {
+        "stdin": "3\n1 2 1",
+        "expectedStdout": "3",
         "input": [
           [
             1,
             2,
-            3
+            1
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "4\n0 1 2 2",
+        "expectedStdout": "3",
+        "input": [
+          [
+            0,
+            1,
+            2,
+            2
+          ]
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "5\n1 2 3 2 2",
+        "expectedStdout": "4",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            2,
+            2
+          ]
+        ],
+        "expected": 4
+      }
+    ],
+    "hiddenCases": [
+      {
+        "stdin": "11\n3 3 3 1 2 1 1 2 3 3 4",
+        "expectedStdout": "5",
+        "input": [
+          [
+            3,
+            3,
+            3,
+            1,
+            2,
+            1,
+            1,
+            2,
+            3,
+            3,
+            4
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
           ]
         ],
         "expected": 1
       },
       {
+        "stdin": "4\n1 1 1 1",
+        "expectedStdout": "4",
         "input": [
           [
-            4,
-            5,
-            6
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "2\n1 2",
+        "expectedStdout": "2",
+        "input": [
+          [
+            1,
+            2
           ]
         ],
         "expected": 2
-      }
-    ],
-    "hiddenCases": [
+      },
       {
+        "stdin": "6\n1 2 1 2 1 2",
+        "expectedStdout": "6",
         "input": [
           [
-            0
+            1,
+            2,
+            1,
+            2,
+            1,
+            2
           ]
         ],
-        "expected": 0
+        "expected": 6
+      },
+      {
+        "stdin": "4\n0 0 1 1",
+        "expectedStdout": "4",
+        "input": [
+          [
+            0,
+            0,
+            1,
+            1
+          ]
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "7\n6 2 1 1 3 6 6",
+        "expectedStdout": "3",
+        "input": [
+          [
+            6,
+            2,
+            1,
+            1,
+            3,
+            6,
+            6
+          ]
+        ],
+        "expected": 3
       }
     ]
   },
   "74": {
-    "methodName": "longestSubarrayOf1sAfterDeletingOneElement",
-    "starterCode": "class Solution:\n    def longestSubarrayOf1sAfterDeletingOneElement(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "longestSubarray",
     "sampleCases": [
       {
+        "stdin": "4\n1 1 0 1",
+        "expectedStdout": "3",
         "input": [
           [
             1,
-            2,
-            3
+            1,
+            0,
+            1
           ]
         ],
-        "expected": 1
+        "expected": 3
       },
       {
+        "stdin": "9\n0 1 1 1 0 1 1 0 1",
+        "expectedStdout": "5",
         "input": [
           [
-            4,
-            5,
-            6
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "3\n1 1 1",
+        "expectedStdout": "2",
+        "input": [
+          [
+            1,
+            1,
+            1
           ]
         ],
         "expected": 2
@@ -5589,228 +6973,997 @@ export const PROBLEM_TEST_CASES = {
     ],
     "hiddenCases": [
       {
+        "stdin": "3\n0 0 0",
+        "expectedStdout": "0",
+        "input": [
+          [
+            0,
+            0,
+            0
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "1\n1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "1\n0",
+        "expectedStdout": "0",
         "input": [
           [
             0
           ]
         ],
         "expected": 0
+      },
+      {
+        "stdin": "14\n1 0 1 1 1 1 1 1 0 1 1 1 1 1",
+        "expectedStdout": "11",
+        "input": [
+          [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": 11
+      },
+      {
+        "stdin": "6\n1 1 0 0 1 1",
+        "expectedStdout": "2",
+        "input": [
+          [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "7\n0 1 1 1 1 1 0",
+        "expectedStdout": "5",
+        "input": [
+          [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ]
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "9\n1 1 1 1 0 1 1 1 1",
+        "expectedStdout": "8",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": 8
       }
     ]
   },
   "75": {
-    "methodName": "subarraysWithKDifferentIntegers",
-    "starterCode": "class Solution:\n    def subarraysWithKDifferentIntegers(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "subarraysWithKDistinct",
     "sampleCases": [
       {
+        "stdin": "5\n1 2 1 2 3\n2",
+        "expectedStdout": "7",
         "input": [
           [
             1,
             2,
+            1,
+            2,
             3
-          ]
+          ],
+          2
         ],
-        "expected": 1
+        "expected": 7
       },
       {
+        "stdin": "5\n1 2 1 3 4\n3",
+        "expectedStdout": "3",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            1,
+            2,
+            1,
+            3,
+            4
+          ],
+          3
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "2\n1 2\n1",
+        "expectedStdout": "2",
+        "input": [
+          [
+            1,
+            2
+          ],
+          1
         ],
         "expected": 2
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "4\n1 1 1 1\n1",
+        "expectedStdout": "10",
         "input": [
           [
-            0
-          ]
+            1,
+            1,
+            1,
+            1
+          ],
+          1
         ],
-        "expected": 0
+        "expected": 10
+      },
+      {
+        "stdin": "5\n1 2 3 4 5\n1",
+        "expectedStdout": "5",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          1
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "5\n1 2 3 4 5\n5",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          5
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "5\n2 1 1 1 2\n1",
+        "expectedStdout": "8",
+        "input": [
+          [
+            2,
+            1,
+            1,
+            1,
+            2
+          ],
+          1
+        ],
+        "expected": 8
+      },
+      {
+        "stdin": "5\n2 1 2 1 2\n2",
+        "expectedStdout": "10",
+        "input": [
+          [
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          2
+        ],
+        "expected": 10
+      },
+      {
+        "stdin": "6\n1 2 1 2 1 2\n2",
+        "expectedStdout": "15",
+        "input": [
+          [
+            1,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          2
+        ],
+        "expected": 15
+      },
+      {
+        "stdin": "8\n1 1 2 2 3 3 4 4\n2",
+        "expectedStdout": "12",
+        "input": [
+          [
+            1,
+            1,
+            2,
+            2,
+            3,
+            3,
+            4,
+            4
+          ],
+          2
+        ],
+        "expected": 12
       }
     ]
   },
   "76": {
-    "methodName": "maxConsecutiveOnesIii",
-    "starterCode": "class Solution:\n    def maxConsecutiveOnesIii(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "longestOnes",
     "sampleCases": [
       {
+        "stdin": "11\n1 1 1 0 0 0 1 1 1 1 0\n2",
+        "expectedStdout": "6",
         "input": [
           [
             1,
-            2,
-            3
-          ]
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          2
         ],
-        "expected": 1
+        "expected": 6
       },
       {
+        "stdin": "19\n0 0 1 1 0 0 1 1 1 0 1 1 0 0 0 1 1 1 1\n3",
+        "expectedStdout": "10",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          3
         ],
-        "expected": 2
+        "expected": 10
+      },
+      {
+        "stdin": "4\n0 0 0 0\n0",
+        "expectedStdout": "0",
+        "input": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          0
+        ],
+        "expected": 0
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "4\n1 1 1 1\n0",
+        "expectedStdout": "4",
         "input": [
           [
-            0
-          ]
+            1,
+            1,
+            1,
+            1
+          ],
+          0
         ],
-        "expected": 0
+        "expected": 4
+      },
+      {
+        "stdin": "4\n0 0 0 0\n2",
+        "expectedStdout": "2",
+        "input": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          2
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "5\n1 0 1 0 1\n1",
+        "expectedStdout": "3",
+        "input": [
+          [
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          1
+        ],
+        "expected": 3
+      },
+      {
+        "stdin": "8\n1 1 0 1 1 0 1 1\n1",
+        "expectedStdout": "5",
+        "input": [
+          [
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          1
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "7\n0 1 0 1 0 1 0\n2",
+        "expectedStdout": "5",
+        "input": [
+          [
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          2
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "22\n1 0 0 0 1 1 0 0 1 1 0 0 0 0 0 1 1 1 1 1 1 0\n4",
+        "expectedStdout": "10",
+        "input": [
+          [
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+          ],
+          4
+        ],
+        "expected": 10
       }
     ]
   },
   "77": {
-    "methodName": "countNumberOfNiceSubarrays",
-    "starterCode": "class Solution:\n    def countNumberOfNiceSubarrays(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "numberOfSubarrays",
     "sampleCases": [
       {
+        "stdin": "5\n1 1 2 1 1\n3",
+        "expectedStdout": "2",
         "input": [
           [
             1,
+            1,
             2,
-            3
-          ]
-        ],
-        "expected": 1
-      },
-      {
-        "input": [
-          [
-            4,
-            5,
-            6
-          ]
+            1,
+            1
+          ],
+          3
         ],
         "expected": 2
+      },
+      {
+        "stdin": "3\n2 4 6\n1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            2,
+            4,
+            6
+          ],
+          1
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "10\n2 2 2 1 2 2 1 2 2 2\n2",
+        "expectedStdout": "16",
+        "input": [
+          [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2,
+            1,
+            2,
+            2,
+            2
+          ],
+          2
+        ],
+        "expected": 16
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "5\n1 1 1 1 1\n1",
+        "expectedStdout": "5",
         "input": [
           [
-            0
-          ]
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          1
         ],
-        "expected": 0
+        "expected": 5
+      },
+      {
+        "stdin": "5\n1 1 1 1 1\n5",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          5
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "4\n2 2 2 2\n0",
+        "expectedStdout": "10",
+        "input": [
+          [
+            2,
+            2,
+            2,
+            2
+          ],
+          0
+        ],
+        "expected": 10
+      },
+      {
+        "stdin": "5\n1 2 1 2 1\n2",
+        "expectedStdout": "4",
+        "input": [
+          [
+            1,
+            2,
+            1,
+            2,
+            1
+          ],
+          2
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "7\n2 1 2 1 2 1 2\n2",
+        "expectedStdout": "8",
+        "input": [
+          [
+            2,
+            1,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          2
+        ],
+        "expected": 8
+      },
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "10\n1 1 2 1 2 2 2 2 1 1\n3",
+        "expectedStdout": "8",
+        "input": [
+          [
+            1,
+            1,
+            2,
+            1,
+            2,
+            2,
+            2,
+            2,
+            1,
+            1
+          ],
+          3
+        ],
+        "expected": 8
       }
     ]
   },
   "78": {
-    "methodName": "binarySubarraysWithSum",
-    "starterCode": "class Solution:\n    def binarySubarraysWithSum(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "numSubarraysWithSum",
     "sampleCases": [
       {
+        "stdin": "5\n1 0 1 0 1\n2",
+        "expectedStdout": "4",
         "input": [
           [
             1,
-            2,
-            3
-          ]
+            0,
+            1,
+            0,
+            1
+          ],
+          2
         ],
-        "expected": 1
+        "expected": 4
       },
       {
+        "stdin": "5\n0 0 0 0 0\n0",
+        "expectedStdout": "15",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          0
         ],
-        "expected": 2
+        "expected": 15
+      },
+      {
+        "stdin": "5\n1 1 1 1 1\n3",
+        "expectedStdout": "3",
+        "input": [
+          [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          3
+        ],
+        "expected": 3
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "3\n1 1 1\n0",
+        "expectedStdout": "0",
+        "input": [
+          [
+            1,
+            1,
+            1
+          ],
+          0
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "1\n0\n0",
+        "expectedStdout": "1",
         "input": [
           [
             0
-          ]
+          ],
+          0
         ],
-        "expected": 0
+        "expected": 1
+      },
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "1",
+        "input": [
+          [
+            1
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "7\n1 0 1 0 1 0 1\n3",
+        "expectedStdout": "4",
+        "input": [
+          [
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1
+          ],
+          3
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "5\n0 1 0 1 0\n1",
+        "expectedStdout": "8",
+        "input": [
+          [
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          1
+        ],
+        "expected": 8
+      },
+      {
+        "stdin": "7\n1 0 0 1 0 0 1\n2",
+        "expectedStdout": "6",
+        "input": [
+          [
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          2
+        ],
+        "expected": 6
+      },
+      {
+        "stdin": "5\n0 0 0 0 1\n1",
+        "expectedStdout": "5",
+        "input": [
+          [
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          1
+        ],
+        "expected": 5
       }
     ]
   },
   "79": {
-    "methodName": "numberOfSubstringsContainingAllThreeCharacters",
-    "starterCode": "class Solution:\n    def numberOfSubstringsContainingAllThreeCharacters(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "numberOfSubstrings",
     "sampleCases": [
       {
+        "stdin": "abcabc",
+        "expectedStdout": "10",
         "input": [
-          [
-            1,
-            2,
-            3
-          ]
+          "abcabc"
         ],
-        "expected": 1
+        "expected": 10
       },
       {
+        "stdin": "aaacb",
+        "expectedStdout": "3",
         "input": [
-          [
-            4,
-            5,
-            6
-          ]
+          "aaacb"
         ],
-        "expected": 2
+        "expected": 3
+      },
+      {
+        "stdin": "abc",
+        "expectedStdout": "1",
+        "input": [
+          "abc"
+        ],
+        "expected": 1
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "a",
+        "expectedStdout": "0",
         "input": [
-          [
-            0
-          ]
+          "a"
         ],
         "expected": 0
+      },
+      {
+        "stdin": "ab",
+        "expectedStdout": "0",
+        "input": [
+          "ab"
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "acb",
+        "expectedStdout": "1",
+        "input": [
+          "acb"
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "abacb",
+        "expectedStdout": "5",
+        "input": [
+          "abacb"
+        ],
+        "expected": 5
+      },
+      {
+        "stdin": "aaaa",
+        "expectedStdout": "0",
+        "input": [
+          "aaaa"
+        ],
+        "expected": 0
+      },
+      {
+        "stdin": "aabbcc",
+        "expectedStdout": "4",
+        "input": [
+          "aabbcc"
+        ],
+        "expected": 4
+      },
+      {
+        "stdin": "cbaabc",
+        "expectedStdout": "7",
+        "input": [
+          "cbaabc"
+        ],
+        "expected": 7
       }
     ]
   },
   "80": {
-    "methodName": "minimumNumberOfKConsecutiveBitFlips",
-    "starterCode": "class Solution:\n    def minimumNumberOfKConsecutiveBitFlips(self, nums: list[int] = None) -> any:\n        # Write your code here\n        pass",
+    "methodName": "minKBitFlips",
     "sampleCases": [
       {
+        "stdin": "3\n0 1 0\n1",
+        "expectedStdout": "2",
+        "input": [
+          [
+            0,
+            1,
+            0
+          ],
+          1
+        ],
+        "expected": 2
+      },
+      {
+        "stdin": "3\n1 1 0\n2",
+        "expectedStdout": "-1",
         "input": [
           [
             1,
-            2,
-            3
-          ]
+            1,
+            0
+          ],
+          2
         ],
-        "expected": 1
+        "expected": -1
       },
       {
+        "stdin": "8\n0 0 0 1 0 1 1 0\n3",
+        "expectedStdout": "3",
         "input": [
           [
-            4,
-            5,
-            6
-          ]
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0
+          ],
+          3
         ],
-        "expected": 2
+        "expected": 3
       }
     ],
     "hiddenCases": [
       {
+        "stdin": "1\n0\n1",
+        "expectedStdout": "1",
         "input": [
           [
             0
-          ]
+          ],
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "1\n1\n1",
+        "expectedStdout": "0",
+        "input": [
+          [
+            1
+          ],
+          1
         ],
         "expected": 0
+      },
+      {
+        "stdin": "2\n0 0\n2",
+        "expectedStdout": "1",
+        "input": [
+          [
+            0,
+            0
+          ],
+          2
+        ],
+        "expected": 1
+      },
+      {
+        "stdin": "2\n0 1\n2",
+        "expectedStdout": "-1",
+        "input": [
+          [
+            0,
+            1
+          ],
+          2
+        ],
+        "expected": -1
+      },
+      {
+        "stdin": "3\n1 0 1\n2",
+        "expectedStdout": "-1",
+        "input": [
+          [
+            1,
+            0,
+            1
+          ],
+          2
+        ],
+        "expected": -1
+      },
+      {
+        "stdin": "5\n0 0 0 0 0\n3",
+        "expectedStdout": "-1",
+        "input": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          3
+        ],
+        "expected": -1
+      },
+      {
+        "stdin": "5\n0 0 0 0 0\n1",
+        "expectedStdout": "5",
+        "input": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          1
+        ],
+        "expected": 5
       }
     ]
   },
@@ -13173,18 +15326,8 @@ export const PROBLEM_TEST_CASES = {
   }
 };
 
-export function getProblemTestSuite(questionId, fallbackQuestion = {}) {
-  const idStr = String(questionId);
-  if (PROBLEM_TEST_CASES[idStr]) {
-    return PROBLEM_TEST_CASES[idStr];
-  }
-  return {
-    methodName: "solve",
-    sampleCases: [
-      { stdin: "sample_input", expectedStdout: "sample_output", input: ["sample_input"], expected: "sample_output" }
-    ],
-    hiddenCases: [
-      { stdin: "hidden_input", expectedStdout: "hidden_output", input: ["hidden_input"], expected: "hidden_output" }
-    ]
-  };
+export function getProblemTestSuite(questionId) {
+  const strId = String(questionId);
+  return PROBLEM_TEST_CASES[strId] || { sampleCases: [], hiddenCases: [] };
 }
+

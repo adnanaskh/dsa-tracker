@@ -287,61 +287,76 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
         isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
       }`;
     }
-    if (count <= 5) {
-      return `bg-emerald-600 dark:bg-emerald-500 text-white border border-emerald-600 dark:border-emerald-400 hover:ring-1 hover:ring-emerald-400 ${
-        isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
+    if (count === 0) {
+      return `bg-zinc-900 border border-zinc-800/80 text-zinc-600 hover:border-zinc-600 ${
+        isToday ? 'ring-1 ring-zinc-500' : ''
       }`;
     }
-    return `bg-emerald-700 dark:bg-emerald-400 text-white border border-emerald-800 dark:border-emerald-300 shadow-xs hover:ring-1 hover:ring-emerald-300 ${
-      isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
+    if (count === 1) {
+      return `bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 hover:border-emerald-500 ${
+        isToday ? 'ring-1 ring-emerald-500' : ''
+      }`;
+    }
+    if (count <= 3) {
+      return `bg-emerald-800 text-emerald-100 border border-emerald-700 hover:border-emerald-400 ${
+        isToday ? 'ring-1 ring-emerald-400' : ''
+      }`;
+    }
+    if (count <= 5) {
+      return `bg-emerald-600 text-white border border-emerald-500 hover:border-emerald-300 ${
+        isToday ? 'ring-1 ring-emerald-300' : ''
+      }`;
+    }
+    return `bg-emerald-500 text-zinc-950 font-bold border border-emerald-400 hover:border-emerald-200 ${
+      isToday ? 'ring-1 ring-emerald-200' : ''
     }`;
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded-xl p-5 shadow-xs mb-6 transition-colors">
+    <div className="bg-[#18181b] border border-zinc-800 rounded-md p-4 mb-5">
       {/* Top Banner Stats */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 dark:border-slate-800 pb-4 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800 pb-3.5 mb-3.5">
         <div>
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-emerald-500" />
-            <h3 className="text-base font-bold text-gray-900 dark:text-slate-100">
-              Study Activity & Practice Heatmap
+            <Calendar className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-sm font-semibold text-zinc-100">
+              Study Activity & Heatmap
             </h3>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          <p className="text-xs text-zinc-400 mt-0.5 font-mono text-[11px]">
             {yearStats.yearTotalActivity} {yearStats.yearTotalActivity === 1 ? 'submission' : 'submissions'} in {selectedYear} • {yearStats.yearActiveDays} active {yearStats.yearActiveDays === 1 ? 'day' : 'days'}
           </p>
         </div>
 
         {/* Global Streak & Best Streak Indicators */}
-        <div className="flex items-center gap-4 sm:gap-6 text-sm">
+        <div className="flex items-center gap-4 sm:gap-6 text-xs">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/50">
-              <Flame className="w-5 h-5 fill-amber-500 animate-pulse" />
+            <div className="p-1.5 rounded border border-amber-500/40 bg-zinc-900 text-amber-400">
+              <Flame className="w-4 h-4 fill-amber-500" />
             </div>
             <div>
-              <div className="text-[11px] text-gray-500 uppercase tracking-wider font-bold">Current Streak</div>
-              <div className="text-lg font-extrabold text-gray-900 dark:text-slate-100">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono">Current Streak</div>
+              <div className="text-sm font-bold text-zinc-100 font-mono">
                 {currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/50">
-              <Award className="w-5 h-5" />
+            <div className="p-1.5 rounded border border-zinc-700 bg-zinc-900 text-zinc-300">
+              <Award className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-[11px] text-gray-500 uppercase tracking-wider font-bold">Best Streak</div>
-              <div className="text-lg font-extrabold text-gray-900 dark:text-slate-100">
+              <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono">Best Streak</div>
+              <div className="text-sm font-bold text-zinc-100 font-mono">
                 {maxStreak} Days
               </div>
             </div>
           </div>
 
-          <div className="hidden md:block text-right pl-2 border-l border-gray-200 dark:border-slate-800">
-            <div className="text-[11px] text-gray-500 uppercase tracking-wider font-bold">All-Time Active</div>
-            <div className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
+          <div className="hidden md:block text-right pl-2 border-l border-zinc-800">
+            <div className="text-[10px] text-zinc-500 uppercase tracking-wider font-mono">All-Time Active</div>
+            <div className="text-sm font-bold text-emerald-400 font-mono">
               {totalActiveDays} Days
             </div>
           </div>
@@ -356,17 +371,17 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
             type="button"
             onClick={() => setSelectedYear(prev => Math.max(baseYear, prev - 1))}
             disabled={selectedYear <= baseYear}
-            className={`p-1.5 rounded-md border text-xs flex items-center justify-center transition-all ${
+            className={`p-1 rounded border text-xs flex items-center justify-center transition-colors ${
               selectedYear <= baseYear
-                ? 'opacity-40 cursor-not-allowed border-gray-200 dark:border-slate-800 text-gray-400'
-                : 'border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200 cursor-pointer active:scale-95'
+                ? 'opacity-40 cursor-not-allowed border-zinc-800 text-zinc-600'
+                : 'border-zinc-700 hover:bg-zinc-800 text-zinc-300 cursor-pointer'
             }`}
             title="Previous Year"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center gap-1 bg-gray-100 dark:bg-slate-800/80 p-0.5 rounded-lg border border-gray-200 dark:border-slate-700/80">
+          <div className="flex items-center gap-1 bg-zinc-900 p-0.5 rounded border border-zinc-800">
             {availableYears.map(year => {
               const isSelected = year === selectedYear;
               const hasActivity = Object.keys(dateCounts).some(d => d.startsWith(`${year}-`));
@@ -376,10 +391,10 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
                   key={year}
                   type="button"
                   onClick={() => setSelectedYear(year)}
-                  className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-0.5 rounded text-xs font-mono font-medium transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-white dark:bg-emerald-600 text-emerald-700 dark:text-white shadow-xs'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-700/50'
+                      ? 'bg-zinc-800 text-zinc-100 border border-zinc-700'
+                      : 'text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
                   <span>{year}</span>
@@ -395,10 +410,10 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
             type="button"
             onClick={() => setSelectedYear(prev => Math.min(maxYear, prev + 1))}
             disabled={selectedYear >= maxYear}
-            className={`p-1.5 rounded-md border text-xs flex items-center justify-center transition-all ${
+            className={`p-1 rounded border text-xs flex items-center justify-center transition-colors ${
               selectedYear >= maxYear
-                ? 'opacity-40 cursor-not-allowed border-gray-200 dark:border-slate-800 text-gray-400'
-                : 'border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-gray-200 cursor-pointer active:scale-95'
+                ? 'opacity-40 cursor-not-allowed border-zinc-800 text-zinc-600'
+                : 'border-zinc-700 hover:bg-zinc-800 text-zinc-300 cursor-pointer'
             }`}
             title="Next Year"
           >
@@ -409,10 +424,10 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
             <button
               type="button"
               onClick={() => setSelectedYear(currentCalendarYear)}
-              className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:underline ml-1 cursor-pointer flex items-center gap-1"
+              className="text-[11px] font-mono text-emerald-400 hover:underline ml-1 cursor-pointer flex items-center gap-1"
             >
               <Sparkles className="w-3 h-3" />
-              Current Year ({currentCalendarYear})
+              Current ({currentCalendarYear})
             </button>
           )}
         </div>

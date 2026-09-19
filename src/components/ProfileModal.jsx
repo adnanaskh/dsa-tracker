@@ -500,16 +500,16 @@ export default function ProfileModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
-      <div className="w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92vh] my-auto animate-in fade-in zoom-in-95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 overflow-y-auto">
+      <div className="w-full max-w-2xl bg-[#18181b] rounded-md border border-zinc-800 overflow-hidden flex flex-col max-h-[92vh] my-auto">
         
-        {/* LeetCode-Style Top Profile Banner */}
-        <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-5 sm:p-6 relative border-b border-slate-800">
+        {/* Top Profile Header */}
+        <div className="bg-[#18181b] text-zinc-100 p-4 sm:p-5 relative border-b border-zinc-800">
           <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-0">
-              {/* Avatar Photo with Ring */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-blue-600 p-0.5 shadow-lg shrink-0">
-                <div className="w-full h-full rounded-2xl bg-slate-900 flex items-center justify-center text-2xl font-black text-white overflow-hidden">
+            <div className="flex items-center gap-3.5 min-w-0">
+              {/* Avatar Photo */}
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded border border-zinc-700 bg-zinc-900 p-0.5 shrink-0 overflow-hidden">
+                <div className="w-full h-full rounded bg-zinc-900 flex items-center justify-center text-xl font-bold text-zinc-200 overflow-hidden">
                   {displayUser.photoURL ? (
                     <img src={displayUser.photoURL} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -520,29 +520,29 @@ export default function ProfileModal({
 
               {/* Names & Metadata */}
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-lg sm:text-2xl font-extrabold truncate text-white">
+                <div className="flex items-center gap-2 flex-wrap font-sans">
+                  <h2 className="text-base sm:text-lg font-bold truncate text-zinc-100">
                     {displayUser.displayName}
                   </h2>
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="font-mono text-[11px] px-1.5 py-0.5 rounded border border-zinc-700 text-zinc-400 bg-zinc-900">
                     @{displayUser.username}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 line-clamp-2 mt-1 leading-relaxed">
+                <p className="text-xs text-zinc-400 line-clamp-2 mt-1 leading-relaxed">
                   {displayUser.bio}
                 </p>
 
                 {/* Social & Cloud Status Row */}
-                <div className="flex items-center gap-3 mt-2.5 text-xs text-slate-300 flex-wrap">
+                <div className="flex items-center gap-2 mt-2 text-xs text-zinc-400 flex-wrap">
                   {displayUser.linkedin && (
                     <a
                       href={displayUser.linkedin.startsWith('http') ? displayUser.linkedin : `https://${displayUser.linkedin}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[#0a66c2] hover:underline font-semibold bg-white/10 px-2 py-0.5 rounded"
+                      className="inline-flex items-center gap-1 text-indigo-400 hover:underline border border-zinc-700 bg-zinc-900 px-2 py-0.5 rounded text-[11px]"
                     >
-                      <LinkedinIcon className="w-3.5 h-3.5" />
+                      <LinkedinIcon className="w-3 h-3" />
                       <span>LinkedIn</span>
                     </a>
                   )}
@@ -552,9 +552,9 @@ export default function ProfileModal({
                       href={displayUser.github.startsWith('http') ? displayUser.github : `https://${displayUser.github}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-slate-200 hover:underline font-semibold bg-white/10 px-2 py-0.5 rounded"
+                      className="inline-flex items-center gap-1 text-zinc-300 hover:underline border border-zinc-700 bg-zinc-900 px-2 py-0.5 rounded text-[11px]"
                     >
-                      <GithubIcon className="w-3.5 h-3.5" />
+                      <GithubIcon className="w-3 h-3" />
                       <span>GitHub</span>
                     </a>
                   )}
@@ -568,30 +568,30 @@ export default function ProfileModal({
                 <button
                   type="button"
                   onClick={() => setIsEditing(true)}
-                  className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-                  title="Edit profile & username"
+                  className="p-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer"
+                  title="Edit profile"
                 >
-                  <Edit3 className="w-4 h-4" />
+                  <Edit3 className="w-3.5 h-3.5" />
                 </button>
               )}
 
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                className="p-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer"
                 title="Close"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
           {/* Public Profile Share Bar */}
-          <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-            <div className="flex items-center gap-2 truncate text-slate-300">
+          <div className="mt-3.5 pt-3 border-t border-zinc-800 flex items-center justify-between gap-2 text-xs font-mono">
+            <div className="flex items-center gap-2 truncate text-zinc-400 text-[11px]">
               <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span className="font-semibold text-slate-200 hidden sm:inline">Public Profile:</span>
-              <code className="font-mono text-[11px] bg-slate-950/70 px-2 py-0.5 rounded text-emerald-400 border border-slate-700 truncate">
+              <span className="text-zinc-300 hidden sm:inline">Profile URL:</span>
+              <code className="bg-[#09090b] px-2 py-0.5 rounded text-emerald-400 border border-zinc-800 truncate">
                 {publicProfileUrl}
               </code>
             </div>
@@ -599,16 +599,16 @@ export default function ProfileModal({
             <button
               type="button"
               onClick={handleCopyProfileLink}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shrink-0 cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs transition-colors shrink-0 cursor-pointer"
             >
               {copiedLink ? (
                 <>
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Copied!</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400">Copied</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-3.5 h-3.5" />
+                  <Share2 className="w-3.5 h-3.5 text-zinc-400" />
                   <span>Share</span>
                 </>
               )}
@@ -1051,12 +1051,12 @@ export default function ProfileModal({
 
               {/* Sign In CTA if viewing as guest */}
               {!currentUser && isOwner && (
-                <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-transparent border border-blue-200 dark:border-blue-900 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div className="p-4 rounded-md bg-[#18181b] border border-indigo-500/30 flex flex-wrap items-center justify-between gap-3 text-xs">
                   <div>
-                    <div className="font-bold text-blue-900 dark:text-blue-200">
+                    <div className="font-semibold text-indigo-300">
                       Sync Progress & Join Leaderboard
                     </div>
-                    <div className="text-gray-500 dark:text-gray-400">
+                    <div className="text-zinc-400">
                       Sign in with Google to sync your progress to the cloud, secure your public username, and appear on the leaderboard.
                     </div>
                   </div>
@@ -1066,7 +1066,7 @@ export default function ProfileModal({
                       onClose();
                       onGoogleSignIn();
                     }}
-                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0 transition-colors cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shrink-0 transition-colors cursor-pointer"
                   >
                     Sign In with Google
                   </button>

@@ -31,7 +31,7 @@ export default function EditorialModal({
   isDone = false,
   isRevisit = false
 }) {
-  const [selectedLanguage, setSelectedLanguage] = useState('python'); // 'python' | 'java' | 'cpp' | 'javascript'
+  const [selectedLanguage, setSelectedLanguage] = useState('python');
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -41,7 +41,6 @@ export default function EditorialModal({
   const slug = question ? toSlug(question.name) : '';
   const shareableUrl = `https://dsa.adnanahmad.tech/?solution=${slug}`;
 
-  // Dynamic SEO: Update Document Title, Meta Description & Inject JSON-LD Schema
   useEffect(() => {
     if (!isOpen || !question || !editorial) return;
 
@@ -49,14 +48,12 @@ export default function EditorialModal({
     const metaDesc = document.querySelector('meta[name="description"]');
     const originalDesc = metaDesc ? metaDesc.getAttribute('content') : '';
 
-    // Set page title for search query: "{Problem Name} Solution & Editorial (Python 3)"
     document.title = `${question.name} Solution & Editorial (Python 3) | DSA Tracker`;
 
     if (metaDesc) {
       metaDesc.setAttribute('content', `${editorial.overview} Complete working solution in Python 3 with Time Complexity ${editorial.complexity.time} and Space Complexity ${editorial.complexity.space}.`);
     }
 
-    // Inject Dynamic JSON-LD TechArticle / QAPage Schema for Googlebot
     let scriptTag = document.getElementById('editorial-seo-jsonld');
     if (!scriptTag) {
       scriptTag = document.createElement('script');
@@ -124,35 +121,35 @@ export default function EditorialModal({
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const difficultyColors = {
-    Easy: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800',
-    Medium: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border-amber-300 dark:border-amber-800',
-    Hard: 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border-rose-300 dark:border-rose-800'
+  const difficultyStyles = {
+    Easy: 'border-emerald-500/40 text-emerald-400',
+    Medium: 'border-amber-500/40 text-amber-400',
+    Hard: 'border-rose-500/40 text-rose-400'
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs">
-      <div className="w-full max-w-4xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden flex flex-col max-h-[92vh] animate-in fade-in zoom-in-95">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80">
+      <div className="w-full max-w-4xl bg-[#18181b] rounded-md border border-zinc-800 overflow-hidden flex flex-col max-h-[92vh]">
         
         {/* Modal Top Header */}
-        <div className="p-4 sm:p-5 border-b border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-900/80 flex items-start justify-between gap-3">
+        <div className="p-4 sm:p-5 border-b border-zinc-800 bg-[#18181b] flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300">
+            <div className="flex items-center gap-2 flex-wrap mb-1.5 font-mono text-xs">
+              <span className="font-bold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-300">
                 #{question.id}
               </span>
-              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${difficultyColors[question.difficulty] || difficultyColors.Medium}`}>
+              <span className={`px-2 py-0.5 rounded border bg-transparent font-medium ${difficultyStyles[question.difficulty] || difficultyStyles.Medium}`}>
                 {question.difficulty}
               </span>
-              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
                 {question.topic}
               </span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+              <span className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
                 {question.pattern}
               </span>
             </div>
 
-            <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+            <h2 className="text-base sm:text-lg font-bold text-zinc-100 flex items-center gap-2 flex-wrap">
               <span>{question.name}</span>
             </h2>
           </div>
@@ -161,18 +158,18 @@ export default function EditorialModal({
             {/* Share Link Button */}
             <button
               onClick={handleCopyShareLink}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-xs font-semibold transition-colors"
-              title="Copy direct shareable link for this solution"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium transition-colors cursor-pointer"
+              title="Copy shareable link"
             >
               {copiedLink ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Copied!</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-400">Copied</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Share Solution</span>
+                  <Share2 className="w-3.5 h-3.5 text-zinc-400" />
+                  <span className="hidden sm:inline">Share</span>
                 </>
               )}
             </button>
@@ -182,8 +179,8 @@ export default function EditorialModal({
                 href={question.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-300 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300 text-xs font-semibold transition-colors"
-                title="Open original problem on LeetCode"
+                className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-medium transition-colors"
+                title="Open on LeetCode"
               >
                 <span>LeetCode</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -192,7 +189,7 @@ export default function EditorialModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 text-gray-500 dark:text-gray-400 transition-colors"
+              className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
               title="Close modal"
             >
               <X className="w-5 h-5" />
@@ -200,44 +197,27 @@ export default function EditorialModal({
           </div>
         </div>
 
-        {/* Public Direct Link Pill Banner */}
-        <div className="px-4 py-2 bg-gradient-to-r from-purple-500/10 via-blue-500/5 to-transparent border-b border-gray-200 dark:border-slate-800 flex items-center justify-between gap-2 text-[11px] text-gray-600 dark:text-gray-300">
-          <div className="flex items-center gap-1.5 truncate">
-            <LinkIcon className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-            <span className="font-semibold text-gray-800 dark:text-gray-200">Share Link:</span>
-            <code className="font-mono bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-gray-200 dark:border-slate-700 text-purple-600 dark:text-purple-400 truncate">
-              {shareableUrl}
-            </code>
-          </div>
-          <button
-            onClick={handleCopyShareLink}
-            className="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline shrink-0"
-          >
-            {copiedLink ? 'Copied' : 'Copy'}
-          </button>
-        </div>
-
         {/* Scrollable Editorial Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 text-sm text-gray-800 dark:text-slate-200">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 text-sm text-zinc-200">
           
           {/* Section 1: Problem Overview */}
-          <div className="p-4 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-blue-900 dark:text-blue-300 flex items-center gap-1.5 mb-2">
-              <HelpCircle className="w-4 h-4 text-blue-500" />
+          <div className="p-4 rounded border border-zinc-800 bg-[#09090b]">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5 mb-2 font-mono">
+              <HelpCircle className="w-4 h-4 text-indigo-400" />
               Problem Understanding & Constraints
             </h3>
-            <p className="text-xs sm:text-sm text-gray-700 dark:text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-sans">
               {editorial.overview}
             </p>
           </div>
 
           {/* Section 2: Intuition & Approaches */}
           <div className="space-y-3">
-            <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
+            <h3 className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
               Intuition & Thought Process
             </h3>
-            <p className="text-xs sm:text-sm leading-relaxed text-gray-600 dark:text-slate-300">
+            <p className="text-xs sm:text-sm leading-relaxed text-zinc-400 font-sans">
               {editorial.intuition}
             </p>
 
@@ -246,17 +226,17 @@ export default function EditorialModal({
               {editorial.approaches.map((app, idx) => (
                 <div 
                   key={idx}
-                  className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-800/40"
+                  className="p-3.5 rounded border border-zinc-800 bg-[#09090b]"
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-bold text-xs text-gray-900 dark:text-white">
+                    <span className="font-semibold text-xs text-zinc-200">
                       {app.name}
                     </span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 border border-zinc-700 text-emerald-400 font-medium">
                       {app.timeComplexity}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed">
                     {app.description}
                   </p>
                 </div>
@@ -264,17 +244,17 @@ export default function EditorialModal({
             </div>
           </div>
 
-          {/* Section 3: Step-by-Step Algorithm Walkthrough (GFG Style) */}
+          {/* Section 3: Step-by-Step Algorithm Walkthrough */}
           {editorial.algorithmSteps && editorial.algorithmSteps.length > 0 && (
-            <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-800 space-y-2">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white flex items-center gap-1.5 mb-2">
-                <Layers className="w-4 h-4 text-indigo-500" />
+            <div className="p-4 rounded border border-zinc-800 bg-[#09090b] space-y-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5 mb-2 font-mono">
+                <Layers className="w-4 h-4 text-indigo-400" />
                 Step-by-Step Algorithm Walkthrough
               </h3>
-              <ol className="space-y-1.5 text-xs text-gray-700 dark:text-slate-300">
+              <ol className="space-y-1.5 text-xs text-zinc-300">
                 {editorial.algorithmSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-mono font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded bg-zinc-800 border border-zinc-700 text-zinc-300 font-mono font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
                       {idx + 1}
                     </span>
                     <span className="leading-relaxed flex-1">{step}</span>
@@ -287,45 +267,44 @@ export default function EditorialModal({
           {/* Section 4: Complete Python 3 Code Implementation */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-emerald-500" />
+              <h3 className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+                <Code2 className="w-4 h-4 text-emerald-400" />
                 <span>Python 3 Optimal Solution</span>
               </h3>
 
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-emerald-400 font-medium border border-emerald-500/40">
                   Python 3 (LeetCode Signature)
                 </span>
               </div>
             </div>
 
             {/* Code Block */}
-            <div className="relative rounded-xl overflow-hidden border border-gray-200 dark:border-slate-800 bg-slate-950 text-slate-100 font-mono text-xs shadow-md">
-              <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-[11px] text-slate-400">
+            <div className="relative rounded border border-zinc-800 bg-[#09090b] text-zinc-100 font-mono text-xs overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2 bg-[#18181b] border-b border-zinc-800 text-[11px] text-zinc-400">
                 <div className="flex items-center gap-2">
                   <FileCode className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="font-bold text-slate-200">Solution.py</span>
-                  <span className="text-slate-500">• Complete Working Code</span>
+                  <span className="font-bold text-zinc-200 font-mono">Solution.py</span>
                 </div>
                 <button
                   onClick={handleCopyCode}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 font-sans text-xs font-semibold transition-colors cursor-pointer border border-slate-700"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-sans text-xs font-medium transition-colors cursor-pointer"
                 >
                   {copiedCode ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400 font-bold">Copied!</span>
+                      <span className="text-emerald-400">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Copy Python Code</span>
+                      <Copy className="w-3.5 h-3.5 text-zinc-400" />
+                      <span>Copy Code</span>
                     </>
                   )}
                 </button>
               </div>
 
-              <pre className="p-4 overflow-x-auto leading-relaxed text-slate-200 max-h-[420px]">
+              <pre className="p-4 overflow-x-auto leading-relaxed text-zinc-200 max-h-[420px] font-mono">
                 <code>{currentCode}</code>
               </pre>
             </div>
@@ -333,27 +312,27 @@ export default function EditorialModal({
 
           {/* Section 5: Complexity Analysis */}
           <div className="space-y-3">
-            <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-purple-500" />
+            <h3 className="text-sm font-semibold text-zinc-100 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-indigo-400" />
               Complexity Analysis
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/40">
-                <div className="flex items-center gap-2 font-bold text-xs text-gray-900 dark:text-white mb-1">
-                  <Clock className="w-4 h-4 text-blue-500" />
+              <div className="p-3.5 rounded border border-zinc-800 bg-[#09090b]">
+                <div className="flex items-center gap-2 font-semibold text-xs text-zinc-200 mb-1">
+                  <Clock className="w-4 h-4 text-indigo-400" />
                   <span>Time Complexity</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300 font-mono">
+                <p className="text-xs text-zinc-400 font-mono">
                   {editorial.complexity.time}
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-800 bg-gray-50/60 dark:bg-slate-800/40">
-                <div className="flex items-center gap-2 font-bold text-xs text-gray-900 dark:text-white mb-1">
-                  <Database className="w-4 h-4 text-purple-500" />
+              <div className="p-3.5 rounded border border-zinc-800 bg-[#09090b]">
+                <div className="flex items-center gap-2 font-semibold text-xs text-zinc-200 mb-1">
+                  <Database className="w-4 h-4 text-indigo-400" />
                   <span>Space Complexity</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-300 font-mono">
+                <p className="text-xs text-zinc-400 font-mono">
                   {editorial.complexity.space}
                 </p>
               </div>
@@ -362,12 +341,12 @@ export default function EditorialModal({
 
           {/* Section 6: Edge Cases & Pitfalls */}
           {editorial.edgeCases && editorial.edgeCases.length > 0 && (
-            <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300 flex items-center gap-1.5 mb-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
+            <div className="p-4 rounded border border-zinc-800 bg-[#09090b]">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-1.5 mb-2 font-mono">
+                <AlertTriangle className="w-4 h-4 text-amber-400" />
                 Critical Edge Cases & Pitfalls
               </h3>
-              <ul className="list-disc list-inside space-y-1 text-xs text-amber-950 dark:text-amber-200">
+              <ul className="list-disc list-inside space-y-1 text-xs text-zinc-400">
                 {editorial.edgeCases.map((edge, idx) => (
                   <li key={idx} className="leading-relaxed">{edge}</li>
                 ))}
@@ -377,12 +356,12 @@ export default function EditorialModal({
 
           {/* Section 7: Technical Interview Tips */}
           {editorial.interviewTips && (
-            <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/40">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5 mb-1.5">
-                <Flame className="w-4 h-4 text-emerald-600" />
+            <div className="p-4 rounded border border-zinc-800 bg-[#09090b]">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5 mb-1.5 font-mono">
+                <Flame className="w-4 h-4 text-emerald-400" />
                 Interview Insights & Trade-offs
               </h3>
-              <p className="text-xs text-emerald-950 dark:text-emerald-200 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
                 {editorial.interviewTips}
               </p>
             </div>
@@ -390,14 +369,14 @@ export default function EditorialModal({
         </div>
 
         {/* Modal Bottom Footer Actions */}
-        <div className="p-4 border-t border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-900/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="p-3.5 border-t border-zinc-800 bg-[#18181b] flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <button
               onClick={() => onMarkDone(question)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-medium border transition-colors cursor-pointer ${
                 isDone
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-emerald-500 hover:text-white'
+                  ? 'bg-emerald-600 border-emerald-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
               }`}
             >
               <CheckCircle2 className="w-4 h-4" />
@@ -406,14 +385,14 @@ export default function EditorialModal({
 
             <button
               onClick={() => onScheduleRevision(question)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-medium border transition-colors cursor-pointer ${
                 isRevisit
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-purple-500 hover:text-white'
+                  ? 'bg-indigo-600 border-indigo-500 text-white'
+                  : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
               }`}
             >
               <RotateCcw className="w-4 h-4" />
-              <span>{isRevisit ? 'In Spaced Revision' : 'Add to Revision (SRS)'}</span>
+              <span>{isRevisit ? 'In SRS Revision' : 'Add to SRS'}</span>
             </button>
           </div>
 
@@ -423,17 +402,17 @@ export default function EditorialModal({
                 onClose();
                 onOpenPlayground(question);
               }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded border border-indigo-500/40 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-colors cursor-pointer"
             >
               <Code2 className="w-4 h-4" />
-              <span>Solve in Python Sandbox</span>
+              <span>Open in Code Arena</span>
             </button>
 
             <button
               onClick={onClose}
-              className="px-4 py-1.5 rounded-lg bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded border border-zinc-700 bg-zinc-800 text-zinc-300 font-medium hover:bg-zinc-700 transition-colors cursor-pointer"
             >
-              Close Editorial
+              Close
             </button>
           </div>
         </div>
