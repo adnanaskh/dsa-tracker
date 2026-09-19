@@ -270,44 +270,29 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
       return 'opacity-0 pointer-events-none';
     }
     if (isFuture) {
-      return 'bg-gray-50/50 dark:bg-slate-800/20 border border-dashed border-gray-200 dark:border-slate-800/80 cursor-not-allowed';
+      return 'bg-zinc-900/30 border border-zinc-900/50 cursor-default pointer-events-none';
     }
     if (!count || count === 0) {
-      return `bg-gray-100 dark:bg-slate-800/80 border border-transparent hover:border-gray-400 dark:hover:border-slate-600 ${
-        isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
-      }`;
-    }
-    if (count === 1) {
-      return `bg-emerald-200 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800/60 hover:ring-1 hover:ring-emerald-500 ${
-        isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
-      }`;
-    }
-    if (count <= 3) {
-      return `bg-emerald-400 dark:bg-emerald-700 text-emerald-950 dark:text-emerald-100 border border-emerald-500 dark:border-emerald-600 hover:ring-1 hover:ring-emerald-500 ${
-        isToday ? 'ring-2 ring-emerald-500 ring-offset-1 dark:ring-offset-slate-900' : ''
-      }`;
-    }
-    if (count === 0) {
-      return `bg-zinc-900 border border-zinc-800/80 text-zinc-600 hover:border-zinc-600 ${
+      return `bg-zinc-900 border border-zinc-800/80 text-zinc-600 hover:border-zinc-600 cursor-pointer ${
         isToday ? 'ring-1 ring-zinc-500' : ''
       }`;
     }
     if (count === 1) {
-      return `bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 hover:border-emerald-500 ${
+      return `bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 hover:border-emerald-500 cursor-pointer ${
         isToday ? 'ring-1 ring-emerald-500' : ''
       }`;
     }
     if (count <= 3) {
-      return `bg-emerald-800 text-emerald-100 border border-emerald-700 hover:border-emerald-400 ${
+      return `bg-emerald-800 text-emerald-100 border border-emerald-700 hover:border-emerald-400 cursor-pointer ${
         isToday ? 'ring-1 ring-emerald-400' : ''
       }`;
     }
     if (count <= 5) {
-      return `bg-emerald-600 text-white border border-emerald-500 hover:border-emerald-300 ${
+      return `bg-emerald-600 text-white border border-emerald-500 hover:border-emerald-300 cursor-pointer ${
         isToday ? 'ring-1 ring-emerald-300' : ''
       }`;
     }
-    return `bg-emerald-500 text-zinc-950 font-bold border border-emerald-400 hover:border-emerald-200 ${
+    return `bg-emerald-500 text-zinc-950 font-bold border border-emerald-400 hover:border-emerald-200 cursor-pointer ${
       isToday ? 'ring-1 ring-emerald-200' : ''
     }`;
   };
@@ -491,7 +476,7 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
                     <div
                       key={dIdx}
                       title={
-                        day.isInSelectedYear
+                        day.isInSelectedYear && !day.isFuture
                           ? `${day.displayDate}: ${day.count} ${day.count === 1 ? 'problem' : 'problems'} solved/reviewed${
                               day.isToday ? ' (Today)' : ''
                             }`
@@ -511,21 +496,21 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
           </div>
 
           {/* Bottom Info Bar & Legend */}
-          <div className="flex flex-wrap items-center justify-between text-xs text-gray-400 mt-4 pt-2.5 border-t border-gray-100 dark:border-slate-800/80 gap-3">
-            <div className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+          <div className="flex flex-wrap items-center justify-between text-xs text-zinc-400 mt-4 pt-2.5 border-t border-zinc-800 gap-3">
+            <div className="text-[11px] font-mono text-zinc-400">
               {selectedYear} Activity
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[11px]">Less</span>
+              <span className="text-[11px] text-zinc-500 font-mono">Less</span>
               <div className="flex items-center gap-1">
-                <div className="w-3 h-3 rounded-[2px] bg-gray-100 dark:bg-slate-800 border border-transparent" title="0 submissions" />
-                <div className="w-3 h-3 rounded-[2px] bg-emerald-200 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800/60" title="1 submission" />
-                <div className="w-3 h-3 rounded-[2px] bg-emerald-400 dark:bg-emerald-700 border border-emerald-500 dark:border-emerald-600" title="2-3 submissions" />
-                <div className="w-3 h-3 rounded-[2px] bg-emerald-600 dark:bg-emerald-500 border border-emerald-600 dark:border-emerald-400" title="4-5 submissions" />
-                <div className="w-3 h-3 rounded-[2px] bg-emerald-700 dark:bg-emerald-400 border border-emerald-800 dark:border-emerald-300" title="6+ submissions" />
+                <div className="w-3 h-3 rounded-[2px] bg-zinc-900 border border-zinc-800/80" title="0 submissions" />
+                <div className="w-3 h-3 rounded-[2px] bg-emerald-950/80 border border-emerald-800/60" title="1 submission" />
+                <div className="w-3 h-3 rounded-[2px] bg-emerald-800 border border-emerald-700" title="2-3 submissions" />
+                <div className="w-3 h-3 rounded-[2px] bg-emerald-600 border border-emerald-500" title="4-5 submissions" />
+                <div className="w-3 h-3 rounded-[2px] bg-emerald-500 border border-emerald-400" title="6+ submissions" />
               </div>
-              <span className="text-[11px]">More</span>
+              <span className="text-[11px] text-zinc-500 font-mono">More</span>
             </div>
           </div>
         </div>

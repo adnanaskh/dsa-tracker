@@ -138,7 +138,11 @@ export default function EditorialModal({
               <span className="font-bold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-300">
                 #{question.id}
               </span>
-              <span className={`px-2 py-0.5 rounded border bg-transparent font-medium ${difficultyStyles[question.difficulty] || difficultyStyles.Medium}`}>
+              <span className={`font-mono font-medium ${
+                question.difficulty === 'Easy' ? 'text-emerald-400' :
+                question.difficulty === 'Hard' ? 'text-rose-400' :
+                'text-amber-400'
+              }`}>
                 {question.difficulty}
               </span>
               <span className="px-2 py-0.5 rounded bg-zinc-900 text-zinc-300 border border-zinc-700">
@@ -273,7 +277,7 @@ export default function EditorialModal({
               </h3>
 
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-emerald-400 font-medium border border-emerald-500/40">
+                <span className="text-[11px] font-mono font-medium text-emerald-400">
                   Python 3 (LeetCode Signature)
                 </span>
               </div>

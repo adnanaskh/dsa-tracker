@@ -186,11 +186,11 @@ export default function CommandPalette({
                 );
               }
 
-              // Question item - transparent border difficulty badge
+              // Question item - clean font-medium difficulty badge
               const diffStyles = {
-                Easy: 'border-emerald-500/40 text-emerald-400',
-                Medium: 'border-amber-500/40 text-amber-400',
-                Hard: 'border-rose-500/40 text-rose-400'
+                Easy: 'text-emerald-400',
+                Medium: 'text-amber-400',
+                Hard: 'text-rose-400'
               };
 
               return (
@@ -214,7 +214,7 @@ export default function CommandPalette({
 
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-[11px] text-zinc-500 hidden md:inline font-mono">{item.pattern}</span>
-                    <span className={`text-[11px] px-2 py-0.5 rounded border bg-transparent font-medium ${diffStyles[item.difficulty] || ''}`}>
+                    <span className={`text-[11px] font-medium font-mono ${diffStyles[item.difficulty] || ''}`}>
                       {item.difficulty}
                     </span>
                   </div>

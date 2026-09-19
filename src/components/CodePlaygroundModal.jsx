@@ -511,10 +511,10 @@ export default function CodePlaygroundModal({
             <span className="font-bold px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-300">
               #{question.id}
             </span>
-            <span className={`px-2 py-0.5 rounded border bg-transparent font-medium ${
-              question.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
-              question.difficulty === 'Hard' ? 'border-rose-500/40 text-rose-400' :
-              'border-amber-500/40 text-amber-400'
+            <span className={`font-mono font-medium ${
+              question.difficulty === 'Easy' ? 'text-emerald-400' :
+              question.difficulty === 'Hard' ? 'text-rose-400' :
+              'text-amber-400'
             }`}>
               {question.difficulty}
             </span>
@@ -1070,7 +1070,7 @@ export default function CodePlaygroundModal({
             {/* Python Code Editor Area */}
             <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
               {/* Editor Toolbar */}
-              <div className="flex items-center justify-between px-3 py-1.5 bg-slate-900 border-b border-slate-800 text-xs text-slate-300 shrink-0">
+              <div className="flex items-center justify-between px-3 py-1.5 bg-[#141416] border-b border-zinc-800 text-xs text-zinc-300 shrink-0">
                 <div className="flex items-center gap-2">
                   <FileCode className="w-3.5 h-3.5 text-emerald-400" />
                   
@@ -1078,7 +1078,7 @@ export default function CodePlaygroundModal({
                   <select
                     value={selectedLanguage}
                     onChange={(e) => handleLanguageChange(e.target.value)}
-                    className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold rounded px-2 py-0.5 outline-none cursor-pointer hover:border-slate-600"
+                    className="bg-zinc-900 border border-zinc-700 text-zinc-200 text-xs font-bold rounded px-2 py-0.5 outline-none cursor-pointer hover:border-zinc-600"
                   >
                     <option value="python3">🐍 Python 3 (Pyodide WASM)</option>
                     <option value="java">☕ Java (OpenJDK 17)</option>
@@ -1090,7 +1090,7 @@ export default function CodePlaygroundModal({
                   <button
                     type="button"
                     onClick={handleLoadStarterTemplate}
-                    className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer text-[11px] font-bold flex items-center gap-1"
+                    className="px-2 py-0.5 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700 transition-colors cursor-pointer text-[11px] font-bold flex items-center gap-1"
                     title={`Load clean starter template for ${getLangName(selectedLanguage)}`}
                   >
                     <Sparkles className="w-3 h-3 text-amber-400" />
@@ -1099,7 +1099,7 @@ export default function CodePlaygroundModal({
 
                   {/* Saved Status Indicator */}
                   {saveToast && (
-                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800 animate-in fade-in">
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-800/60 animate-in fade-in">
                       <Check className="w-3 h-3" />
                       <span>Code Saved</span>
                     </span>
@@ -1108,8 +1108,8 @@ export default function CodePlaygroundModal({
                 
                 <div className="flex items-center gap-1.5">
                   {/* Font Size Adjuster */}
-                  <div className="flex items-center gap-1 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-[11px]">
-                    <Type className="w-3 h-3 text-slate-400" />
+                  <div className="flex items-center gap-1 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-700 text-[11px]">
+                    <Type className="w-3 h-3 text-zinc-400" />
                     <button
                       onClick={() => setFontSize(Math.max(11, fontSize - 1))}
                       className="px-1 hover:text-white font-bold"
@@ -1117,7 +1117,7 @@ export default function CodePlaygroundModal({
                     >
                       -
                     </button>
-                    <span className="font-mono text-slate-300">{fontSize}px</span>
+                    <span className="font-mono text-zinc-300">{fontSize}px</span>
                     <button
                       onClick={() => setFontSize(Math.min(18, fontSize + 1))}
                       className="px-1 hover:text-white font-bold"
@@ -1130,7 +1130,7 @@ export default function CodePlaygroundModal({
                   {/* Word Wrap Toggle */}
                   <button
                     onClick={() => setIsWordWrap(!isWordWrap)}
-                    className={`p-1 rounded border text-[11px] font-semibold transition-colors cursor-pointer ${isWordWrap ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-slate-200'}`}
+                    className={`p-1 rounded border text-[11px] font-semibold transition-colors cursor-pointer ${isWordWrap ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-zinc-900 text-zinc-400 border-zinc-700 hover:text-zinc-200'}`}
                     title={isWordWrap ? "Disable Word Wrap" : "Enable Word Wrap"}
                   >
                     <WrapText className="w-3 h-3" />
@@ -1139,7 +1139,7 @@ export default function CodePlaygroundModal({
                   {/* Clear / Reset Code */}
                   <button
                     onClick={handleResetCode}
-                    className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700 transition-colors cursor-pointer"
+                    className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors cursor-pointer"
                     title="Clear Editor & Start Fresh"
                   >
                     <RotateCcw className="w-3 h-3" />
@@ -1148,7 +1148,7 @@ export default function CodePlaygroundModal({
                   {/* Copy Code */}
                   <button
                     onClick={handleCopyCode}
-                    className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700 transition-colors cursor-pointer"
+                    className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-zinc-700 transition-colors cursor-pointer"
                     title="Copy Code"
                   >
                     {copiedCode ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
@@ -1157,11 +1157,11 @@ export default function CodePlaygroundModal({
               </div>
 
               {/* Code Editor Container with Synchronized Line Numbers */}
-              <div className="flex-1 relative flex bg-slate-950 overflow-hidden">
+              <div className="flex-1 relative flex bg-[#09090b] overflow-hidden">
                 {/* Line Numbers Gutter */}
                 <div
                   ref={lineNumbersRef}
-                  className="w-10 sm:w-12 py-3 bg-slate-950 text-slate-600 text-right pr-2.5 font-mono select-none overflow-hidden shrink-0 border-r border-slate-900 leading-relaxed"
+                  className="w-10 sm:w-12 py-3 bg-[#0c0c0e] text-[#52525b] text-right pr-2.5 font-mono select-none overflow-hidden shrink-0 border-r border-zinc-900 leading-relaxed"
                   style={{ fontSize: `${fontSize}px` }}
                 >
                   {lineNumbers.map(n => (
@@ -1177,7 +1177,7 @@ export default function CodePlaygroundModal({
                   onScroll={handleScroll}
                   onKeyDown={handleKeyDownTextarea}
                   spellCheck="false"
-                  className={`flex-1 h-full p-3 font-mono text-slate-100 bg-slate-950 resize-none outline-none leading-relaxed selection:bg-blue-600/40 ${isWordWrap ? 'whitespace-pre-wrap' : 'whitespace-pre overflow-x-auto'}`}
+                  className={`flex-1 h-full p-3 font-mono text-zinc-100 bg-[#09090b] resize-none outline-none leading-relaxed selection:bg-indigo-600/30 ${isWordWrap ? 'whitespace-pre-wrap' : 'whitespace-pre overflow-x-auto'}`}
                   placeholder="# Write your code from here (import sys ... print)"
                   style={{ tabSize: 4, fontSize: `${fontSize}px` }}
                 />
@@ -1187,28 +1187,28 @@ export default function CodePlaygroundModal({
             {/* VERTICAL DRAGGABLE RESIZER HANDLE */}
             <div
               onPointerDown={startVerticalDrag}
-              className="h-2 hover:h-2.5 bg-slate-900 hover:bg-blue-500 transition-colors cursor-row-resize flex items-center justify-center shrink-0 group z-10 select-none border-t border-slate-800"
+              className="h-2 hover:h-2.5 bg-zinc-900 hover:bg-indigo-500/50 transition-colors cursor-row-resize flex items-center justify-center shrink-0 group z-10 select-none border-t border-zinc-800"
               title="Drag vertically to resize console height (Double-click to reset)"
               onDoubleClick={() => setConsoleHeightPx(250)}
             >
-              <GripHorizontal className="w-4 h-3 text-slate-600 group-hover:text-white" />
+              <GripHorizontal className="w-4 h-3 text-zinc-600 group-hover:text-zinc-200" />
             </div>
 
             {/* Test Cases & Execution Results Console */}
             <div 
               style={{ height: isConsoleMinimized ? '38px' : `${consoleHeightPx}px` }}
-              className="flex flex-col bg-gray-50 dark:bg-slate-900 overflow-hidden shrink-0 transition-[height] duration-75"
+              className="flex flex-col bg-[#0e0e11] overflow-hidden shrink-0 transition-[height] duration-75"
             >
               {/* Console Toolbar */}
-              <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-800 px-3 bg-gray-100/80 dark:bg-slate-950 text-xs font-bold shrink-0">
+              <div className="flex items-center justify-between border-b border-zinc-800 px-3 bg-[#141416] text-xs font-bold shrink-0">
                 <div className="flex gap-1.5">
                   <button
                     type="button"
                     onClick={() => { setActiveConsoleTab('testcases'); if (isConsoleMinimized) setIsConsoleMinimized(false); }}
                     className={`py-1.5 px-2.5 border-b-2 transition-colors cursor-pointer ${
                       activeConsoleTab === 'testcases' && !isConsoleMinimized
-                        ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
-                        : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
+                        ? 'border-indigo-500 text-indigo-400 font-semibold'
+                        : 'border-transparent text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
                     Testcases
@@ -1218,8 +1218,8 @@ export default function CodePlaygroundModal({
                     onClick={() => { setActiveConsoleTab('result'); if (isConsoleMinimized) setIsConsoleMinimized(false); }}
                     className={`py-1.5 px-2.5 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                       activeConsoleTab === 'result' && !isConsoleMinimized
-                        ? 'border-blue-600 dark:border-emerald-400 text-blue-600 dark:text-emerald-400'
-                        : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400'
+                        ? 'border-indigo-500 text-indigo-400 font-semibold'
+                        : 'border-transparent text-zinc-400 hover:text-zinc-200'
                     }`}
                   >
                     <Terminal className="w-3.5 h-3.5" />
@@ -1232,7 +1232,7 @@ export default function CodePlaygroundModal({
 
                 <div className="flex items-center gap-2">
                   {activeResult && !isEvaluating && (
-                    <span className="text-[11px] font-mono text-gray-400 flex items-center gap-1">
+                    <span className="text-[11px] font-mono text-zinc-400 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {activeResult.totalTimeMs} ms
                     </span>
@@ -1241,7 +1241,7 @@ export default function CodePlaygroundModal({
                   {/* Toggle Minimize/Maximize Console */}
                   <button
                     onClick={() => setIsConsoleMinimized(!isConsoleMinimized)}
-                    className="p-1 hover:bg-gray-200 dark:hover:bg-slate-800 rounded text-gray-500 dark:text-gray-400 cursor-pointer"
+                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-zinc-200 cursor-pointer"
                     title={isConsoleMinimized ? "Expand Console" : "Minimize Console"}
                   >
                     {isConsoleMinimized ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -1251,7 +1251,7 @@ export default function CodePlaygroundModal({
 
               {/* Console Body */}
               {!isConsoleMinimized && (
-                <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-[#0e0e11]">
                   
                   {/* CONSOLE TAB 1: TESTCASES PREVIEW */}
                   {activeConsoleTab === 'testcases' && (
@@ -1262,10 +1262,10 @@ export default function CodePlaygroundModal({
                             key={idx}
                             type="button"
                             onClick={() => setSelectedCaseIdx(idx)}
-                            className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                            className={`px-2.5 py-1 rounded font-mono font-medium text-xs transition-all cursor-pointer ${
                               selectedCaseIdx === idx
-                                ? 'bg-blue-600 text-white shadow-xs'
-                                : 'bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-slate-300 hover:bg-gray-300 dark:hover:bg-slate-700'
+                                ? 'bg-indigo-600 text-white'
+                                : 'bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800'
                             }`}
                           >
                             Case {idx + 1}
@@ -1276,10 +1276,10 @@ export default function CodePlaygroundModal({
                       {sampleCases[selectedCaseIdx] && (
                         <div className="space-y-2 font-mono text-xs">
                           <div>
-                            <span className="font-sans font-bold text-gray-600 dark:text-slate-400 block mb-0.5">
+                            <span className="font-sans font-bold text-zinc-400 block mb-0.5">
                               Standard Input (STDIN):
                             </span>
-                            <div className="p-2 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-100 overflow-x-auto whitespace-pre-wrap">
+                            <div className="p-2 rounded bg-[#09090b] border border-zinc-800 text-zinc-200 overflow-x-auto whitespace-pre-wrap">
                               {sampleCases[selectedCaseIdx].stdin || (
                                 Array.isArray(sampleCases[selectedCaseIdx].input)
                                   ? sampleCases[selectedCaseIdx].input.map(x => Array.isArray(x) ? `${x.length}\n${x.join(' ')}` : String(x)).join('\n')
@@ -1289,10 +1289,10 @@ export default function CodePlaygroundModal({
                           </div>
 
                           <div>
-                            <span className="font-sans font-bold text-gray-600 dark:text-slate-400 block mb-0.5">
+                            <span className="font-sans font-bold text-zinc-400 block mb-0.5">
                               Expected Output (STDOUT):
                             </span>
-                            <div className="p-2 rounded-lg bg-gray-100 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap">
+                            <div className="p-2 rounded bg-[#09090b] border border-zinc-800 text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap">
                               {sampleCases[selectedCaseIdx].expectedStdout || (
                                 sampleCases[selectedCaseIdx].expected === true ? 'true' : sampleCases[selectedCaseIdx].expected === false ? 'false' : String(sampleCases[selectedCaseIdx].expected)
                               )}
@@ -1309,8 +1309,8 @@ export default function CodePlaygroundModal({
                       {/* Loading Spinner */}
                       {isEvaluating && (
                         <div className="py-6 flex flex-col items-center justify-center text-center space-y-2">
-                          <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
-                          <p className="font-bold text-xs text-gray-800 dark:text-slate-200">
+                          <Loader2 className="w-5 h-5 text-indigo-400 animate-spin" />
+                          <p className="font-bold text-xs text-zinc-200">
                             {isSubmitting
                               ? `Evaluating All Test Cases (${getLangName(selectedLanguage)})...`
                               : selectedLanguage === 'java'
@@ -1326,12 +1326,12 @@ export default function CodePlaygroundModal({
 
                       {/* Compilation Error Card */}
                       {!isEvaluating && activeResult && activeResult.compileError && (
-                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 text-xs space-y-1.5">
-                          <div className="font-bold flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
+                        <div className="p-3 rounded bg-amber-950/30 border border-amber-800/50 text-amber-200 text-xs space-y-1.5">
+                          <div className="font-bold flex items-center gap-1.5 text-amber-400">
                             <AlertTriangle className="w-4 h-4 shrink-0" />
                             <span>Compilation Error ({getLangName(selectedLanguage)})</span>
                           </div>
-                          <pre className="p-2.5 rounded-lg bg-slate-900 text-amber-300 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px] border border-amber-900/60">
+                          <pre className="p-2.5 rounded bg-[#09090b] text-amber-300 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px] border border-amber-900/60">
                             {activeResult.compileError}
                           </pre>
                         </div>
@@ -1339,12 +1339,12 @@ export default function CodePlaygroundModal({
 
                       {/* Runtime / Execution Error */}
                       {!isEvaluating && activeResult && !activeResult.compileError && activeResult.error && (
-                        <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200 text-xs space-y-1">
-                          <div className="font-bold flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+                        <div className="p-3 rounded bg-rose-950/30 border border-rose-800/50 text-rose-200 text-xs space-y-1">
+                          <div className="font-bold flex items-center gap-1.5 text-rose-400">
                             <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
                             <span>Runtime Error</span>
                           </div>
-                          <pre className="p-2 rounded-lg bg-rose-100/70 dark:bg-rose-950 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px]">
+                          <pre className="p-2 rounded bg-[#09090b] text-rose-300 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap text-[11px] border border-rose-900/60">
                             {activeResult.error}
                           </pre>
                         </div>
@@ -1354,16 +1354,16 @@ export default function CodePlaygroundModal({
                       {!isEvaluating && activeResult && !activeResult.error && (
                         <div className="space-y-2.5 text-xs">
                           {/* Overall Banner */}
-                          <div className={`p-2.5 rounded-xl border flex items-center justify-between ${
+                          <div className={`p-2.5 rounded border flex items-center justify-between ${
                             activeResult.allPassed
-                                ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
-                                : 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
+                                ? 'bg-emerald-950/30 border-emerald-800/60 text-emerald-200'
+                                : 'bg-rose-950/30 border-rose-800/60 text-rose-200'
                           }`}>
                             <div className="flex items-center gap-2">
                               {activeResult.allPassed ? (
-                                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
                               ) : (
-                                <XCircle className="w-5 h-5 text-rose-500 shrink-0" />
+                                <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
                               )}
                               <div>
                                 <h3 className="font-extrabold text-xs sm:text-sm">
@@ -1387,14 +1387,14 @@ export default function CodePlaygroundModal({
                                 key={idx}
                                 type="button"
                                 onClick={() => setSelectedCaseIdx(idx)}
-                                className={`px-2 py-0.5 rounded-lg font-bold text-xs flex items-center gap-1 transition-all cursor-pointer ${
+                                className={`px-2 py-0.5 rounded font-bold text-xs flex items-center gap-1 transition-all cursor-pointer ${
                                   selectedCaseIdx === idx
                                     ? res.passed
                                       ? 'bg-emerald-600 text-white'
                                       : 'bg-rose-600 text-white'
                                     : res.passed
-                                    ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                                    : 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                                    ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60'
+                                    : 'bg-rose-950/40 text-rose-300 border border-rose-800/60'
                                 }`}
                               >
                                 {res.passed ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
@@ -1405,18 +1405,18 @@ export default function CodePlaygroundModal({
 
                           {/* Selected Case Inspection */}
                           {activeResult.results[selectedCaseIdx] && (
-                            <div className="p-2.5 rounded-xl bg-gray-100/80 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 space-y-1.5 font-mono text-xs">
+                            <div className="p-2.5 rounded bg-[#09090b] border border-zinc-800 space-y-1.5 font-mono text-xs">
                               <div>
-                                <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
+                                <span className="font-sans font-bold text-zinc-400 block mb-0.5">
                                   STDIN Input:
                                 </span>
-                                <div className="text-gray-900 dark:text-slate-100 overflow-x-auto whitespace-pre-wrap">
+                                <div className="text-zinc-200 overflow-x-auto whitespace-pre-wrap">
                                   {activeResult.results[selectedCaseIdx].stdin || JSON.stringify(activeResult.results[selectedCaseIdx].input)}
                                 </div>
                               </div>
 
                               <div>
-                                <span className="font-sans font-bold text-gray-500 dark:text-gray-400 block mb-0.5">
+                                <span className="font-sans font-bold text-zinc-400 block mb-0.5">
                                   Your Output (STDOUT):
                                 </span>
                                 <div className={activeResult.results[selectedCaseIdx].passed ? 'text-emerald-600 dark:text-emerald-400 font-bold overflow-x-auto whitespace-pre-wrap' : 'text-rose-600 dark:text-rose-400 font-bold overflow-x-auto whitespace-pre-wrap'}>

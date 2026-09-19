@@ -1133,7 +1133,7 @@ export default function App() {
                 <h1 className="text-base sm:text-lg font-bold tracking-tight text-zinc-100">
                   DSA TRACKER
                 </h1>
-                <span className="hidden sm:inline-block text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-transparent text-indigo-400 border border-indigo-500/40">
+                <span className="hidden sm:inline-block text-[11px] font-mono font-medium text-indigo-400">
                   60 DAYS • 305 PROBLEMS
                 </span>
               </div>
@@ -1282,9 +1282,9 @@ export default function App() {
           {[
             { id: 'questions', icon: ListTodo, label: 'Problems', badge: user ? `${Object.values(questionsProgress).filter(q => q.status === '✅ Done').length}/305` : '305 Problems', locked: false },
             { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', locked: !user },
-            { id: 'leaderboard', icon: Trophy, label: 'Leaderboard', badge: user ? `#${estimatedRank}` : null, badgeColor: 'bg-zinc-800 border border-amber-500/40 text-amber-400', locked: !user },
+            { id: 'leaderboard', icon: Trophy, label: 'Leaderboard', badge: user ? `#${estimatedRank}` : null, badgeColor: 'bg-zinc-800 border border-zinc-700 text-amber-400', locked: !user },
             { id: 'planner', icon: Calendar, label: 'Study Plan', locked: !user },
-            { id: 'revision', icon: RotateCcw, label: 'Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-zinc-800 border border-rose-500/40 text-rose-400', locked: !user },
+            { id: 'revision', icon: RotateCcw, label: 'Revision', badge: user && dueRevisionQuestions.length > 0 ? `${dueRevisionQuestions.length} Due` : null, badgeColor: 'bg-zinc-800 border border-zinc-700 text-rose-400', locked: !user },
             { id: 'patterns', icon: BookOpen, label: 'Patterns', locked: !user },
             { id: 'weekly', icon: BarChart3, label: 'Analytics', locked: !user },
           ].map(tab => {
@@ -1739,7 +1739,7 @@ export default function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
           <div className="w-full max-w-md bg-white dark:bg-[#18181b] rounded-md border border-zinc-200 dark:border-zinc-800 p-6 animate-in fade-in zoom-in-95">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-900 border border-emerald-500/40 text-emerald-400">
+              <span className="text-[11px] font-mono font-medium text-emerald-400">
                 🎯 Random Challenge
               </span>
               <button 
@@ -1764,10 +1764,10 @@ export default function App() {
               <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-[11px]">
                 {randomQuestionModal.pattern}
               </span>
-              <span className={`px-2 py-0.5 rounded font-mono text-[11px] font-medium border ${
-                randomQuestionModal.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400 bg-transparent' :
-                randomQuestionModal.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400 bg-transparent' :
-                'border-rose-500/40 text-rose-400 bg-transparent'
+              <span className={`font-mono text-[11px] font-medium ${
+                randomQuestionModal.difficulty === 'Easy' ? 'text-emerald-400' :
+                randomQuestionModal.difficulty === 'Medium' ? 'text-amber-400' :
+                'text-rose-400'
               }`}>
                 {randomQuestionModal.difficulty}
               </span>
@@ -1864,7 +1864,7 @@ function DashboardTab({ questionsProgress, revisionLogs, dueQuestions, onNavigat
       {dueQuestions.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-md bg-[#18181b] border border-amber-500/30 text-amber-300">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-md bg-zinc-900 border border-amber-500/40 text-amber-400">
+            <div className="p-2 rounded-md bg-zinc-900 border border-zinc-800 text-amber-400">
               <RotateCcw className="w-4 h-4" />
             </div>
             <div>
@@ -2285,9 +2285,9 @@ function QuestionsTab({
               const isRevisit = prog.revisit === '🔄 Revisit';
 
               const diffBadge = {
-                Easy: 'border border-emerald-500/40 text-emerald-400 bg-transparent font-medium',
-                Medium: 'border border-amber-500/40 text-amber-400 bg-transparent font-medium',
-                Hard: 'border border-rose-500/40 text-rose-400 bg-transparent font-medium',
+                Easy: 'text-emerald-400 font-medium',
+                Medium: 'text-amber-400 font-medium',
+                Hard: 'text-rose-400 font-medium',
               }[q.difficulty];
 
               return (
@@ -2316,7 +2316,7 @@ function QuestionsTab({
                     </a>
                   </td>
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
-                    <span className={`px-2 py-0.5 rounded font-mono text-[11px] ${diffBadge}`}>
+                    <span className={`font-mono text-[11px] ${diffBadge}`}>
                       {q.difficulty}
                     </span>
                   </td>
@@ -2326,10 +2326,10 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => handleQuickToggleStatus(q)}
-                      className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer border ${
-                        isDone ? 'bg-zinc-900 border-emerald-500/40 text-emerald-400 hover:bg-zinc-800' :
-                        prog.status === '🟡 In Progress' ? 'bg-zinc-900 border-amber-500/40 text-amber-400 hover:bg-zinc-800' :
-                        'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
+                      className={`px-2 py-1 rounded text-[11px] font-mono transition-colors cursor-pointer ${
+                        isDone ? 'text-emerald-400 hover:text-emerald-300 font-medium' :
+                        prog.status === '🟡 In Progress' ? 'text-amber-400 hover:text-amber-300 font-medium' :
+                        'text-zinc-500 hover:text-zinc-300'
                       }`}
                       title="Click to toggle status: Todo ➔ In Progress ➔ Done"
                     >
@@ -2339,10 +2339,10 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => handleQuickToggleRevisit(q)}
-                      className={`px-2 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer border ${
+                      className={`px-2 py-1 rounded text-[11px] font-mono transition-colors cursor-pointer ${
                         isRevisit 
-                          ? 'bg-zinc-900 border-amber-500/40 text-amber-400 hover:bg-zinc-800' 
-                          : 'border-transparent text-zinc-500 hover:text-zinc-300 hover:border-zinc-800'
+                          ? 'text-amber-400 font-medium hover:text-amber-300' 
+                          : 'text-zinc-500 hover:text-zinc-300'
                       }`}
                       title="Click to toggle Spaced Repetition revisit flag"
                     >
@@ -2352,7 +2352,7 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => onOpenPlayground(q)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 text-emerald-400 font-mono text-[11px] border border-zinc-800 hover:border-emerald-500/40 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-emerald-400 font-mono text-[11px] border border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer"
                       title="Open Python 3 in-browser code editor and test suite"
                     >
                       <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
@@ -2362,7 +2362,7 @@ function QuestionsTab({
                   <td className="py-2.5 px-3 text-center whitespace-nowrap">
                     <button
                       onClick={() => onOpenEditorial(q)}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-900 hover:bg-zinc-800 text-indigo-400 font-mono text-[11px] border border-zinc-800 hover:border-indigo-500/40 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 hover:bg-zinc-800 text-indigo-400 font-mono text-[11px] border border-zinc-800 hover:border-zinc-700 transition-colors cursor-pointer"
                       title="Read complete editorial with Python, Java, C++, JS code"
                     >
                       <BookOpen className="w-3 h-3 text-indigo-400" />
@@ -2665,10 +2665,10 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
                     {p.topic}
                   </span>
                 </div>
-                <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
-                  isComplete ? 'border-emerald-500/40 text-emerald-400 bg-transparent' :
-                  solvedCount > 0 ? 'border-amber-500/40 text-amber-400 bg-transparent' :
-                  'border-zinc-700 text-zinc-400 bg-transparent'
+                <span className={`text-[11px] font-mono font-medium ${
+                  isComplete ? 'text-emerald-400' :
+                  solvedCount > 0 ? 'text-amber-400' :
+                  'text-zinc-400'
                 }`}>
                   {solvedCount}/{target} ({pct}%)
                 </span>
@@ -2704,7 +2704,7 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
                         {inProg && (
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border border-amber-500/40 text-amber-400">
+                          <span className="text-[10px] font-mono text-amber-400 font-medium">
                             In Progress
                           </span>
                         )}
@@ -2715,9 +2715,9 @@ function PlannerTab({ plannerProgress, questionsProgress, onSave, onOpenPlaygrou
                         >
                           <Play className="w-3 h-3 fill-emerald-400" />
                         </button>
-                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
-                          q.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
-                          q.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400' : 'border-rose-500/40 text-rose-400'
+                        <span className={`text-[10px] font-mono font-medium ${
+                          q.difficulty === 'Easy' ? 'text-emerald-400' :
+                          q.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400'
                         }`}>
                           {q.difficulty}
                         </span>
@@ -2871,7 +2871,7 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                         {item.questionName}
                         <Play className="w-3 h-3 text-emerald-400 fill-emerald-400" />
                       </button>
-                      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-amber-500/40 text-amber-400">
+                      <span className="font-mono text-[10px] text-amber-400">
                         Stage {(item.intervalStage || 0) + 1} ({SRS_INTERVALS[item.intervalStage || 0]}d)
                       </span>
                     </div>
@@ -2952,9 +2952,9 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                     </td>
                     <td className="py-2.5 px-3 text-zinc-500">{item.topic}</td>
                     <td className="py-2.5 px-3 text-center">
-                      <span className={`px-2 py-0.5 rounded font-mono text-[11px] border ${
-                        item.difficulty === 'Easy' ? 'border-emerald-500/40 text-emerald-400' :
-                        item.difficulty === 'Medium' ? 'border-amber-500/40 text-amber-400' : 'border-rose-500/40 text-rose-400'
+                      <span className={`font-mono text-[11px] font-medium ${
+                        item.difficulty === 'Easy' ? 'text-emerald-400' :
+                        item.difficulty === 'Medium' ? 'text-amber-400' : 'text-rose-400'
                       }`}>
                         {item.difficulty}
                       </span>
@@ -2964,7 +2964,7 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                     </td>
                     <td className="py-2.5 px-3 text-center font-mono text-[11px]">
                       {isDue ? (
-                        <span className="px-2 py-0.5 rounded border border-rose-500/40 text-rose-400">
+                        <span className="text-rose-400 font-medium">
                           Due Today
                         </span>
                       ) : (
@@ -2972,10 +2972,10 @@ function RevisionTab({ revisionLogs, onSave, onDelete, onOpenPlayground = () => 
                       )}
                     </td>
                     <td className="py-2.5 px-3 text-center">
-                      <span className={`px-2 py-0.5 rounded font-mono text-[11px] border ${
-                        item.mastered === 'Mastered' ? 'border-emerald-500/40 text-emerald-400' :
-                        item.mastered === 'Getting Better' ? 'border-indigo-500/40 text-indigo-400' :
-                        'border-amber-500/40 text-amber-400'
+                      <span className={`font-mono text-[11px] font-medium ${
+                        item.mastered === 'Mastered' ? 'text-emerald-400' :
+                        item.mastered === 'Getting Better' ? 'text-indigo-400' :
+                        'text-amber-400'
                       }`}>
                         {item.mastered || 'Needs Work'}
                       </span>
@@ -3105,10 +3105,10 @@ function WeeklyTab({ weeklyReviews, questionsProgress, onSave }) {
                     {plan.days}
                   </span>
                 </div>
-                <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
-                  pct === 100 ? 'border-emerald-500/40 text-emerald-400' :
-                  pct > 0 ? 'border-indigo-500/40 text-indigo-400' :
-                  'border-zinc-700 text-zinc-400'
+                <span className={`text-[11px] font-mono font-medium ${
+                  pct === 100 ? 'text-emerald-400' :
+                  pct > 0 ? 'text-indigo-400' :
+                  'text-zinc-400'
                 }`}>
                   {pct}% Completed
                 </span>

@@ -95,7 +95,7 @@ export default function LeaderboardTab({
           <div>
             <h2 className="text-base font-bold text-zinc-100 flex items-center gap-2">
               <span>Global Community Leaderboard</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded border border-emerald-500/40 text-emerald-400 bg-transparent font-medium">
+              <span className="text-[10px] font-mono text-emerald-400 font-medium">
                 LIVE
               </span>
             </h2>
@@ -380,14 +380,14 @@ export default function LeaderboardTab({
                     </td>
 
                     <td className="py-2.5 px-3 text-center">
-                      <div className="inline-flex items-center gap-1 font-mono text-[10px]">
-                        <span className="px-1.5 py-0.2 rounded border border-emerald-500/40 text-emerald-400">
+                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] font-medium">
+                        <span className="text-emerald-400">
                           E:{u.easyCount || 0}
                         </span>
-                        <span className="px-1.5 py-0.2 rounded border border-amber-500/40 text-amber-400">
+                        <span className="text-amber-400">
                           M:{u.medCount || 0}
                         </span>
-                        <span className="px-1.5 py-0.2 rounded border border-rose-500/40 text-rose-400">
+                        <span className="text-rose-400">
                           H:{u.hardCount || 0}
                         </span>
                       </div>
