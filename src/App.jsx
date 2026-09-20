@@ -70,6 +70,7 @@ import {
   DAILY_PLAN, 
   WEEKLY_PLAN 
 } from './data/questionsData';
+import { DEFAULT_LEADERBOARD } from './data/defaultLeaderboard';
 
 import CodeViewer from './components/CodeViewer';
 import ActivityHeatmap from './components/ActivityHeatmap';
@@ -476,10 +477,24 @@ export default function App() {
     });
 
     const dateCounts = {};
+    const today = new Date();
+    const formatLocal = (d) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    };
+    const todayStr = formatLocal(today);
+
     Object.values(questionsProgress).forEach(q => {
       if (q.status === '✅ Done') {
-        const d = (q.completedAt || q.date || '').split('T')[0];
-        if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) dateCounts[d] = (dateCounts[d] || 0) + 1;
+        const d = (q.completedAt || q.date || q.updatedAt || '').split('T')[0];
+        if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+          dateCounts[d] = (dateCounts[d] || 0) + 1;
+        } else {
+          // If no timestamp exists on done problem, credit it to today's activity
+          dateCounts[todayStr] = (dateCounts[todayStr] || 0) + 1;
+        }
       }
     });
     Object.values(revisionLogs).forEach(r => {
@@ -491,15 +506,6 @@ export default function App() {
         }
       });
     });
-
-    const today = new Date();
-    const formatLocal = (d) => {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
-    };
-    const todayStr = formatLocal(today);
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     const yesterdayStr = formatLocal(yesterday);
@@ -550,11 +556,15 @@ export default function App() {
 
     return {
       solved,
+      solvedCount: solved,
       streak,
       maxStreak: Math.max(maxStreak, streak),
       easy,
+      easyCount: easy,
       med,
+      medCount: med,
       hard,
+      hardCount: hard,
       easyTotal,
       medTotal,
       hardTotal
@@ -635,40 +645,49 @@ export default function App() {
     revisionLogs
   ]);
 
-  // Real leaderboard list containing only real authenticated users from Firestore
+  // Global Leaderboard combining community benchmarks + cloud users + current user
   const combinedLeaderboard = useMemo(() => {
     const map = new Map();
-    // Only real users fetched from Firestore
-    cloudLeaderboard.forEach(item => {
-      if (item && item.uid && item.uid !== 'coder' && item.username !== 'coder') {
-        map.set(item.uid, item);
+
+    // 1. Initialize with default community benchmarks
+    DEFAULT_LEADERBOARD.forEach(item => {
+      if (item && item.uid) {
+        map.set(item.uid, { ...item });
       }
     });
 
-    // If current authenticated user is signed in, ensure their latest live stats are represented immediately
-    if (user) {
-      const fallbackUname = user.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || user.email?.split('@')[0] || `user_${user.uid.slice(0, 6)}`;
-      const effectiveUsername = (customUsername || fallbackUname).toLowerCase().replace(/[^a-z0-9_]/g, '');
-      map.set(user.uid, {
-        uid: user.uid,
-        displayName: customDisplayName || user.displayName || user.email?.split('@')[0] || 'User',
-        username: effectiveUsername,
-        bio: customBio || '',
-        linkedin: customLinkedin || '',
-        github: customGithub || '',
-        photoURL: user.photoURL || null,
-        solvedCount: userStats.solved || 0,
-        streak: userStats.streak || 0,
-        maxStreak: userStats.maxStreak || 0,
-        easyCount: userStats.easy || 0,
-        medCount: userStats.med || 0,
-        hardCount: userStats.hard || 0,
-        questionsProgress: questionsProgress,
-        revisionLogs: revisionLogs,
-        isCurrentUser: true,
-        lastActive: new Date().toISOString()
-      });
-    }
+    // 2. Overlay real users fetched from Firestore
+    cloudLeaderboard.forEach(item => {
+      if (item && item.uid && item.uid !== 'coder' && item.username !== 'coder') {
+        map.set(item.uid, { ...map.get(item.uid), ...item });
+      }
+    });
+
+    // 3. Ensure current user (authenticated or guest) is included with their true live stats
+    const currentUid = user ? user.uid : 'local_current_user';
+    const fallbackUname = user?.displayName?.toLowerCase().replace(/[^a-z0-9_]/g, '') || user?.email?.split('@')[0] || (user ? `user_${user.uid.slice(0, 6)}` : 'guest_coder');
+    const effectiveUsername = (customUsername || fallbackUname).toLowerCase().replace(/[^a-z0-9_]/g, '');
+    const currentDisplayName = customDisplayName || user?.displayName || user?.email?.split('@')[0] || (user ? 'User' : 'You (Guest)');
+
+    map.set(currentUid, {
+      uid: currentUid,
+      displayName: currentDisplayName,
+      username: effectiveUsername,
+      bio: customBio || '',
+      linkedin: customLinkedin || '',
+      github: customGithub || '',
+      photoURL: user?.photoURL || null,
+      solvedCount: userStats.solved || 0,
+      streak: userStats.streak || 0,
+      maxStreak: userStats.maxStreak || 0,
+      easyCount: userStats.easy || 0,
+      medCount: userStats.med || 0,
+      hardCount: userStats.hard || 0,
+      questionsProgress: questionsProgress,
+      revisionLogs: revisionLogs,
+      isCurrentUser: true,
+      lastActive: new Date().toISOString()
+    });
 
     return Array.from(map.values());
   }, [
@@ -684,15 +703,17 @@ export default function App() {
     revisionLogs
   ]);
 
-  // Calculate real rank of current user among real users
+  // Calculate real rank of current user among all competitors
   const estimatedRank = useMemo(() => {
-    if (!user) return '-';
+    const currentUid = user ? user.uid : 'local_current_user';
+    const solvedNum = userStats.solved || 0;
+    const streakNum = userStats.streak || 0;
     let higherCount = 0;
     combinedLeaderboard.forEach(u => {
-      if (u.uid !== user.uid) {
-        if ((u.solvedCount || 0) > userStats.solved) {
+      if (u.uid !== currentUid && !u.isCurrentUser) {
+        if ((u.solvedCount || 0) > solvedNum) {
           higherCount++;
-        } else if ((u.solvedCount || 0) === userStats.solved && (u.streak || 0) > userStats.streak) {
+        } else if ((u.solvedCount || 0) === solvedNum && (u.streak || 0) > streakNum) {
           higherCount++;
         }
       }
@@ -1352,11 +1373,13 @@ export default function App() {
               currentUser={user}
               userStats={userStats}
               customDisplayName={customDisplayName}
+              isGuest={!user}
               onOpenProfile={(targetUser) => {
-                setViewingPublicProfile(targetUser && targetUser.uid !== user?.uid ? targetUser : null);
+                setViewingPublicProfile(targetUser && targetUser.uid !== (user?.uid || 'local_current_user') ? targetUser : null);
                 setIsProfileModalOpen(true);
               }}
               onGoogleSignIn={handleGoogleSignIn}
+              onPromptAuth={handleGoogleSignIn}
             />
           )}
 

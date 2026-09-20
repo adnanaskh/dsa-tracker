@@ -12,7 +12,7 @@ def solve():
     if not input_data:
         return
     
-    # Write your optimal algorithm here
+    # Write your optimal algorithm here 
     pass
 
 if __name__ == '__main__':
