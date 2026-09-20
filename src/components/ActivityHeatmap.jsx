@@ -113,31 +113,31 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
     };
   }, [questionsProgress, revisionLogs]);
 
-  // Determine available years: First year is always 2026
-  const currentCalendarYear = new Date().getFullYear();
-  const baseYear = 2026;
-  const maxYear = Math.max(baseYear, currentCalendarYear, ...(allRecordedYears.length > 0 ? allRecordedYears : [baseYear]));
+  // Determine available years
+  const currentCalendarYear = new Date().getFullYear() || 2026;
+  const baseYear = Math.min(2025, currentCalendarYear, ...(allRecordedYears.length > 0 ? allRecordedYears : [currentCalendarYear]));
+  const maxYear = Math.max(2026, currentCalendarYear, ...(allRecordedYears.length > 0 ? allRecordedYears : [currentCalendarYear]));
   
-  // Available years array sorted ascending (e.g., [2026, 2027, ...])
+  // Available years array sorted ascending
   const availableYears = useMemo(() => {
     const list = [];
     for (let y = baseYear; y <= maxYear; y++) {
       list.push(y);
     }
-    return list;
-  }, [baseYear, maxYear]);
+    return list.length > 0 ? list : [currentCalendarYear];
+  }, [baseYear, maxYear, currentCalendarYear]);
 
   // Selected year state
-  const [selectedYear, setSelectedYear] = useState(() => {
-    return Math.max(baseYear, currentCalendarYear);
-  });
+  const [selectedYear, setSelectedYear] = useState(() => currentCalendarYear);
 
-  // Ensure selected year stays valid if maxYear increases
+  // Ensure selected year stays valid
   useEffect(() => {
     if (selectedYear < baseYear) {
       setSelectedYear(baseYear);
+    } else if (selectedYear > maxYear) {
+      setSelectedYear(maxYear);
     }
-  }, [selectedYear, baseYear]);
+  }, [selectedYear, baseYear, maxYear]);
 
   // Stats specific to the selected year
   const yearStats = useMemo(() => {
@@ -229,7 +229,7 @@ export default function ActivityHeatmap({ questionsProgress = {}, revisionLogs =
       resultWeeks.push(week);
       weekIndex++;
 
-      if (iterDate > endDate && resultWeeks.length >= 52) {
+      if (weekIndex > 54 || (iterDate > endDate && resultWeeks.length >= 52)) {
         break;
       }
     }
